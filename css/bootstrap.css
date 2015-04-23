@@ -6654,7 +6654,6 @@ button.close {
     margin-bottom: 30px;
     text-align: center;
     font-size: 26px;
-    text-transform: uppercase;
   }
   .form-login .form-control{
     position: relative;
@@ -6745,7 +6744,7 @@ button.close {
   height:auto !important;
   height:150px;
   background: #ecf0f1;
-  margin: 50px auto;
+  margin: 90px auto;
   padding: 50px;
 }
   .box-search h1{
@@ -6764,3 +6763,15 @@ button.close {
     color: #fff;
     border: none;
   }
+
+/* Pace */
+
+.loader{
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url('../img/page-loader.gif') 50% 50% no-repeat rgb(249,249,249);
+}

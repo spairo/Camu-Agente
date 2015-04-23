@@ -3,14 +3,17 @@
 
 //Setting Global
 
-jQuery.support.cors = true;
 window.ws = "http://172.18.149.21/Servicios/REST.svc/";
 
+
+$(window).load(function() {
+	$(".loader").fadeOut("slow");
+})
 
 //$(document).ready(function(){
 $(window).load(function() {
 
-  //$(".date").text("Abril, 2015");
+  $(".date").text("Abril, 2015");
 
   //if($('#view-container').length){
     //$('#view-container').load('views/login.html');
@@ -29,15 +32,18 @@ $(window).load(function() {
 
 function login(user, password){
 
-  var url = ws+"rp_seguridadLogin";
+  var url = ws+"rg_seguridadLogin";
 
   var oData = { User: user, Password: password };
 
+  //jQuery.support.cors = true;
+  $.support.cors = true;
   $.ajax({
-    type: "POST",
+    type: "GET",
     url: url,
+    cache: false,
     crossDomain: true,
-    data: JSON.stringify(oData),
+    data: oData,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: OnSuccessCall_WS,
@@ -45,9 +51,24 @@ function login(user, password){
   });
 
   function OnSuccessCall_WS(response) {
-     alert(response);
-     $("#logdIn").fadeOut().hide();//.css("display","none");
-     $("#main").fadeIn().show();
+
+     if(response != ""){
+
+       $("#user").val('');
+       $("#password").val('');
+
+       $("#logdIn").hide("slow", function(){
+         $(".loader").fadeIn("slow", function(){
+           $(".loader").fadeOut("slow", function(){
+             $("#main").show();
+           });
+         });
+       });
+
+     }else{
+       alert("Usuario no Valido");
+       return false;
+     }
   }
   function OnErrorCall_WS(response) {
     alert("Error: " + response.status + " " + response.statusText);
@@ -63,7 +84,7 @@ $(document).ready(function(){
 
     $("#login").click(function(){
 
-      $("#login").prop( "disabled", true );
+      //$("#login").prop( "disabled", true );
 
       var user = $('#user').val();
       var password = $('#password').val();
@@ -73,9 +94,6 @@ $(document).ready(function(){
       }else{
 
         login(user, password);
-        document.getElementById("user").reset();
-        document.getElementById("password").reset();
-
 
       }
 
