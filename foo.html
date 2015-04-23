@@ -1,0 +1,36 @@
+<html>
+ <head>
+    <title>Chat</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <script type="text/javascript">
+    	function WS(){
+    		 //var url = "http://172.18.130.203/ServiciosCAMU/REST.svc/rp_seguridadLogin";
+         var url = "http://172.18.149.21/Servicios/REST.svc/rp_seguridadLogin"
+    		 var oData = {
+                     User: "master",
+                     Password: "master"
+                 };
+
+    		$.ajax({
+    			type: "POST",
+    			url: url,
+    			crossDomain: true,
+    			data: JSON.stringify(oData),
+    			contentType: "application/json; charset=utf-8",
+    			dataType: "json",
+    			success: OnSuccessCall_WS,
+    			error: OnErrorCall_WS
+    		});
+    	}
+    	function OnSuccessCall_WS(response) {
+    		 alert(response);
+      }
+    	function OnErrorCall_WS(response) {
+            alert("Error: " + response.status + " " + response.statusText);
+      }
+    </script>
+</head>
+<body>
+    <input id="btnEnviar" type="button" value="Enviar" onclick="WS();"/>
+</body>
+</html>
