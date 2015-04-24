@@ -36,7 +36,6 @@ function login(user, password){
 
   var oData = { User: user, Password: password };
 
-  //jQuery.support.cors = true;
   $.support.cors = true;
   $.ajax({
     type: "GET",
@@ -50,7 +49,7 @@ function login(user, password){
     error: OnErrorCall_WS
   });
 
-  function OnSuccessCall_WS(response) {
+  function OnSuccessCall_WS(response){
 
      if(response != ""){
 
@@ -73,11 +72,49 @@ function login(user, password){
        return false;
      }
   }
-  function OnErrorCall_WS(response) {
+  function OnErrorCall_WS(response){
     alert("Error: " + response.status + " " + response.statusText);
   }
 
 }
+
+//Search
+
+function seach(name, pat, mat, phone){
+
+  //alert(name + pat + mat + phone);
+
+  //rg_ListClientes(String nombre1, String nombre2, String apellido1, String apellido2, String telefono)
+
+  var url = ws+"rg_ListClientes";
+
+  var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, telefono: phone }
+
+  //var Data = { User: user, Password: password };
+
+  $.support.cors = true;
+  $.ajax({
+    type: "GET",
+    url: url,
+    cache: false,
+    crossDomain: true,
+    data: Data,
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: OnSuccessCall_WS,
+    error: OnErrorCall_WS
+  });
+
+  function OnSuccessCall_WS(data){
+    alert(data);
+    console.log(data);
+  }
+  function OnErrorCall_WS(data){
+    alert("error", data);
+  }
+
+}
+
 
 
 $(document).on('click', '#login', function(){
@@ -97,7 +134,6 @@ $(document).on('click', '#login', function(){
 
 });
 
-//Search Box
 
 $(document).ready(function(){
 
@@ -108,11 +144,11 @@ $(document).ready(function(){
 
   //phone
   $("#box-phone").keypress(function (e){
-     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+     if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
         //display error message
         $(".numbers").html("Solo Numeros").show().fadeOut("slow");
         return false;
-    }
+     }
   });
 
   $(".search-case").click(function(){
@@ -122,7 +158,14 @@ $(document).ready(function(){
         $(".box-group").addClass('has-error');
         return false;
     }else{
-        alert("do something");
+
+      var name = $("#box-name").val();
+      var pat = $("#box-pat").val();
+      var mat = $("#box-mat").val();
+      var phone = $("#box-phone").val();
+
+      seach(name, pat, mat, phone);
+
     }
 
   });
