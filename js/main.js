@@ -77,27 +77,21 @@ function login(user, password){
 }
 
 
-$(document).ready(function(){
+$(document).on('click', '#login', function(){
 
-    $("#user").attr('maxlength','20');
-    $("#password").attr('maxlength','20');
+  //$("#login").prop( "disabled", true );
 
-    $("#login").click(function(){
+  var user = $('#user').val();
+  var password = $('#password').val();
 
-      //$("#login").prop( "disabled", true );
+  if($("#user").val() == '' || $("#password").val() == ''){
+      alert("Los campos son obligatorios");
+      $(".form-group").addClass('has-error');
+      return false;
+  }else{
+      login(user, password);
+  }
 
-      var user = $('#user').val();
-      var password = $('#password').val();
-
-      if($("#user").val() == '' || $("#password").val() == ''){
-        alert("Los campos son obligatorios");
-      }else{
-
-        login(user, password);
-
-      }
-
-    });
 });
 
 //Search Box
@@ -113,7 +107,7 @@ $(document).ready(function(){
   $("#box-phone").keypress(function (e){
      if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
         //display error message
-        $("#errmsg").html("Solo Numeros").show().fadeOut("slow");
+        $(".numbers").html("Solo Numeros").show().fadeOut("slow");
         return false;
     }
   });
@@ -122,6 +116,7 @@ $(document).ready(function(){
 
     if($("#box-name").val() == '' &&  $("#box-pat").val() == '' &&  $("#box-mat").val() == '' && $("#box-phone").val() == ''){
         alert("Debe tener un campo a buscar minimo");
+        $(".box-group").addClass('has-error');
         return false;
     }else{
         alert("do something");
