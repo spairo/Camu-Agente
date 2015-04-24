@@ -60,7 +60,10 @@ function login(user, password){
        $("#logdIn").hide("slow", function(){
          $(".loader").fadeIn("slow", function(){
            $(".loader").fadeOut("slow", function(){
+
              $("#main").show();
+             $(".form-group").removeClass('has-error');
+
            });
          });
        });
