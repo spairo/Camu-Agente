@@ -10,22 +10,16 @@ $(window).load(function() {
 	$(".loader").fadeOut("slow");
 })
 
-//$(document).ready(function(){
-$(window).load(function() {
+$(window).bind('beforeunload', function(){
+	return 'Salir de la aplicacion.';
+});
+
+$(document).ready(function(){
 
   $(".date").text("Abril, 2015");
-
   //if($('#view-container').length){
     //$('#view-container').load('views/login.html');
   //}
-
-  /*
-  $("#page1").click(function(){
-    $('#view-container').load('views/main.html');
-    alert("Thanks for visiting!");
-  });
-  */
-
 });
 
 //login
@@ -60,7 +54,7 @@ function login(user, password){
          $(".loader").fadeIn("slow", function(){
            $(".loader").fadeOut("slow", function(){
 
-             $("#main").show();
+             $("#main, #search").show();
              $(".form-group").removeClass('has-error');
 
            });
@@ -82,15 +76,9 @@ function login(user, password){
 
 function seach(name, pat, mat, phone){
 
-  //alert(name + pat + mat + phone);
-
-  //rg_ListClientes(String nombre1, String nombre2, String apellido1, String apellido2, String telefono)
-
   var url = ws+"rg_ListClientes";
 
   var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, telefono: phone }
-
-  //var Data = { User: user, Password: password };
 
   $.support.cors = true;
   $.ajax({
@@ -101,21 +89,24 @@ function seach(name, pat, mat, phone){
     data: Data,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    success: OnSuccessCall_WS,
-    error: OnErrorCall_WS
+    success: OnSuccess,
+    error: OnError
   });
+}
+function OnSuccess(data){
 
-  function OnSuccessCall_WS(data){
-    alert(data);
-    console.log(data);
+  console.log("listas", data);
+  if(data != ""){
+    console.log("si");
+  }else{
+    $(".res").text("No hay resultados");
   }
-  function OnErrorCall_WS(data){
-    alert("error", data);
-  }
-
+}
+function OnError(data){
+  alert("error", data);
 }
 
-
+/*Login*/
 
 $(document).on('click', '#login', function(){
 
@@ -134,6 +125,7 @@ $(document).on('click', '#login', function(){
 
 });
 
+/*Search*/
 
 $(document).ready(function(){
 
@@ -164,11 +156,37 @@ $(document).ready(function(){
       var mat = $("#box-mat").val();
       var phone = $("#box-phone").val();
 
-      seach(name, pat, mat, phone);
+      $("#search").hide("slow", function(){
+        $(".loader").fadeIn(1000, function(){
+          $(".loader").fadeOut(1000, function(){
+
+            $("#search-result").show();
+            seach(name, pat, mat, phone);
+
+          });
+        });
+      });
+
 
     }
 
   });
 
+});
 
+$(document).on('click', '.btn-search-again', function(){
+
+  $('.res').empty();
+  $("#box-name").val("");
+  $("#box-pat").val("");
+  $("#box-mat").val("");
+  $("#box-phone").val("");
+
+  $("#search-result").hide("slow", function(){
+    $(".loader").fadeIn(500, function(){
+      $(".loader").fadeOut(500, function(){
+        $("#search").show();
+      });
+    });
+  });
 });

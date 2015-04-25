@@ -7,7 +7,7 @@
     <title>Camu.Agente</title>
 
     <!-- Css Core -->
-    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/core.css" rel="stylesheet" />
     <link type="image/x-icon" href="img/Icono.ico" rel="shortcut icon" />
 
     <!--[if lt IE 9]>
@@ -50,7 +50,6 @@
         </div>
         <!-- //login -->
 
-
         <!--  Main -->
         <div id="main" style="display:none;">
           <div class="subheader">
@@ -70,8 +69,12 @@
               </div>
             </div>
           </div>
-          
-          <div class="row">
+        </div>
+        <!--  //Main -->
+
+        <div class="container">
+
+          <div id="search" class="row" style="display:none;">
             <div class="col-md-4 col-md-offset-4">
               <div class="box-search">
                 <h1>Buscador</h1>
@@ -100,76 +103,82 @@
               </div>
             </div>
           </div>
-        </div>
-        <!--  //Main -->
 
-        <div class="container">
-
-        </div>
-
-
-        <div class="row">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-2">
-                <div class="list-group">
-                  <a href="#" class="list-group-item disabled">
-                    Cras justo odio
-                  </a>
-                  <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-                  <a href="#" class="list-group-item">Morbi leo risus</a>
-                  <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-                  <a href="#" class="list-group-item">Vestibulum at eros</a>
-                </div>
+          <div id="search-result" class="row" style="display:none;">
+              <div class="btn-group btn-group-lg pull-right" role="group" aria-label="config">
+                <button class="btn btn-search btn-search-again">Nueva Busqueda <span class="glyphicon glyphicon-search"></button>
               </div>
-              <div class="col-md-10">
-                <table class="table table-striped">
-                  <caption>Optional table caption.</caption>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>Username</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+
+              <div class="res"></div>
+              <!--
+              <table class="table table-striped">
+                <caption>Resultado de la busqueda.</caption>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Apellido Pat</th>
+                    <th>Apellido Mat</th>
+                    <th>Tipo Telefono</th>
+                    <th>Lada Telefono</th>
+                    <th>Ext</th>
+                    <th>Base</th>
+                    <th>Build it</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Lorem</td>
+                    <td>Ipsum</td>
+                    <td>Dol sit</td>
+                    <td>5623</td>
+                    <td>55</td>
+                    <td>85646</td>
+                    <td>MD</td>
+                    <td><button class="btn btn-search"><span class="glyphicon glyphicon-cog"></button></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>Lorem</td>
+                    <td>Ipsum</td>
+                    <td>Dol sit</td>
+                    <td>5623</td>
+                    <td>55</td>
+                    <td>85646</td>
+                    <td>MD</td>
+                    <td><button class="btn btn-search"><span class="glyphicon glyphicon-cog"></button></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>Lorem</td>
+                    <td>Ipsum</td>
+                    <td>Dol sit</td>
+                    <td>5623</td>
+                    <td>55</td>
+                    <td>85646</td>
+                    <td>MD</td>
+                    <td><button class="btn btn-search"><span class="glyphicon glyphicon-cog"></button></td>
+                  </tr>
+                </tbody>
+              </table>
+              -->
           </div>
+
         </div>
+
 
 
 
       </div>
-    </div>
-
+    </div><!-- //fluid -->
+  <!--
     <div class="footer">
       <div class="container">
         <p class="text-center">©2015 Atento. Lorem ipsum dolor sit amet</p>
       </div>
     </div>
-
+  -->
 
     <!-- Javascript Core -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
