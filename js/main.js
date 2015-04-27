@@ -10,9 +10,14 @@ $(window).load(function() {
 	$(".loader").fadeOut("slow");
 })
 
+/*
 $(window).bind('beforeunload', function(){
 	return 'Salir de la aplicacion.';
+	Cookies.remove('name');
+	Cookies.remove('profile');
 });
+*/
+
 
 $(document).ready(function(){
 
@@ -54,8 +59,29 @@ function login(user, password){
          $(".loader").fadeIn("slow", function(){
            $(".loader").fadeOut("slow", function(){
 
-             $("#main, #search").show();
-             $(".form-group").removeClass('has-error');
+						  console.info(response);
+
+							//cookies everywhere
+							var id = Cookies.set('id', response[0].usuariosId);
+							var name = Cookies.set('name', response[0].usuario);
+							var profile = Cookies.set('profile', response[0].perfil);
+
+							main(id, name, profile);
+							seach(id);
+
+							/*
+	             for(var i = 0; i < social_feeds.length; i++){
+	                var pic = social_feeds[i].img;
+	                var name = social_feeds[i].txt;
+	                var tipo = social_feeds[i].type;
+	                var url = social_feeds[i].url;
+	                var content = '<div class="messages"><div class="mini-cover"><img src="'+pic+'" style="width:35px; height=35px;"></div><div class="listened">'+name+'</div></div>';
+	                $('.block_info').append(content);
+	             }
+							*/
+
+	             $("#main, #search").show();
+	             $(".form-group").removeClass('has-error');
 
            });
          });
@@ -72,13 +98,29 @@ function login(user, password){
 
 }
 
+//main
+
+function main(id,	name, profile){
+
+
+	var myid = Cookies.get('id');
+	var name = Cookies.get('name');
+	var profile = Cookies.get('profile');
+
+	$(".name").empty().text(name);
+	$(".profile").empty().text(profile);
+}
+
 //Search
 
-function seach(name, pat, mat, phone){
+function seach(name, pat, mat, phone, id){
+
+	var myid = Cookies.get('id');
+	console.log(myid);
 
   var url = ws+"rg_ListClientes";
 
-  var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, telefono: phone }
+  var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, telefono: phone, usuarioId: myid };
 
   $.support.cors = true;
   $.ajax({
@@ -99,7 +141,7 @@ function OnSuccess(data){
   if(data != ""){
     console.log("si");
   }else{
-    $(".res").text("No hay resultados");
+    $(".result").text("No hay resultados");
   }
 }
 function OnError(data){
@@ -122,6 +164,16 @@ $(document).on('click', '#login', function(){
   }else{
       login(user, password);
   }
+
+});
+
+/*Logout*/
+
+$(document).on('click', '#logout', function(){
+
+	Cookies.remove('name');
+	Cookies.remove('profile');
+	location.reload();
 
 });
 
@@ -166,15 +218,13 @@ $(document).ready(function(){
           });
         });
       });
-
-
     }
 
   });
 
 });
 
-$(document).on('click', '.btn-search-again', function(){
+$(document).on('click', '.search-back', function(){
 
   $('.res').empty();
   $("#box-name").val("");
@@ -183,10 +233,11 @@ $(document).on('click', '.btn-search-again', function(){
   $("#box-phone").val("");
 
   $("#search-result").hide("slow", function(){
-    $(".loader").fadeIn(500, function(){
-      $(".loader").fadeOut(500, function(){
+    $(".loader").fadeIn(200, function(){
+      $(".loader").fadeOut(200, function(){
         $("#search").show();
       });
     });
   });
+
 });

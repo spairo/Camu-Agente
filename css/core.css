@@ -6777,14 +6777,14 @@ button.close {
   margin-top: 40px;
 }
   #search-result .btn-search{
-    background: #ecf0f1;
-    color: #7F8C97;
-    border-bottom: 4px solid #7f8c8d;
+    background: #7f8c8d;
+    color: #fff;
+    border-bottom: 0px solid #7f8c8d;
   }
   #search-result th, td{
     color: #7F8C97;
   }
-  #search-result .res{
+  #search-result .result{
     color: #7F8C97;
     text-align: center;
     font-weight: bold;
