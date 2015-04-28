@@ -35,11 +35,12 @@ function login(user, password){
 
   var oData = { User: user, Password: password };
 
-  $.support.cors = true;
+  //$.support.cors = true;
+	$.support.cors = true;
   $.ajax({
     type: "GET",
     url: url,
-    cache: false,
+    //cache: false,
     crossDomain: true,
     data: oData,
     contentType: "application/json; charset=utf-8",
@@ -138,14 +139,40 @@ function seach(name, pat, mat, phone, id){
 function OnSuccess(data){
 
   console.log("listas", data);
-  if(data != ""){
-    console.log("si");
+
+	if(data != "[]"){
+
+		DataEvals(data);
+
   }else{
     $(".result").text("No hay resultados");
   }
 }
+
 function OnError(data){
   alert("error", data);
+}
+
+function DataEvals(data){
+
+	var DataT = data;
+
+	$('#result').append(DataT);
+
+	/*
+	for(var i = 0; i < DataT.length; i++){
+
+				var name = DataT[i].nombre1;
+        var name2 = DataT[i].nombre2;
+        var pat = DataT[i].apellido1;
+				var mat = DataT[i].apellido2;
+				var clave = DataT[i].valorClave;
+
+        var content = ('<tr><td>'+name+'</td></tr>');
+
+				$('#result table#list').append(content);
+	}
+	*/
 }
 
 /*Login*/
@@ -171,6 +198,7 @@ $(document).on('click', '#login', function(){
 
 $(document).on('click', '#logout', function(){
 
+	Cookies.remove('id');
 	Cookies.remove('name');
 	Cookies.remove('profile');
 	location.reload();

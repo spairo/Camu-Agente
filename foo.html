@@ -1,7 +1,7 @@
 <html>
  <head>
     <title>Chat</title>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script type="text/javascript">
     function WS(){
     try
@@ -12,15 +12,16 @@
 		 Password: "master"
 		 };
 
+     jQuery.support.cors = true;
 		 $.ajax({
-		 url: url,
-		 type: "get",
-		 crossDomain: true,
-		 data: oData,
-		 contentType: "application/json; charset=utf-8",
-		 dataType: "json",
-		 success: OnSuccessCall_WS,
-		 error: OnErrorCall_WS
+  		 url: url,
+  		 type: "get",
+  		 crossDomain: true,
+  		 data: oData,
+  		 contentType: "application/json; charset=utf-8",
+  		 dataType: "json",
+  		 success: OnSuccessCall_WS,
+  		 error: OnErrorCall_WS
 		 });
 	}
     catch(ex)
