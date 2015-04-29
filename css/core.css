@@ -6762,6 +6762,9 @@ button.close {
     -webkit-box-shadow: none;
     box-shadow: none;
   }
+    .subheader .btn-menu span{
+      color: #fff; 
+    }
 
 
 /* Box Search */
