@@ -60,26 +60,15 @@ function login(user, password){
          $(".loader").fadeIn("slow", function(){
            $(".loader").fadeOut("slow", function(){
 
-						  console.info(response);
-
 							//cookies everywhere
 							var id = Cookies.set('id', response[0].usuariosId);
 							var name = Cookies.set('name', response[0].usuario);
 							var profile = Cookies.set('profile', response[0].perfil);
+							var data = response[0].menu;
 
 							main(id, name, profile);
 							seach(id);
-
-							/*
-	             for(var i = 0; i < social_feeds.length; i++){
-	                var pic = social_feeds[i].img;
-	                var name = social_feeds[i].txt;
-	                var tipo = social_feeds[i].type;
-	                var url = social_feeds[i].url;
-	                var content = '<div class="messages"><div class="mini-cover"><img src="'+pic+'" style="width:35px; height=35px;"></div><div class="listened">'+name+'</div></div>';
-	                $('.block_info').append(content);
-	             }
-							*/
+							Menu(data);
 
 	             $("#main, #search").show();
 	             $(".form-group").removeClass('has-error');
@@ -117,8 +106,6 @@ function main(id,	name, profile){
 function seach(name, pat, mat, phone, id){
 
 	var myid = Cookies.get('id');
-	console.log(myid);
-
   var url = ws+"rg_ListClientes";
 
   var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, telefono: phone, usuarioId: myid };
@@ -135,18 +122,10 @@ function seach(name, pat, mat, phone, id){
     success: OnSuccess,
     error: OnError
   });
+
 }
 function OnSuccess(data){
-
-  console.log("listas", data);
-
-	if(data != "[]"){
-
-		DataEvals(data);
-
-  }else{
-    $(".result").text("No hay resultados");
-  }
+  DataEvals(data);
 }
 
 function OnError(data){
@@ -155,31 +134,157 @@ function OnError(data){
 
 function DataEvals(data){
 
-	var DataT = data;
+	var search_evals = data;
 
-	$('#result').append(DataT);
+	if(search_evals != ""){
 
-	/*
-	for(var i = 0; i < DataT.length; i++){
+		$('.result').empty().append('<table class="search_evals table table-striped"><caption>Resultado de la busqueda.</caption><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Tipo Telefono</th><th>Lada Telefono</th><th>Ext</th><th>Servicio</th><th>Build it</th></tr></thead><tbody></tbody></table>');
 
-				var name = DataT[i].nombre1;
-        var name2 = DataT[i].nombre2;
-        var pat = DataT[i].apellido1;
-				var mat = DataT[i].apellido2;
-				var clave = DataT[i].valorClave;
+		for(var i = 0; i < search_evals.length; i++){
 
-        var content = ('<tr><td>'+name+'</td></tr>');
+				var name = search_evals[i].nombre1;
+				var second_name = search_evals[i].nombre2;
+				var pat_name = search_evals[i].apellido1;
+				var mat_name = search_evals[i].apellido2;
+				var service = search_evals[i].servicio;
 
-				$('#result table#list').append(content);
+				var content = '<tr><th>#</th><th>'+name+'</th><th>'+second_name+'</th><th>'+pat_name+'</th><th>Telefono</th><th>Lada</th><th>Ext</th><th>'+service+'</th><th><button class="btn btn-search build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
+				$('.result table.search_evals').append(content);
+		}
+
+	}else{
+		$(".result").empty().append('<span class="not-found">No hay resultados</span>');
 	}
-	*/
+
+}
+
+//Build  Menu
+
+function Menu(data){
+
+	var data = data;
+
+	var builddata = function(){
+	    var source = [];
+	    var items = [];
+	    for (i = 0; i < data.length; i++) {
+	        var item = data[i];
+	        var label = item["menu"];
+	        var parentid = item["menusSupId"];
+	        var id = item["menusId"];
+	        var url = item["forma"];
+
+	        if (items[parentid]) {
+	            var item = { parentid: parentid, label: label, url: url, item: item };
+	            if (!items[parentid].items) {
+	                items[parentid].items = [];
+	            }
+	            items[parentid].items[items[parentid].items.length] = item;
+	            items[id] = item;
+	        }
+	        else {
+	            items[id] = { parentid: parentid, label: label, url: url, item: item };
+	            source[id] = items[id];
+	        }
+	    }
+	    return source;
+	}
+
+	var buildUL = function(parent, items){
+	    $.each(items, function(){
+	        if (this.label) {
+	            var li = $("<li class='js-menu'>" + "<a href='"+ this.url +"'>" + this.label + "</a></li>");
+	            li.appendTo(parent);
+	            if (this.items && this.items.length > 0) {
+	                var ul = $("<ul class='dropdown-menu js-menu'></ul>");
+	                ul.appendTo(li);
+	                buildUL(ul, this.items);
+	            }
+	        }
+	    });
+	}
+
+	var source = builddata();
+
+	var ul = $(".json-menu");
+
+	ul.appendTo(".json-menu");
+
+	buildUL(ul, source);
+
+	//add bootstrap classes
+
+	if ($(".json-menu>li:has(ul.js-menu)")){
+	  $(".json-menu>li.js-menu").addClass('dropdown-submenu');
+	}
+	if ($(".json-menu>li>ul.js-menu>li:has(> ul.js-menu)")){
+		$(".json-menu>li>ul.js-menu li ").addClass('dropdown-submenu');
+	}
+
+	$("ul.js-menu").find("li:not(:has(> ul.js-menu))").removeClass("dropdown-submenu");
+
+	/*******
+	var data = data;
+
+	var builddata = function(){
+	    var source = [];
+	    var items = [];
+	    // build hierarchical source.
+	    for (i = 0; i < data.length; i++) {
+	        var item = data[i];
+	        var label = item["menu"];
+	        var parentid = item["menusSupId"];
+	        var id = item["menusId"];
+
+	        if (items[parentid]) {
+	            var item = { parentid: parentid, label: label, item: item };
+	            if (!items[parentid].items) {
+	                items[parentid].items = [];
+	            }
+	            items[parentid].items[items[parentid].items.length] = item;
+	            items[id] = item;
+	        }
+	        else {
+	            items[id] = { parentid: parentid, label: label, item: item };
+	            source[id] = items[id];
+	        }
+	    }
+	    return source;
+	}
+
+	var source = builddata();
+
+	var buildUL = function(parent, items){
+	    $.each(items, function () {
+	        if (this.label) {
+	            // create LI element and append it to the parent element.
+	            var li = $("<li>" + this.label + "</li>");
+	            li.appendTo(parent);
+	            // if there are sub items, call the buildUL function.
+	            if (this.items && this.items.length > 0) {
+	                var ul = $("<ul></ul>");
+	                ul.appendTo(li);
+	                buildUL(ul, this.items);
+	            }
+	        }
+	    });
+	}
+
+	var ul = $("<ul></ul>");
+
+	ul.appendTo("#jqxMenu");
+
+	buildUL(ul, source);
+	**********/
+
+
 }
 
 /*Login*/
 
 $(document).on('click', '#login', function(){
 
-  //$("#login").prop( "disabled", true );
+  $("#login").prop( "disabled", true );
 
   var user = $('#user').val();
   var password = $('#password').val();
@@ -254,7 +359,8 @@ $(document).ready(function(){
 
 $(document).on('click', '.search-back', function(){
 
-  $('.res').empty();
+  $('.result').empty();
+	$(".form-group").removeClass('has-error');
   $("#box-name").val("");
   $("#box-pat").val("");
   $("#box-mat").val("");
