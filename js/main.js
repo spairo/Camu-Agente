@@ -21,7 +21,7 @@ $(window).bind('beforeunload', function(){
 
 $(document).ready(function(){
 
-  $(".date").text("Abril, 2015");
+  $(".date").text("");
   //if($('#view-container').length){
     //$('#view-container').load('views/login.html');
   //}
