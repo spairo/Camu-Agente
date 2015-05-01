@@ -92,13 +92,13 @@ function login(user, password){
 
 function main(id,	name, profile){
 
-
 	var myid = Cookies.get('id');
 	var name = Cookies.get('name');
 	var profile = Cookies.get('profile');
 
 	$(".name").empty().text(name);
 	$(".profile").empty().text(profile);
+
 }
 
 //Search
@@ -108,7 +108,7 @@ function seach(name, pat, mat, phone, id){
 	var myid = Cookies.get('id');
   var url = ws+"rg_ListClientes";
 
-  var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, telefono: phone, usuarioId: myid };
+  var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, valorClave: phone, usuarioId: myid };
 
   $.support.cors = true;
   $.ajax({
@@ -138,17 +138,22 @@ function DataEvals(data){
 
 	if(search_evals != ""){
 
-		$('.result').empty().append('<table class="search_evals table table-striped"><caption>Resultado de la busqueda.</caption><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Tipo Telefono</th><th>Lada Telefono</th><th>Ext</th><th>Servicio</th><th>Build it</th></tr></thead><tbody></tbody></table>');
+
+		$('.result').empty().append('<table class="search_evals table table-striped"><caption>Resultado de la busqueda.</caption><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Valor Clave</th><th>Lada Telefono</th><th>Ext</th><th>Servicio</th><th>Build it</th></tr></thead><tbody></tbody></table>');
 
 		for(var i = 0; i < search_evals.length; i++){
 
+				var id = search_evals[i].clientesId;
 				var name = search_evals[i].nombre1;
 				var second_name = search_evals[i].nombre2;
 				var pat_name = search_evals[i].apellido1;
 				var mat_name = search_evals[i].apellido2;
 				var service = search_evals[i].servicio;
+				var clave = search_evals[i].valorClave;
+				var lada = search_evals[i].lada;
+				var extension = search_evals[i].extension;
 
-				var content = '<tr><th>#</th><th>'+name+'</th><th>'+second_name+'</th><th>'+pat_name+'</th><th>Telefono</th><th>Lada</th><th>Ext</th><th>'+service+'</th><th><button class="btn btn-search build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
+				var content = '<tr><th>'+id+'</th><th>'+name+' '+second_name+'</th><th>'+pat_name+'</th><th>'+mat_name+'</th><th>'+clave+'</th><th>'+lada+'</th><th>'+extension+'</th><th>'+service+'</th><th><button class="btn btn-search build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
 				$('.result table.search_evals').append(content);
 		}
 
@@ -317,16 +322,19 @@ $(document).ready(function(){
   $("#box-name").attr('maxlength','20');
   $("#box-pat").attr('maxlength','20');
   $("#box-mat").attr('maxlength','20');
-  $("#box-phone").attr('maxlength','10');
+  $("#box-phone").attr('maxlength','20');
 
-  //phone
-  $("#box-phone").keypress(function (e){
+  //only numbers
+
+	/*
+	$("#box-phone").keypress(function (e){
      if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
         //display error message
         $(".numbers").html("Solo Numeros").show().fadeOut("slow");
         return false;
      }
   });
+	*/
 
   $(".search-case").click(function(){
 
