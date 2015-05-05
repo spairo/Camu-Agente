@@ -64,14 +64,17 @@ function login(user, password){
 							var id = Cookies.set('id', response[0].usuariosId);
 							var name = Cookies.set('name', response[0].usuario);
 							var profile = Cookies.set('profile', response[0].perfil);
-							var data = response[0].menu;
+							var dataM = response[0].menu;
+							var dataS = response[0].configuracion;
 
 							main(id, name, profile);
 							seach(id);
-							Menu(data);
+							Menu(dataM);
+							skills(dataS);
 
-	             $("#main, #search").show();
-	             $(".form-group").removeClass('has-error');
+							$("#main, #skills").show();
+	            //$("#main, #search").show();
+	            $(".form-group").removeClass('has-error');
 
            });
          });
@@ -98,6 +101,27 @@ function main(id,	name, profile){
 
 	$(".name").empty().text(name);
 	$(".profile").empty().text(profile);
+
+}
+
+//Skills
+
+function skills(data){
+
+	//var skills_evals = Object.keys(data).length; //IE8 sucks
+	var skills_evals = data;
+
+	if(skills_evals.length != 1){
+
+		alert("voy a mostrar el select");
+
+	}else{
+		$("#search").show();
+	}
+
+}
+
+function skillsload(){
 
 }
 

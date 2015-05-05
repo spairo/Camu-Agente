@@ -6763,9 +6763,20 @@ button.close {
     box-shadow: none;
   }
     .subheader .btn-menu span{
-      color: #fff; 
+      color: #fff;
     }
 
+/* Box skills */
+
+.box-skills{
+  margin: 50px auto;
+  background: #ecf0f1;
+  width: 100%;
+  min-height: 350px;
+  height:auto !important;
+  height:350px;
+  border-bottom: 4px solid #bdc3c7;
+}
 
 /* Box Search */
 
