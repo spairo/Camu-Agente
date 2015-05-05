@@ -5,6 +5,10 @@
 
 window.ws = "http://172.18.149.21/Servicios/REST.svc/";
 
+//Higher scope
+
+var str_Skillid;
+
 
 $(window).load(function() {
 	$(".loader").fadeOut("slow");
@@ -81,8 +85,11 @@ function login(user, password){
        });
 
      }else{
-       alert("Usuario no Valido");
-       return false;
+
+				alert("Usuario no Valido");
+			 	$("#login").prop( "disabled", true );
+
+			 	return false;
      }
   }
   function OnErrorCall_WS(response){
@@ -113,15 +120,19 @@ function skills(data){
 
 	if(skills_evals.length != 1){
 
-		alert("voy a mostrar el select");
+		$('.box-skills').empty().append('<h1>Skill</h1><select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block">Seleccionar</button>');
+
+		for(var i = 0; i < skills_evals.length; i++){
+			var skill = skills_evals[i].skill;
+			var skillsId = skills_evals[i].skillsId;
+
+			var content = '<option value="'+skillsId+'">'+skill+'</option>';
+			$('.box-skills select.skillchoice').append(content);
+		}
 
 	}else{
 		$("#search").show();
 	}
-
-}
-
-function skillsload(){
 
 }
 
@@ -131,8 +142,9 @@ function seach(name, pat, mat, phone, id){
 
 	var myid = Cookies.get('id');
   var url = ws+"rg_ListClientes";
+	var skillID = Cookies.get('SkillId');
 
-  var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, valorClave: phone, usuarioId: myid };
+  var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, valorClave: phone, usuarioId: myid, skillid: skillID };
 
   $.support.cors = true;
   $.ajax({
@@ -189,10 +201,11 @@ function DataEvals(data){
 
 //Build  Menu
 
+
 function Menu(data){
 
 	var data = data;
-
+	/*
 	var builddata = function(){
 	    var source = [];
 	    var items = [];
@@ -251,63 +264,10 @@ function Menu(data){
 	}
 
 	$("ul.js-menu").find("li:not(:has(> ul.js-menu))").removeClass("dropdown-submenu");
-
-	/*******
-	var data = data;
-
-	var builddata = function(){
-	    var source = [];
-	    var items = [];
-	    // build hierarchical source.
-	    for (i = 0; i < data.length; i++) {
-	        var item = data[i];
-	        var label = item["menu"];
-	        var parentid = item["menusSupId"];
-	        var id = item["menusId"];
-
-	        if (items[parentid]) {
-	            var item = { parentid: parentid, label: label, item: item };
-	            if (!items[parentid].items) {
-	                items[parentid].items = [];
-	            }
-	            items[parentid].items[items[parentid].items.length] = item;
-	            items[id] = item;
-	        }
-	        else {
-	            items[id] = { parentid: parentid, label: label, item: item };
-	            source[id] = items[id];
-	        }
-	    }
-	    return source;
-	}
-
-	var source = builddata();
-
-	var buildUL = function(parent, items){
-	    $.each(items, function () {
-	        if (this.label) {
-	            // create LI element and append it to the parent element.
-	            var li = $("<li>" + this.label + "</li>");
-	            li.appendTo(parent);
-	            // if there are sub items, call the buildUL function.
-	            if (this.items && this.items.length > 0) {
-	                var ul = $("<ul></ul>");
-	                ul.appendTo(li);
-	                buildUL(ul, this.items);
-	            }
-	        }
-	    });
-	}
-
-	var ul = $("<ul></ul>");
-
-	ul.appendTo("#jqxMenu");
-
-	buildUL(ul, source);
-	**********/
-
+	*/
 
 }
+
 
 /*Login*/
 
@@ -321,6 +281,8 @@ $(document).on('click', '#login', function(){
   if($("#user").val() == '' || $("#password").val() == ''){
       alert("Los campos son obligatorios");
       $(".form-group").addClass('has-error');
+			$("#login").prop( "disabled", false );
+
       return false;
   }else{
       login(user, password);
@@ -335,7 +297,25 @@ $(document).on('click', '#logout', function(){
 	Cookies.remove('id');
 	Cookies.remove('name');
 	Cookies.remove('profile');
+	Cookies.remove('SkillId');
 	location.reload();
+
+});
+
+/*Skills box*/
+
+$(document).on('click', '.choice-skill', function(){
+
+	var skillID = $(".skillchoice").val();
+ 	Cookies.set('SkillId', skillID);
+
+	$("#skills").hide("slow", function(){
+		$(".loader").fadeIn("slow", function(){
+			$(".loader").fadeOut("slow", function(){
+					$("#search").show();
+			});
+		});
+	});
 
 });
 
@@ -348,9 +328,8 @@ $(document).ready(function(){
   $("#box-mat").attr('maxlength','20');
   $("#box-phone").attr('maxlength','20');
 
-  //only numbers
-
 	/*
+	//only numbers
 	$("#box-phone").keypress(function (e){
      if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
         //display error message
@@ -406,4 +385,20 @@ $(document).on('click', '.search-back', function(){
     });
   });
 
+});
+
+/*Template Builder Engine*/
+
+$(document).on('click', '.build', function(){
+
+		$.ajax({
+			url: "url",
+			type: "POST",
+			async: false,
+			success: function(){
+				 alert("foo");
+				 window.open('www.google.com', '_blank');
+			}
+		});
+		//window.open('engine.html','_blank');
 });
