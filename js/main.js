@@ -68,6 +68,7 @@ function login(user, password){
 							var id = Cookies.set('id', response[0].usuariosId);
 							var name = Cookies.set('name', response[0].usuario);
 							var profile = Cookies.set('profile', response[0].perfil);
+							Cookies.set('parole', password);
 							var dataM = response[0].menu;
 							var dataS = response[0].configuracion;
 
@@ -79,6 +80,7 @@ function login(user, password){
 							$("#main, #skills").show();
 	            //$("#main, #search").show();
 	            $(".form-group").removeClass('has-error');
+
 
            });
          });
@@ -93,7 +95,7 @@ function login(user, password){
      }
   }
   function OnErrorCall_WS(response){
-    alert("Error: " + response.status + " " + response.statusText);
+    alert("Error44: " + response.status + " " + response.statusText);
   }
 
 }
@@ -165,7 +167,7 @@ function OnSuccess(data){
 }
 
 function OnError(data){
-  alert("error", data);
+  //alert("Perror", data);
 }
 
 function DataEvals(data){
@@ -279,7 +281,8 @@ $(document).on('click', '#login', function(){
   var password = $('#password').val();
 
   if($("#user").val() == '' || $("#password").val() == ''){
-      alert("Los campos son obligatorios");
+
+			alert("Los campos son obligatorios");
       $(".form-group").addClass('has-error');
 			$("#login").prop( "disabled", false );
 
@@ -297,7 +300,7 @@ $(document).on('click', '#logout', function(){
 	Cookies.remove('id');
 	Cookies.remove('name');
 	Cookies.remove('profile');
-	Cookies.remove('SkillId');
+	Cookies.remove('parole');
 	location.reload();
 
 });
@@ -392,13 +395,82 @@ $(document).on('click', '.search-back', function(){
 $(document).on('click', '.build', function(){
 
 		$.ajax({
-			url: "url",
+			url: "index.html",
 			type: "POST",
 			async: false,
 			success: function(){
-				 alert("foo");
-				 window.open('www.google.com', '_blank');
+				alert("foo");
+				window.open('engine.html', '_blank');
 			}
 		});
-		//window.open('engine.html','_blank');
+
 });
+
+$(document).ready(function(){
+
+	var path = window.location.pathname;
+
+	if(path == "/engine.html"){
+
+		/*
+		var myid1 = Cookies.get('id');
+		var name1 = Cookies.get('name');
+		var profile1 = Cookies.get('profile');
+		var passw = Cookies.get('parole');
+		$("#datos").empty().append("id: " + myid1 + name1 + profile1 + "password es: " + passw);
+
+		*/
+		var name = "master";
+		var passw = "master";
+
+		onsetEngine(name, passw);
+
+	}
+
+});
+
+function onsetEngine(name, passw){
+
+  var url = ws+"rg_seguridadLogin";
+
+  var oData = { User: name, Password: passw };
+
+	$.support.cors = true;
+  $.ajax({
+    type: "GET",
+    url: url,
+    //cache: false,
+    crossDomain: true,
+    data: oData,
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: onsetEngineSuccess,
+    error: onsetEngineError
+  });
+
+}
+function onsetEngineSuccess(data){
+
+	console.info(data);
+	var	cssAgente = data[0].configuracion[0].cssAgente;
+
+	$(".loader").fadeIn("slow", function(){
+		cssEngine(cssAgente);
+	});
+
+
+}
+function onsetEngineError(data){
+	alert("Error44: " + data.status + " " + data.statusText);
+}
+
+/* Css Engine */
+
+function cssEngine(data){
+
+	$(".loader").fadeOut("slow", function(){
+		console.info("motor css", data);
+		$("head").append("<!-- Custom Css --><style>" + data + "</style><!-- //Custom Css -->");
+	});
+	
+}
