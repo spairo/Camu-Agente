@@ -7,7 +7,7 @@ window.ws = "http://172.18.149.21/Servicios/REST.svc/";
 
 //Higher scope
 
-var str_Skillid;
+var str_;
 
 
 $(window).load(function() {
@@ -128,7 +128,7 @@ function skills(data){
 			var skill = skills_evals[i].skill;
 			var skillsId = skills_evals[i].skillsId;
 
-			var content = '<option value="'+skillsId+'">'+skill+'</option>';
+			var content = '<option value="'+skillsId+'" name="'+skill+'">'+skill+'</option>';
 			$('.box-skills select.skillchoice').append(content);
 		}
 
@@ -203,11 +203,10 @@ function DataEvals(data){
 
 //Build  Menu
 
-
 function Menu(data){
-
+/*
 	var data = data;
-	/*
+
 	var builddata = function(){
 	    var source = [];
 	    var items = [];
@@ -266,7 +265,7 @@ function Menu(data){
 	}
 
 	$("ul.js-menu").find("li:not(:has(> ul.js-menu))").removeClass("dropdown-submenu");
-	*/
+*/
 
 }
 
@@ -310,7 +309,10 @@ $(document).on('click', '#logout', function(){
 $(document).on('click', '.choice-skill', function(){
 
 	var skillID = $(".skillchoice").val();
- 	Cookies.set('SkillId', skillID);
+	var skillstd = $(".skillchoice option:selected").attr('name');
+
+	Cookies.set('SkillId', skillID);
+	Cookies.set('Skillstd', skillstd);
 
 	$("#skills").hide("slow", function(){
 		$(".loader").fadeIn("slow", function(){
@@ -390,7 +392,9 @@ $(document).on('click', '.search-back', function(){
 
 });
 
-/*Template Builder Engine*/
+/*+++++++++++++++++++++++++++++++
+		Template Builder Engine
+ ++++++++++++++++++++++++++++++++*/
 
 $(document).on('click', '.build', function(){
 
@@ -399,7 +403,6 @@ $(document).on('click', '.build', function(){
 			type: "POST",
 			async: false,
 			success: function(){
-				alert("foo");
 				window.open('engine.html', '_blank');
 			}
 		});
@@ -417,6 +420,9 @@ $(document).ready(function(){
 		var name1 = Cookies.get('name');
 		var profile1 = Cookies.get('profile');
 		var passw = Cookies.get('parole');
+		var skillstd = Cookies.get('Skillstd');
+		var skillId = Cookies.get('SkillId');
+
 		$("#datos").empty().append("id: " + myid1 + name1 + profile1 + "password es: " + passw);
 
 		*/
@@ -453,13 +459,20 @@ function onsetEngineSuccess(data){
 
 	console.info(data);
 	var	cssAgente = data[0].configuracion[0].cssAgente;
+	var factory = data[0].configuracion;
 
 	$(".loader").fadeIn("slow", function(){
-		cssEngine(cssAgente);
+		$(".loader").fadeOut("slow", function(){
+			cssEngine(factory);
+			baselayoutEngine(factory);
+			captureRenderEngine(factory);
+			typificationsEngine(factory);
+			typiHistoryEngine(factory);
+		});
 	});
 
-
 }
+
 function onsetEngineError(data){
 	alert("Error44: " + data.status + " " + data.statusText);
 }
@@ -468,9 +481,122 @@ function onsetEngineError(data){
 
 function cssEngine(data){
 
-	$(".loader").fadeOut("slow", function(){
-		console.info("motor css", data);
-		$("head").append("<!-- Custom Css --><style>" + data + "</style><!-- //Custom Css -->");
-	});
-	
+	var skillidx = "3";
+	for(var i = 0; i < data.length; i++){
+		if(skillidx == data[i].skillsId){
+
+			console.log("cssAgente", data[i].cssAgente);
+			var cssDinamic = data[i].cssAgente;
+
+			$("head").append("<!-- Dinamic Css --><style>" + cssDinamic + "</style><!-- //Dinamic Css -->");
+		}
+	}
+}
+
+function baselayoutEngine(data){
+
+	var skillidx = "3";
+
+	$('#base_layout').append('<h3 class="text-center">Campos Layout Base</h3><br />');
+
+	for(var i = 0; i < data.length; i++){
+		if(skillidx == data[i].skillsId){
+
+			console.log("Estamos vamos a trabajar baselayout", data[i].camposBase);
+
+			var Fields = data[i].camposBase;
+
+			for(var i = 0; i < Fields.length; i++){
+
+				var nombreBase = Fields[i].nombreBase;
+				var title = Fields[i].titulo;
+				var name = Fields[i].nombre;
+				var typeD = Fields[i].tipoDato;
+				var form = Fields[i].tipoCampo;
+				var long = Fields[i].longitud;
+				var required = Fields[i].requerido;
+				var order = Fields[i].orden;
+
+				//HTML elements
+
+				if(form == "input" || form == "Input"){
+					var content = '<div class="form-group"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
+					$('#base_layout').append(content);
+				}
+
+			}
+
+		}
+		else{
+		}
+	}
+
+}
+
+function captureRenderEngine(data){
+
+	var skillidx = "4";
+
+	$('#advisory_capture').append('<h3 class="text-center">Campos Captura Asesor</h3><br />');
+
+	for(var i = 0; i < data.length; i++){
+
+		if(skillidx == data[i].skillsId){
+
+			//console.log("fieldsIn", data[i].camposCaptura);
+
+			var fieldsIn = data[i].camposCaptura;
+
+				for(var i = 0; i < fieldsIn.length; i++){
+
+					var title = fieldsIn[i].titulo;
+					var name = fieldsIn[i].nombre;
+					var typeD = fieldsIn[i].tipoDato;
+					var form = fieldsIn[i].tipoCampo;
+					var long = fieldsIn[i].longitud;
+					var defaultvalue = fieldsIn[i].valorDefault;
+					var required = fieldsIn[i].requerido;
+					var typ = fieldsIn[i].tipo;
+					var order = fieldsIn[i].orden;
+
+					//HTML elements
+
+					if(form == "input" || form == "Input"){
+						var content = '<div class="form-group well-lg"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
+						$('#advisory_capture').append(content);
+					}
+
+				}
+
+		}
+		else{
+			//alert("no tiene nada configurado");
+		}
+
+	}
+
+}
+
+function typificationsEngine(data){
+
+	var skillidx = "3";
+	for(var i = 0; i < data.length; i++){
+
+		if(skillidx == data[i].skillsId){
+
+			console.log("tipologias", data[i].tipologias);
+			$('#treeTip1').empty().text("cargando...");
+
+		}
+
+	}
+
+}
+
+function typiHistoryEngine(data){
+
+	var myid = "12"
+	var clientesId = "1"
+	var serviciosid = data[0].serviciosId;
+
 }
