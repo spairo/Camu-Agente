@@ -9,7 +9,6 @@ window.ws = "http://172.18.149.21/Servicios/REST.svc/";
 
 var str_;
 
-
 $(window).load(function() {
 	$(".loader").fadeOut("slow");
 })
@@ -77,6 +76,7 @@ function login(user, password){
 							Menu(dataM);
 							skills(dataS);
 
+							$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>')
 							$("#main, #skills").show();
 	            //$("#main, #search").show();
 	            $(".form-group").removeClass('has-error');
@@ -148,6 +148,7 @@ function seach(name, pat, mat, phone, id){
 
   var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, valorClave: phone, usuarioId: myid, skillid: skillID };
 
+
   $.support.cors = true;
   $.ajax({
     type: "GET",
@@ -157,48 +158,43 @@ function seach(name, pat, mat, phone, id){
     data: Data,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    success: OnSuccess,
-    error: OnError
+    success: SearchSuccess,
+    error: SearchError
   });
 
 }
-function OnSuccess(data){
-  DataEvals(data);
-}
-
-function OnError(data){
-  //alert("Perror", data);
-}
-
-function DataEvals(data){
+function SearchSuccess(data){
 
 	var search_evals = data;
 
 	if(search_evals != ""){
 
+			$('.result').empty().append('<table class="search_evals table table-striped"><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Valor Clave</th><th>Lada Telefono</th><th>Ext</th><th>Servicio</th><th>Build it</th></tr></thead><tbody></tbody></table>');
 
-		$('.result').empty().append('<table class="search_evals table table-striped"><caption>Resultado de la busqueda.</caption><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Valor Clave</th><th>Lada Telefono</th><th>Ext</th><th>Servicio</th><th>Build it</th></tr></thead><tbody></tbody></table>');
+			for(var i = 0; i < search_evals.length; i++){
 
-		for(var i = 0; i < search_evals.length; i++){
+					var id = search_evals[i].clientesId;
+					var name = search_evals[i].nombre1;
+					var second_name = search_evals[i].nombre2;
+					var pat_name = search_evals[i].apellido1;
+					var mat_name = search_evals[i].apellido2;
+					var service = search_evals[i].servicio;
+					var clave = search_evals[i].valorClave;
+					var lada = search_evals[i].lada;
+					var extension = search_evals[i].extension;
 
-				var id = search_evals[i].clientesId;
-				var name = search_evals[i].nombre1;
-				var second_name = search_evals[i].nombre2;
-				var pat_name = search_evals[i].apellido1;
-				var mat_name = search_evals[i].apellido2;
-				var service = search_evals[i].servicio;
-				var clave = search_evals[i].valorClave;
-				var lada = search_evals[i].lada;
-				var extension = search_evals[i].extension;
-
-				var content = '<tr><th>'+id+'</th><th>'+name+' '+second_name+'</th><th>'+pat_name+'</th><th>'+mat_name+'</th><th>'+clave+'</th><th>'+lada+'</th><th>'+extension+'</th><th>'+service+'</th><th><button class="btn btn-search build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
-				$('.result table.search_evals').append(content);
-		}
+					var content = '<tr><th>'+id+'</th><th>'+name+' '+second_name+'</th><th>'+pat_name+'</th><th>'+mat_name+'</th><th>'+clave+'</th><th>'+lada+'</th><th>'+extension+'</th><th>'+service+'</th><th><button class="btn btn-engine build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
+					$('.result table.search_evals').append(content);
+			}
 
 	}else{
 		$(".result").empty().append('<span class="not-found">No hay resultados</span>');
 	}
 
+}
+
+function SearchError(data){
+  //alert("Perror", data);
 }
 
 //Build  Menu
@@ -328,11 +324,6 @@ $(document).on('click', '.choice-skill', function(){
 
 $(document).ready(function(){
 
-  $("#box-name").attr('maxlength','20');
-  $("#box-pat").attr('maxlength','20');
-  $("#box-mat").attr('maxlength','20');
-  $("#box-phone").attr('maxlength','20');
-
 	/*
 	//only numbers
 	$("#box-phone").keypress(function (e){
@@ -357,16 +348,10 @@ $(document).ready(function(){
       var mat = $("#box-mat").val();
       var phone = $("#box-phone").val();
 
-      $("#search").hide("slow", function(){
-        $(".loader").fadeIn(1000, function(){
-          $(".loader").fadeOut(1000, function(){
+			$("#search").hide("slow").fadeOut("slow");
+			$("#search-result").show().fadeIn("slow");
+			seach(name, pat, mat, phone);
 
-            $("#search-result").show();
-            seach(name, pat, mat, phone);
-
-          });
-        });
-      });
     }
 
   });
@@ -382,13 +367,9 @@ $(document).on('click', '.search-back', function(){
   $("#box-mat").val("");
   $("#box-phone").val("");
 
-  $("#search-result").hide("slow", function(){
-    $(".loader").fadeIn(200, function(){
-      $(".loader").fadeOut(200, function(){
-        $("#search").show();
-      });
-    });
-  });
+	$("#search-result").hide("slow").fadeOut("slow", function(){
+		$("#search").show().fadeIn("slow");
+	});
 
 });
 
@@ -398,6 +379,10 @@ $(document).on('click', '.search-back', function(){
 
 $(document).on('click', '.build', function(){
 
+	var keyValue = $(this).find("[customerid]").eq(0).attr("customerid");
+
+	alert(keyValue);
+
 		$.ajax({
 			url: "index.html",
 			type: "POST",
@@ -406,6 +391,7 @@ $(document).on('click', '.build', function(){
 				window.open('engine.html', '_blank');
 			}
 		});
+
 
 });
 
@@ -429,13 +415,13 @@ $(document).ready(function(){
 		var name = Cookies.get('name');
 		var passw = Cookies.get('parole');
 
-		onsetEngine(name, passw);
+		$.onsetEngine(name, passw);
 
 	}
 
 });
 
-function onsetEngine(name, passw){
+$.onsetEngine = function(name, passw){
 
   var url = ws+"rg_seguridadLogin";
 
@@ -454,20 +440,21 @@ function onsetEngine(name, passw){
     error: onsetEngineError
   });
 
-}
+};
+
 function onsetEngineSuccess(data){
 
-	console.info(data);
+	//console.info(data);
 	var	cssAgente = data[0].configuracion[0].cssAgente;
 	var factory = data[0].configuracion;
 
 	$(".loader").fadeIn("slow", function(){
 		$(".loader").fadeOut("slow", function(){
-			cssEngine(factory);
-			baselayoutEngine(factory);
-			captureRenderEngine(factory);
-			typificationsEngine(factory);
-			typiHistoryEngine(factory);
+			$.cssEngine(factory);
+			$.baselayoutEngine(factory);
+			$.captureRenderEngine(factory);
+			$.typificationsEngine(factory);
+			$.typiHistoryEngine(factory);
 		});
 	});
 
@@ -478,14 +465,12 @@ function onsetEngineError(data){
 }
 
 /* Css Engine */
-
-function cssEngine(data){
+$.cssEngine = function(data){
 
 	var skillidx = Cookies.get('SkillId');
 	for(var i = 0; i < data.length; i++){
 		if(skillidx == data[i].skillsId){
 
-			console.log("cssAgente", data[i].cssAgente);
 			var cssDinamic = data[i].cssAgente;
 
 			$("head").append("<!-- Dinamic Css --><style>" + cssDinamic + "</style><!-- //Dinamic Css -->");
@@ -493,7 +478,7 @@ function cssEngine(data){
 	}
 }
 
-function baselayoutEngine(data){
+$.baselayoutEngine = function(data){
 
 	var skillidx = Cookies.get('SkillId');
 
@@ -501,8 +486,6 @@ function baselayoutEngine(data){
 
 	for(var i = 0; i < data.length; i++){
 		if(skillidx == data[i].skillsId){
-
-			console.log("Estamos vamos a trabajar baselayout", data[i].camposBase);
 
 			var Fields = data[i].camposBase;
 
@@ -533,7 +516,7 @@ function baselayoutEngine(data){
 
 }
 
-function captureRenderEngine(data){
+$.captureRenderEngine = function(data){
 
 	var skillidx = Cookies.get('SkillId');
 
@@ -542,8 +525,6 @@ function captureRenderEngine(data){
 	for(var i = 0; i < data.length; i++){
 
 		if(skillidx == data[i].skillsId){
-
-			//console.log("fieldsIn", data[i].camposCaptura);
 
 			var fieldsIn = data[i].camposCaptura;
 
@@ -577,14 +558,13 @@ function captureRenderEngine(data){
 
 }
 
-function typificationsEngine(data){
+$.typificationsEngine = function(data){
 
 	var skillidx = Cookies.get('SkillId');
 	for(var i = 0; i < data.length; i++){
 
 		if(skillidx == data[i].skillsId){
 
-			console.log("tipologias", data[i].tipologias);
 			var typs = data[i].tipologias;
 
 			$('#treeTip1').append('<h3 class="text-center">Tipificaciones</h3><ul class="list-group"></ul>');
@@ -611,7 +591,7 @@ function typificationsEngine(data){
 
 }
 
-function typiHistoryEngine(data){
+$.typiHistoryEngine = function(data){
 
 	var myid = Cookies.get('id');
 	var clientesId = "1"
@@ -646,17 +626,12 @@ function typiHistoryEngine(data){
 				var content = '<li class="list-group-item">#'+clientesHistoricoId+' '+tipologia+'  ValorClave: '+valorClave+'  Comentarios: '+comentario+'</li>';
 
 				$('#historical ul.list-group').append(content);
-
 			}
 
-
 		},error: function(data){
-
-			console.log("algo salio mal");
-
+			//console.log("algo salio mal");
 		}
 
   });
-
 
 }

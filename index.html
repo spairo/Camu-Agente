@@ -18,16 +18,44 @@
   </head>
   <body>
     <div class="loader"></div>
+
     <!-- Static navbar -->
     <div class="navbar-top">
       <div class="container">
         <div class="logo"></div>
-        <div class="pull-right"><a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a></div>
+        <div class="pull-right logout"></div>
       </div>
     </div>
 
+    <!--  Main -->
+    <div id="main" style="display:none;">
+      <div class="subheader">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="avatar-full"></div>
+              <div class="name">User</div>
+              <div class="profile">profile</div>
+            </div>
+            <div class="col-md-6">
+
+              <div class="pull-right">
+                <div class="date"></div>
+                <div class="dropdown custom-menu">
+                  <button type="button" class="btn btn-menu dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Menu <span class="caret"></span></button>
+                  <ul class="dropdown-menu json-menu"></ul>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  //Main -->
+
     <!-- Container -->
-    <div class="container-fluid">
+    <div class="container">
       <div id="view-container">
 
         <!-- login -->
@@ -48,39 +76,6 @@
           </div>
         </div>
         <!-- //login -->
-
-        <!--  Main -->
-        <div id="main" style="display:none;">
-          <div class="subheader">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="avatar-full"></div>
-                  <div class="name">User</div>
-                  <div class="profile">profile</div>
-                </div>
-                <div class="col-md-6">
-
-                  <div class="pull-right">
-                    <div class="date"></div>
-                    <div class="dropdown custom-menu">
-                      <button type="button" class="btn btn-lg btn-menu dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span>Menu</span> <span class="caret"></span></button>
-                      <ul class="dropdown-menu json-menu"></ul>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="">
-            <ol class="container breadcrumb">
-              <li><a href="#">Home</a></li>
-              <li><a href="#">skill</a></li>
-            </ol>
-          </div>
-        </div>
-        <!--  //Main -->
 
         <div class="container">
 
@@ -123,7 +118,7 @@
           </div>
 
           <div id="search-result" class="row" style="display:none;">
-            <div class="btn-group btn-group-lg pull-right" role="group" aria-label="config">
+            <div class="btn-group btn-group-lg pull-left" role="group" aria-label="config">
               <button class="btn btn-search search-back">Nueva Busqueda <span class="glyphicon glyphicon-search"></button>
             </div>
             <div class="result"></div>
