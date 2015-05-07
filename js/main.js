@@ -418,7 +418,7 @@ $(document).ready(function(){
 		/*
 		var myid1 = Cookies.get('id');
 		var name1 = Cookies.get('name');
-		var profile1 = Cookies.get('profile');
+		var profile = Cookies.get('profile');
 		var passw = Cookies.get('parole');
 		var skillstd = Cookies.get('Skillstd');
 		var skillId = Cookies.get('SkillId');
@@ -426,8 +426,8 @@ $(document).ready(function(){
 		$("#datos").empty().append("id: " + myid1 + name1 + profile1 + "password es: " + passw);
 
 		*/
-		var name = "master";
-		var passw = "master";
+		var name = Cookies.get('name');
+		var passw = Cookies.get('parole');
 
 		onsetEngine(name, passw);
 
@@ -481,7 +481,7 @@ function onsetEngineError(data){
 
 function cssEngine(data){
 
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
 	for(var i = 0; i < data.length; i++){
 		if(skillidx == data[i].skillsId){
 
@@ -495,7 +495,7 @@ function cssEngine(data){
 
 function baselayoutEngine(data){
 
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
 
 	$('#base_layout').append('<h3 class="text-center">Campos Layout Base</h3><br />');
 
@@ -535,7 +535,7 @@ function baselayoutEngine(data){
 
 function captureRenderEngine(data){
 
-	var skillidx = "4";
+	var skillidx = Cookies.get('SkillId');
 
 	$('#advisory_capture').append('<h3 class="text-center">Campos Captura Asesor</h3><br />');
 
@@ -579,7 +579,7 @@ function captureRenderEngine(data){
 
 function typificationsEngine(data){
 
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
 	for(var i = 0; i < data.length; i++){
 
 		if(skillidx == data[i].skillsId){
@@ -613,7 +613,7 @@ function typificationsEngine(data){
 
 function typiHistoryEngine(data){
 
-	var myid = "12"
+	var myid = Cookies.get('id');
 	var clientesId = "1"
 	var servicesid = data[0].serviciosId;
 
