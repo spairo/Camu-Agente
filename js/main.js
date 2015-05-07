@@ -585,7 +585,25 @@ function typificationsEngine(data){
 		if(skillidx == data[i].skillsId){
 
 			console.log("tipologias", data[i].tipologias);
-			$('#treeTip1').empty().text("cargando...");
+			var typs = data[i].tipologias;
+
+			$('#treeTip1').append('<h3 class="text-center">Tipificaciones</h3><ul class="list-group"></ul>');
+
+			for(var i = 0; i < typs.length; i++){
+
+				var skillTipologiasId = typs[i].skillTipologiasId;
+				var tipologia = typs[i].tipologia;
+				var nivel = typs[i].nivel;
+				var skillTipologiasIdSup = typs[i].skillTipologiasIdSup;
+				var agendaLlamada = typs[i].agendaLlamada;
+				var confirmaVenta = typs[i].confirmaVenta;
+
+				var content = '<li class="list-group-item"><span class="badge">'+skillTipologiasId+'</span>'+tipologia+'</li>';
+
+				$('#treeTip1 ul.list-group').append(content);
+
+			}
+
 
 		}
 
@@ -597,6 +615,48 @@ function typiHistoryEngine(data){
 
 	var myid = "12"
 	var clientesId = "1"
-	var serviciosid = data[0].serviciosId;
+	var servicesid = data[0].serviciosId;
+
+	var url = ws+"rg_ListClienteHistorico";
+
+  var oData = { clientesId: clientesId, serviciosid: servicesid, usuariosId: myid  };
+
+	$.support.cors = true;
+  $.ajax({
+    type: "GET",
+    url: url,
+    //cache: false,
+    crossDomain: true,
+    data: oData,
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+		success: function(data){
+
+			$('#historical').append('<h3 class="text-center">Historico Tipificaciones</h3><ul class="list-group"></ul>');
+
+			for(var i = 0; i < data.length; i++){
+
+				var clientesHistoricoId = data[i].clientesHistoricoId;
+				var fechaCreacion = data[i].fechaCreacion;
+				var valorClave = data[i].valorClave;
+				var tipologia = data[i].tipologia;
+				var comentario = data[i].comentario;
+				var skill = data[i].skill;
+
+				var content = '<li class="list-group-item">#'+clientesHistoricoId+' '+tipologia+'  ValorClave: '+valorClave+'  Comentarios: '+comentario+'</li>';
+
+				$('#historical ul.list-group').append(content);
+
+			}
+
+
+		},error: function(data){
+
+			console.log("algo salio mal");
+
+		}
+
+  });
+
 
 }
