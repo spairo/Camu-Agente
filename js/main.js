@@ -293,8 +293,20 @@ $(document).on('click', '#logout', function(){
 
 /*Services Box*/
 
+$(document).on('click', '.choice-service', function(){
 
 
+	alert("sol");
+	//var skillID = $(".skillchoice").val();
+	//var skillstd = $(".skillchoice option:selected").attr('name');
+
+	//Cookies.set('SkillId', skillID);
+
+	//$("#skills").slideUp("slow", function(){
+		//$("#search").slideDown("slow").show();
+	//});
+
+});
 
 /*Skills Box*/
 
