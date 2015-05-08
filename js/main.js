@@ -1,9 +1,9 @@
 /* Main Camu.Agente */
 
-
-//Setting Global
+//Settings
 
 window.ws = "http://172.18.149.21/Servicios/REST.svc/";
+var path = window.location.pathname;
 
 //Higher scope
 
@@ -21,88 +21,75 @@ $(window).bind('beforeunload', function(){
 });
 */
 
-
-$(document).ready(function(){
-
-  $(".date").text("");
-  //if($('#view-container').length){
-    //$('#view-container').load('views/login.html');
-  //}
-});
-
 //login
 
-function login(user, password){
+$.login = function(user, password){
 
   var url = ws+"rg_seguridadLogin";
 
   var oData = { User: user, Password: password };
 
-  //$.support.cors = true;
 	$.support.cors = true;
   $.ajax({
     type: "GET",
     url: url,
-    //cache: false,
     crossDomain: true,
     data: oData,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    success: OnSuccessCall_WS,
-    error: OnErrorCall_WS
+    success: LoginOnSuccess,
+    error: LoginOnError
   });
 
-  function OnSuccessCall_WS(response){
+};
 
-     if(response != ""){
+function LoginOnSuccess(response){
 
-       $("#user").val('');
-       $("#password").val('');
+	if(response != ""){
 
-       $("#logdIn").hide("slow", function(){
-         $(".loader").fadeIn("slow", function(){
-           $(".loader").fadeOut("slow", function(){
+		$("#user").val('');
+		$("#password").val('');
 
-							//cookies everywhere
-							var id = Cookies.set('id', response[0].usuariosId);
-							var name = Cookies.set('name', response[0].usuario);
-							var profile = Cookies.set('profile', response[0].perfil);
-							Cookies.set('parole', password);
-							var dataM = response[0].menu;
-							var dataS = response[0].configuracion;
+		$("#logdIn").slideToggle(1000, function(){
+			$(".loader").fadeIn("slow", function(){
+				$(".loader").fadeOut("slow", function(){
 
-							main(id, name, profile);
-							seach(id);
-							Menu(dataM);
-							skills(dataS);
+						//cookies everywhere
+						var id = Cookies.set('id', response[0].usuariosId);
+						var name = Cookies.set('name', response[0].usuario);
+						var profile = Cookies.set('profile', response[0].perfil);
+						var dataM = response[0].menu;
+						var dataS = response[0].skills;
 
-							$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>')
-							$("#main, #skills").show();
-	            //$("#main, #search").show();
-	            $(".form-group").removeClass('has-error');
+						Cookies.set('parole', password);
 
+						$.main(id, name, profile);
+						$.Menu(dataM);
+						$.skills(dataS);
 
-           });
-         });
-       });
+						$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
+						$(".form-group").removeClass('has-error');
+						$("#main").slideDown().show();
 
-     }else{
+				});
+			});
+		});
 
-				alert("Usuario no Valido");
-			 	$("#login").prop( "disabled", true );
+	}else{
 
-			 	return false;
-     }
-  }
-  function OnErrorCall_WS(response){
-    alert("Error44: " + response.status + " " + response.statusText);
-  }
+			alert("Usuario no Valido");
+			$("#login").prop("disabled", true );
 
+			return false;
+	}
+}
+function LoginOnError(response){
+	alert("Error44: " + response.status + " " + response.statusText);
 }
 
 //main
 
-function main(id,	name, profile){
+$.main = function(id,	name, profile){
 
 	var myid = Cookies.get('id');
 	var name = Cookies.get('name');
@@ -111,18 +98,19 @@ function main(id,	name, profile){
 	$(".name").empty().text(name);
 	$(".profile").empty().text(profile);
 
-}
+};
 
 //Skills
 
-function skills(data){
+$.skills = function(data){
 
 	//var skills_evals = Object.keys(data).length; //IE8 sucks
 	var skills_evals = data;
 
-	if(skills_evals.length != 1){
+	if(skills_evals.length > 1){
 
-		$('.box-skills').empty().append('<h1>Skill</h1><select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block">Seleccionar</button>');
+		$("#skills").slideDown().show();
+		$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
 
 		for(var i = 0; i < skills_evals.length; i++){
 			var skill = skills_evals[i].skill;
@@ -133,21 +121,22 @@ function skills(data){
 		}
 
 	}else{
-		$("#search").show();
+
+		$("#skills").hide();
+		$("#search").slideDown().show();
 	}
 
-}
+};
 
 //Search
 
-function seach(name, pat, mat, phone, id){
+$.search = function(name, pat, mat, phone){
 
+	var url = ws+"rg_ListClientes";
 	var myid = Cookies.get('id');
-  var url = ws+"rg_ListClientes";
 	var skillID = Cookies.get('SkillId');
 
   var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, valorClave: phone, usuarioId: myid, skillid: skillID };
-
 
   $.support.cors = true;
   $.ajax({
@@ -158,12 +147,13 @@ function seach(name, pat, mat, phone, id){
     data: Data,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    success: SearchSuccess,
-    error: SearchError
+    success: SearchOnSuccess,
+    error: SearchOnError
   });
 
-}
-function SearchSuccess(data){
+};
+
+function SearchOnSuccess(data){
 
 	var search_evals = data;
 
@@ -193,14 +183,14 @@ function SearchSuccess(data){
 
 }
 
-function SearchError(data){
+function SearchOnError(data){
   //alert("Perror", data);
 }
 
 //Build  Menu
 
-function Menu(data){
-/*
+$.Menu = function(data){
+
 	var data = data;
 
 	var builddata = function(){
@@ -261,9 +251,9 @@ function Menu(data){
 	}
 
 	$("ul.js-menu").find("li:not(:has(> ul.js-menu))").removeClass("dropdown-submenu");
-*/
 
-}
+
+};
 
 
 /*Login*/
@@ -283,7 +273,7 @@ $(document).on('click', '#login', function(){
 
       return false;
   }else{
-      login(user, password);
+		$.login(user, password);
   }
 
 });
@@ -296,6 +286,7 @@ $(document).on('click', '#logout', function(){
 	Cookies.remove('name');
 	Cookies.remove('profile');
 	Cookies.remove('parole');
+	Cookies.remove('SkillId');
 	location.reload();
 
 });
@@ -305,27 +296,45 @@ $(document).on('click', '#logout', function(){
 $(document).on('click', '.choice-skill', function(){
 
 	var skillID = $(".skillchoice").val();
-	var skillstd = $(".skillchoice option:selected").attr('name');
+	//var skillstd = $(".skillchoice option:selected").attr('name');
 
 	Cookies.set('SkillId', skillID);
-	Cookies.set('Skillstd', skillstd);
 
-	$("#skills").hide("slow", function(){
-		$(".loader").fadeIn("slow", function(){
-			$(".loader").fadeOut("slow", function(){
-					$("#search").show();
-			});
-		});
+	$("#skills").slideUp("slow", function(){
+		$("#search").slideDown("slow").show();
 	});
 
 });
 
 /*Search*/
 
+$(document).on('click', '.search-case', function(){
+
+	if($("#box-name").val() == '' &&  $("#box-pat").val() == '' &&  $("#box-mat").val() == '' && $("#box-phone").val() == ''){
+
+			alert("Debe tener un campo a buscar minimo");
+			$(".box-group").addClass('has-error');
+			return;
+
+	}else{
+
+		var name = $("#box-name").val();
+		var pat = $("#box-pat").val();
+		var mat = $("#box-mat").val();
+		var phone = $("#box-phone").val();
+
+		$("#search").hide("slow").fadeOut("slow");
+		$("#search-result").show().fadeIn("slow");
+		$.search(name, pat, mat, phone);
+
+	}
+
+});
+
 $(document).ready(function(){
 
 	/*
-	//only numbers
+	//only numbers input
 	$("#box-phone").keypress(function (e){
      if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
         //display error message
@@ -334,28 +343,6 @@ $(document).ready(function(){
      }
   });
 	*/
-
-  $(".search-case").click(function(){
-
-    if($("#box-name").val() == '' &&  $("#box-pat").val() == '' &&  $("#box-mat").val() == '' && $("#box-phone").val() == ''){
-        alert("Debe tener un campo a buscar minimo");
-        $(".box-group").addClass('has-error');
-        return false;
-    }else{
-
-      var name = $("#box-name").val();
-      var pat = $("#box-pat").val();
-      var mat = $("#box-mat").val();
-      var phone = $("#box-phone").val();
-
-			$("#search").hide("slow").fadeOut("slow");
-			$("#search-result").show().fadeIn("slow");
-			seach(name, pat, mat, phone);
-
-    }
-
-  });
-
 });
 
 $(document).on('click', '.search-back', function(){
@@ -367,15 +354,22 @@ $(document).on('click', '.search-back', function(){
   $("#box-mat").val("");
   $("#box-phone").val("");
 
-	$("#search-result").hide("slow").fadeOut("slow", function(){
-		$("#search").show().fadeIn("slow");
+	$("#search-result").slideUp("slow", function(){
+		$("#search").slideDown("slow");
 	});
 
 });
 
+
+
+
 /*+++++++++++++++++++++++++++++++
 		Template Builder Engine
  ++++++++++++++++++++++++++++++++*/
+
+
+
+
 
 $(document).on('click', '.build', function(){
 
@@ -397,35 +391,23 @@ $(document).on('click', '.build', function(){
 
 $(document).ready(function(){
 
-	var path = window.location.pathname;
-
 	if(path == "/engine.html"){
 
-		/*
-		var myid1 = Cookies.get('id');
-		var name1 = Cookies.get('name');
-		var profile = Cookies.get('profile');
-		var passw = Cookies.get('parole');
-		var skillstd = Cookies.get('Skillstd');
-		var skillId = Cookies.get('SkillId');
-
-		$("#datos").empty().append("id: " + myid1 + name1 + profile1 + "password es: " + passw);
-
-		*/
-		var name = Cookies.get('name');
-		var passw = Cookies.get('parole');
-
-		$.onsetEngine(name, passw);
+		//var name = Cookies.get('name');
+		//var passw = Cookies.get('parole');
+		var user = "master";
+		var passw = "master";
+		$.onsetEngine(user, passw);
 
 	}
 
 });
 
-$.onsetEngine = function(name, passw){
+$.onsetEngine = function(user, passw){
 
   var url = ws+"rg_seguridadLogin";
 
-  var oData = { User: name, Password: passw };
+  var oData = { User: user, Password: passw };
 
 	$.support.cors = true;
   $.ajax({
@@ -445,80 +427,94 @@ $.onsetEngine = function(name, passw){
 function onsetEngineSuccess(data){
 
 	//console.info(data);
-	var	cssAgente = data[0].configuracion[0].cssAgente;
 	var factory = data[0].configuracion;
 
-	$(".loader").fadeIn("slow", function(){
-		$(".loader").fadeOut("slow", function(){
-			$.cssEngine(factory);
-			$.baselayoutEngine(factory);
-			$.captureRenderEngine(factory);
-			$.typificationsEngine(factory);
-			$.typiHistoryEngine(factory);
+	$(".loader").slideDown("slow", function(){
+
+		$.cssEngine(factory);
+		$.baselayoutEngine(factory);
+		$.captureRenderEngine(factory);
+		$.typificationsEngine(factory);
+		$.typiHistoryEngine(factory);
+
+		$(".loader").slideUp("slow", function(){
+				$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
 		});
+
 	});
 
 }
 
 function onsetEngineError(data){
 	alert("Error44: " + data.status + " " + data.statusText);
+	$(".loader").slideDown("slow");
 }
 
-/* Css Engine */
 $.cssEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
+
 	for(var i = 0; i < data.length; i++){
 		if(skillidx == data[i].skillsId){
 
 			var cssDinamic = data[i].cssAgente;
-
 			$("head").append("<!-- Dinamic Css --><style>" + cssDinamic + "</style><!-- //Dinamic Css -->");
+
 		}
 	}
-}
+
+};
 
 $.baselayoutEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	$('#base_layout').append('<h3 class="text-center">Campos Layout Base</h3><br />');
 
 	for(var i = 0; i < data.length; i++){
+
 		if(skillidx == data[i].skillsId){
 
 			var Fields = data[i].camposBase;
 
-			for(var i = 0; i < Fields.length; i++){
+				if(Fields != ""){
 
-				var nombreBase = Fields[i].nombreBase;
-				var title = Fields[i].titulo;
-				var name = Fields[i].nombre;
-				var typeD = Fields[i].tipoDato;
-				var form = Fields[i].tipoCampo;
-				var long = Fields[i].longitud;
-				var required = Fields[i].requerido;
-				var order = Fields[i].orden;
+					for(var i = 0; i < Fields.length; i++){
 
-				//HTML elements
+						var nombreBase = Fields[i].nombreBase;
+						var title = Fields[i].titulo;
+						var name = Fields[i].nombre;
+						var typeD = Fields[i].tipoDato;
+						var form = Fields[i].tipoCampo;
+						var long = Fields[i].longitud;
+						var required = Fields[i].requerido;
+						var order = Fields[i].orden;
 
-				if(form == "input" || form == "Input"){
-					var content = '<div class="form-group"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
-					$('#base_layout').append(content);
+						//HTML elements
+
+						if(form == "input" || form == "Input"){
+							var content = '<div class="form-group"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
+							$('#base_layout').append(content);
+						}
+
+					}
+
+				}else{
+					$('#base_layout').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Layout Base.</div>');
 				}
-
-			}
-
 		}
-		else{
-		}
+
 	}
 
-}
+};
+
 
 $.captureRenderEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	$('#advisory_capture').append('<h3 class="text-center">Campos Captura Asesor</h3><br />');
 
@@ -528,39 +524,45 @@ $.captureRenderEngine = function(data){
 
 			var fieldsIn = data[i].camposCaptura;
 
-				for(var i = 0; i < fieldsIn.length; i++){
+				if(fieldsIn != ""){
 
-					var title = fieldsIn[i].titulo;
-					var name = fieldsIn[i].nombre;
-					var typeD = fieldsIn[i].tipoDato;
-					var form = fieldsIn[i].tipoCampo;
-					var long = fieldsIn[i].longitud;
-					var defaultvalue = fieldsIn[i].valorDefault;
-					var required = fieldsIn[i].requerido;
-					var typ = fieldsIn[i].tipo;
-					var order = fieldsIn[i].orden;
+					for(var i = 0; i < fieldsIn.length; i++){
 
-					//HTML elements
+						var title = fieldsIn[i].titulo;
+						var name = fieldsIn[i].nombre;
+						var typeD = fieldsIn[i].tipoDato;
+						var form = fieldsIn[i].tipoCampo;
+						var long = fieldsIn[i].longitud;
+						var defaultvalue = fieldsIn[i].valorDefault;
+						var required = fieldsIn[i].requerido;
+						var typ = fieldsIn[i].tipo;
+						var order = fieldsIn[i].orden;
 
-					if(form == "input" || form == "Input"){
-						var content = '<div class="form-group well-lg"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
-						$('#advisory_capture').append(content);
+						//HTML elements
+
+						if(form == "input" || form == "Input"){
+							var content = '<div class="form-group well-lg"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
+							$('#advisory_capture').append(content);
+						}
+
 					}
 
+				}else{
+					$('#advisory_capture').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Captura Asesor.</div>');
 				}
 
-		}
-		else{
-			//alert("no tiene nada configurado");
+
 		}
 
 	}
 
-}
+};
 
 $.typificationsEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
+
 	for(var i = 0; i < data.length; i++){
 
 		if(skillidx == data[i].skillsId){
@@ -584,16 +586,17 @@ $.typificationsEngine = function(data){
 
 			}
 
-
 		}
 
 	}
 
-}
+};
 
 $.typiHistoryEngine = function(data){
 
 	var myid = Cookies.get('id');
+	//var myid =  = "12";
+
 	var clientesId = "1"
 	var servicesid = data[0].serviciosId;
 
@@ -634,4 +637,4 @@ $.typiHistoryEngine = function(data){
 
   });
 
-}
+};
