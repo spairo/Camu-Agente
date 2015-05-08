@@ -9,7 +9,7 @@ var path = window.location.pathname;
 
 var str_;
 
-$(window).load(function() {
+$(window).load(function(){
 	$(".loader").fadeOut("slow");
 })
 
@@ -291,7 +291,12 @@ $(document).on('click', '#logout', function(){
 
 });
 
-/*Skills box*/
+/*Services Box*/
+
+
+
+
+/*Skills Box*/
 
 $(document).on('click', '.choice-skill', function(){
 
@@ -373,9 +378,9 @@ $(document).on('click', '.search-back', function(){
 
 $(document).on('click', '.build', function(){
 
-	var keyValue = $(this).find("[customerid]").eq(0).attr("customerid");
+		///var keyValue = $(this).find("[customerid]").eq(0).attr("customerid");
 
-	alert(keyValue);
+		///alert(keyValue);
 
 		$.ajax({
 			url: "index.html",
@@ -385,7 +390,6 @@ $(document).on('click', '.build', function(){
 				window.open('engine.html', '_blank');
 			}
 		});
-
 
 });
 
