@@ -6622,6 +6622,11 @@ button.close {
     position: relative;
     top: -15px;
   }
+  .navbar-top-fixed{
+    position: fixed;
+    z-index: 100;
+    top: 0;
+  }
 
 /* Sticky footer */
 
@@ -6916,6 +6921,77 @@ button.close {
     font-weight: bold;
     font-size: 26px;
   }
+
+/* Template Engine Builder */
+
+#Builder_Engine{
+
+}
+  #Builder_Engine .container-fluid{
+    margin-top: 50px;
+  }
+
+  #Builder_Engine .advisory_capture{
+
+  }
+    #Builder_Engine .advisory_capture h3{
+      color: #7F8C97;
+      text-align: center;
+      font-weight: bold;
+    }
+
+  #Builder_Engine .base_layout{
+
+  }
+    #Builder_Engine .base_layout h3{
+      color: #7F8C97;
+      text-align: center;
+      font-weight: bold;
+    }
+
+  #Builder_Engine .tree{
+    margin-top: 50px;
+    padding: 20px;
+  }
+    #Builder_Engine .tree h3{
+      color: #7F8C97;
+      text-align: center;
+      font-weight: bold;
+    }
+    #Builder_Engine .tree .list-group-item{
+      background: #95a5a6;
+      border-bottom: 3px #7f8c8d solid;
+      color: #fff;
+      text-align: center;
+    }
+    #Builder_Engine .tree .list-group-item:hover{
+      background: #e74c3c;
+      border-bottom: 3px #c0392b solid;
+      text-align: center;
+      color: #fff;
+    }
+
+  #Builder_Engine .products{
+    margin-top: 50px;
+    padding: 20px;
+  }
+    #Builder_Engine .products h3{
+      color: #7F8C97;
+      text-align: center;
+      font-weight: bold;
+    }
+    #Builder_Engine .products .list-group-item{
+      background: #95a5a6;
+      border-bottom: 3px #7f8c8d solid;
+      color: #fff;
+      text-align: center;
+    }
+    #Builder_Engine .products .list-group-item:hover{
+      background: #e74c3c;
+      border-bottom: 3px #c0392b solid;
+      text-align: center;
+      color: #fff;
+    }
 
 
 /* loader */

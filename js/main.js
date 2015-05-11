@@ -361,21 +361,16 @@ $(document).on('click', '.search-back', function(){
 });
 
 
-
-
 /*+++++++++++++++++++++++++++++++
 		Template Builder Engine
  ++++++++++++++++++++++++++++++++*/
-
-
-
 
 
 $(document).on('click', '.build', function(){
 
 	var keyValue = $(this).find("[customerid]").eq(0).attr("customerid");
 
-	alert(keyValue);
+	//alert(keyValue);
 
 		$.ajax({
 			url: "index.html",
@@ -389,10 +384,25 @@ $(document).on('click', '.build', function(){
 
 });
 
+$(document).on('click', '#logout-builder', function(){
+
+	Cookies.remove('id');
+	Cookies.remove('name');
+	Cookies.remove('profile');
+	Cookies.remove('parole');
+	Cookies.remove('SkillId');
+
+	$('#Builder_Engine').empty("", function(){
+		location.reload();
+	});
+
+});
+
 $(document).ready(function(){
 
 	if(path == "/engine.html"){
 
+		$('.navbar-top').addClass('navbar-top-fixed');
 		//var name = Cookies.get('name');
 		//var passw = Cookies.get('parole');
 		var user = "master";
@@ -435,10 +445,11 @@ function onsetEngineSuccess(data){
 		$.baselayoutEngine(factory);
 		$.captureRenderEngine(factory);
 		$.typificationsEngine(factory);
+		$.productsEngine(factory);
 		$.typiHistoryEngine(factory);
 
 		$(".loader").slideUp("slow", function(){
-				$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
+			$('.logout').html('<a href="#" id="logout-builder"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
 		});
 
 	});
@@ -471,8 +482,6 @@ $.baselayoutEngine = function(data){
 	//var skillidx = Cookies.get('SkillId');
 	var skillidx = "3";
 
-	$('#base_layout').append('<h3 class="text-center">Campos Layout Base</h3><br />');
-
 	for(var i = 0; i < data.length; i++){
 
 		if(skillidx == data[i].skillsId){
@@ -480,6 +489,8 @@ $.baselayoutEngine = function(data){
 			var Fields = data[i].camposBase;
 
 				if(Fields != ""){
+
+					$('.base_layout').append('<h3 class="text-center">Campos Layout Base</h3><br />');
 
 					for(var i = 0; i < Fields.length; i++){
 
@@ -496,13 +507,13 @@ $.baselayoutEngine = function(data){
 
 						if(form == "input" || form == "Input"){
 							var content = '<div class="form-group"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
-							$('#base_layout').append(content);
+							$('.base_layout').append(content);
 						}
 
 					}
 
 				}else{
-					$('#base_layout').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Layout Base.</div>');
+					$('.base_layout').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Layout Base.</div>');
 				}
 		}
 
@@ -516,7 +527,7 @@ $.captureRenderEngine = function(data){
 	//var skillidx = Cookies.get('SkillId');
 	var skillidx = "3";
 
-	$('#advisory_capture').append('<h3 class="text-center">Campos Captura Asesor</h3><br />');
+	$('.advisory_capture').append('<h3 class="text-center">Campos Captura Asesor</h3>');
 
 	for(var i = 0; i < data.length; i++){
 
@@ -541,16 +552,15 @@ $.captureRenderEngine = function(data){
 						//HTML elements
 
 						if(form == "input" || form == "Input"){
-							var content = '<div class="form-group well-lg"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
-							$('#advisory_capture').append(content);
+							var content = '<div class="form-group"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
+							$('.advisory_capture').append(content);
 						}
 
 					}
 
 				}else{
-					$('#advisory_capture').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Captura Asesor.</div>');
+					$('.advisory_capture').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Captura Asesor.</div>');
 				}
-
 
 		}
 
@@ -569,7 +579,7 @@ $.typificationsEngine = function(data){
 
 			var typs = data[i].tipologias;
 
-			$('#treeTip1').append('<h3 class="text-center">Tipificaciones</h3><ul class="list-group"></ul>');
+			$('.tree').append('<h3 class="text-center">Tipificaciones</h3><div class="list-group"></div>');
 
 			for(var i = 0; i < typs.length; i++){
 
@@ -580,9 +590,44 @@ $.typificationsEngine = function(data){
 				var agendaLlamada = typs[i].agendaLlamada;
 				var confirmaVenta = typs[i].confirmaVenta;
 
-				var content = '<li class="list-group-item"><span class="badge">'+skillTipologiasId+'</span>'+tipologia+'</li>';
+				var content = '<a href="#" class="list-group-item"><span class="badge">'+skillTipologiasId+'</span>'+tipologia+'</a>';
 
-				$('#treeTip1 ul.list-group').append(content);
+				$('.tree div.list-group').append(content);
+
+			}
+
+		}
+
+	}
+
+};
+
+$.productsEngine = function(data){
+
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
+
+	for(var i = 0; i < data.length; i++){
+
+		if(skillidx == data[i].skillsId){
+
+			var items = data[i].productos;
+
+			$('.products').append('<h3 class="text-center">Productos</h3><div class="list-group"></div>');
+
+			for(var i = 0; i < items.length; i++){
+
+				var skillsProductosId = items[i].skillsProductosId;
+				var skillsId = items[i].skillsId;
+				var product = items[i].producto;
+				var skillsProductosIdSup = items[i].skillsProductosIdSup;
+				var active = items[i].activo;
+				var userAt = items[i].usuarioCreacion;
+				var dateAt = items[i].fechaCreacion;
+
+				var content = '<a href="#" class="list-group-item"><span class="badge">'+skillsProductosId+'</span>'+product+'</a>';
+
+				$('.products div.list-group').append(content);
 
 			}
 
