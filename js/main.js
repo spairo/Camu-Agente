@@ -60,12 +60,14 @@ function LoginOnSuccess(response){
 						var profile = Cookies.set('profile', response[0].perfil);
 						var dataM = response[0].menu;
 						var dataS = response[0].skills;
+						var dataServices = response[0].configuracion;
 
 						Cookies.set('parole', password);
 
 						$.main(id, name, profile);
 						$.Menu(dataM);
 						$.skills(dataS);
+						$.services(dataS);
 
 						$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
 						$(".form-group").removeClass('has-error');
@@ -78,9 +80,8 @@ function LoginOnSuccess(response){
 	}else{
 
 			alert("Usuario no Valido");
-			$("#login").prop("disabled", true );
-
 			return false;
+
 	}
 }
 function LoginOnError(response){
@@ -97,6 +98,25 @@ $.main = function(id,	name, profile){
 
 	$(".name").empty().text(name);
 	$(".profile").empty().text(profile);
+
+};
+
+//Service
+
+$.services = function(data){
+
+	var services_evals = data;
+
+	if(services_evals.length > 1){
+
+		$("#services").slideDown().show();
+
+	}else{
+
+		$("#services").hide();
+		//$("#skills").slideDown().show();
+
+	}
 
 };
 
@@ -260,7 +280,7 @@ $.Menu = function(data){
 
 $(document).on('click', '#login', function(){
 
-  $("#login").prop( "disabled", true );
+	//business logic...
 
   var user = $('#user').val();
   var password = $('#password').val();
