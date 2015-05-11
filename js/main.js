@@ -9,7 +9,7 @@ var path = window.location.pathname;
 
 var str_;
 
-$(window).load(function() {
+$(window).load(function(){
 	$(".loader").fadeOut("slow");
 })
 
@@ -291,7 +291,24 @@ $(document).on('click', '#logout', function(){
 
 });
 
-/*Skills box*/
+/*Services Box*/
+
+$(document).on('click', '.choice-service', function(){
+
+
+	alert("sol");
+	//var skillID = $(".skillchoice").val();
+	//var skillstd = $(".skillchoice option:selected").attr('name');
+
+	//Cookies.set('SkillId', skillID);
+
+	//$("#skills").slideUp("slow", function(){
+		//$("#search").slideDown("slow").show();
+	//});
+
+});
+
+/*Skills Box*/
 
 $(document).on('click', '.choice-skill', function(){
 
@@ -368,19 +385,14 @@ $(document).on('click', '.search-back', function(){
 
 $(document).on('click', '.build', function(){
 
-	var keyValue = $(this).find("[customerid]").eq(0).attr("customerid");
-
-	//alert(keyValue);
-
-		$.ajax({
-			url: "index.html",
-			type: "POST",
-			async: false,
-			success: function(){
-				window.open('engine.html', '_blank');
-			}
-		});
-
+	$.ajax({
+		url: "index.html",
+		type: "POST",
+		async: false,
+		success: function(){
+			window.open('engine.html', '_blank');
+		}
+	});
 
 });
 
@@ -660,7 +672,7 @@ $.typiHistoryEngine = function(data){
     dataType: "json",
 		success: function(data){
 
-			$('#historical').append('<h3 class="text-center">Historico Tipificaciones</h3><ul class="list-group"></ul>');
+			$('.historical').append('<h3 class="text-center">Historico Tipificaciones</h3><ul class="list-group"></ul>');
 
 			for(var i = 0; i < data.length; i++){
 
@@ -673,7 +685,7 @@ $.typiHistoryEngine = function(data){
 
 				var content = '<li class="list-group-item">#'+clientesHistoricoId+' '+tipologia+'  ValorClave: '+valorClave+'  Comentarios: '+comentario+'</li>';
 
-				$('#historical ul.list-group').append(content);
+				$('.historical ul.list-group').append(content);
 			}
 
 		},error: function(data){
