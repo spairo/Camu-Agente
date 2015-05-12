@@ -270,6 +270,7 @@ $.Menu = function(data){
 		$(".json-menu>li>ul.js-menu li ").addClass('dropdown-submenu');
 	}
 
+
 	//.removeClass
 	$("ul.js-menu").find("li:not(:has(> ul.js-menu))").removeClass("dropdown-submenu");
 
@@ -372,8 +373,6 @@ $(document).on('click', '.search-case', function(){
 
 });
 
-$(document).ready(function(){
-
 	/*
 	//only numbers input
 	$("#box-phone").keypress(function (e){
@@ -384,7 +383,6 @@ $(document).ready(function(){
      }
   });
 	*/
-});
 
 $(document).on('click', '.search-back', function(){
 
@@ -438,7 +436,6 @@ $(document).ready(function(){
 
 	if(path == "/engine.html"){
 
-		$('.navbar-top').addClass('navbar-top-fixed');
 		//var name = Cookies.get('name');
 		//var passw = Cookies.get('parole');
 		var user = "master";
@@ -472,8 +469,9 @@ $.onsetEngine = function(user, passw){
 
 function onsetEngineSuccess(data){
 
-	//console.info(data);
 	var factory = data[0].configuracion;
+
+	$('.navbar-top').addClass('navbar-top-fixed');
 
 	$(".loader").slideDown("slow", function(){
 
