@@ -50,7 +50,7 @@ function LoginOnSuccess(response){
 		$("#user").val('');
 		$("#password").val('');
 
-		$("#logdIn").slideToggle(1000, function(){
+		$("#logdIn").slideUp(1000, function(){
 			$(".loader").fadeIn("slow", function(){
 				$(".loader").fadeOut("slow", function(){
 
@@ -245,7 +245,7 @@ $.Menu = function(data){
 	            var li = $("<li class='js-menu'>" + "<a href='"+ this.url +"'>" + this.label + "</a></li>");
 	            li.appendTo(parent);
 	            if (this.items && this.items.length > 0) {
-	                var ul = $("<ul class='dropdown-menu js-menu'></ul>");
+	                var ul = $("<ul class='dropdown-submenu'></ul>");
 	                ul.appendTo(li);
 	                buildUL(ul, this.items);
 	            }
@@ -270,6 +270,7 @@ $.Menu = function(data){
 		$(".json-menu>li>ul.js-menu li ").addClass('dropdown-submenu');
 	}
 
+	//.removeClass
 	$("ul.js-menu").find("li:not(:has(> ul.js-menu))").removeClass("dropdown-submenu");
 
 
@@ -289,7 +290,7 @@ $(document).on('click', '#login', function(){
 
 			alert("Los campos son obligatorios");
       $(".form-group").addClass('has-error');
-			$("#login").prop( "disabled", false );
+			//$("#login").prop( "disabled", false );
 
       return false;
   }else{
@@ -315,8 +316,6 @@ $(document).on('click', '#logout', function(){
 
 $(document).on('click', '.choice-service', function(){
 
-	alert("sol");
-
 	//var skillID = $(".skillchoice").val();
 	//var skillstd = $(".skillchoice option:selected").attr('name');
 
@@ -325,7 +324,6 @@ $(document).on('click', '.choice-service', function(){
 	//$("#skills").slideUp("slow", function(){
 		//$("#search").slideDown("slow").show();
 	//});
-
 });
 
 /*Skills Box*/
@@ -352,6 +350,12 @@ $(document).on('click', '.search-case', function(){
 			alert("Debe tener un campo a buscar minimo");
 			$(".box-group").addClass('has-error');
 			return;
+
+	}
+	else if($("#box-name").val().length < 3 && $("#box-pat").val().length < 3 && $("#box-mat").val().length < 3 && $("#box-phone").val().length < 3){
+
+		alert("Debe ser mayor a 3 caracteres");
+		return;
 
 	}else{
 
