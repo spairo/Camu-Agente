@@ -109,11 +109,11 @@ $.services = function(data){
 
 	if(services_evals.length > 1){
 
-		$("#services").slideDown().show();
+		//$("#services").slideDown().show();
 
 	}else{
 
-		$("#services").hide();
+		//$("#services").hide();
 		//$("#skills").slideDown().show();
 
 	}
@@ -315,8 +315,8 @@ $(document).on('click', '#logout', function(){
 
 $(document).on('click', '.choice-service', function(){
 
-
 	alert("sol");
+
 	//var skillID = $(".skillchoice").val();
 	//var skillstd = $(".skillchoice option:selected").attr('name');
 
