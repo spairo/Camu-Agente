@@ -193,7 +193,7 @@ function SearchOnSuccess(data){
 					var lada = search_evals[i].lada;
 					var extension = search_evals[i].extension;
 
-					var content = '<tr><th>'+id+'</th><th>'+name+' '+second_name+'</th><th>'+pat_name+'</th><th>'+mat_name+'</th><th>'+clave+'</th><th>'+lada+'</th><th>'+extension+'</th><th>'+service+'</th><th><button class="btn btn-engine build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
+					var content = '<tr><th class="nr">'+id+'</th><th>'+name+' '+second_name+'</th><th>'+pat_name+'</th><th>'+mat_name+'</th><th>'+clave+'</th><th>'+lada+'</th><th>'+extension+'</th><th>'+service+'</th><th><button class="btn btn-engine build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
 					$('.result table.search_evals').append(content);
 			}
 
@@ -261,7 +261,7 @@ $.Menu = function(data){
 
 	buildUL(ul, source);
 
-	//add bootstrap classes
+	//bootstrap classes
 
 	if ($(".json-menu>li:has(ul.js-menu)")){
 	  $(".json-menu>li.js-menu").addClass('dropdown-submenu');
@@ -270,13 +270,10 @@ $.Menu = function(data){
 		$(".json-menu>li>ul.js-menu li ").addClass('dropdown-submenu');
 	}
 
-
 	//.removeClass
 	$("ul.js-menu").find("li:not(:has(> ul.js-menu))").removeClass("dropdown-submenu");
 
-
 };
-
 
 /*Login*/
 
@@ -407,6 +404,15 @@ $(document).on('click', '.search-back', function(){
 
 $(document).on('click', '.build', function(){
 
+	var $row = $(this).closest("tr");    // Find the row
+	var $text = $row.find(".nr").text(); // Find the text
+
+	var clientesId = $text;
+	console.log("esto es lo que guardo", clientesId);
+	Cookies.set('clientesId', clientesId);
+
+	// Let's build it out
+
 	$.ajax({
 		url: "index.html",
 		type: "POST",
@@ -414,20 +420,6 @@ $(document).on('click', '.build', function(){
 		success: function(){
 			window.open('engine.html', '_blank');
 		}
-	});
-
-});
-
-$(document).on('click', '#logout-builder', function(){
-
-	Cookies.remove('id');
-	Cookies.remove('name');
-	Cookies.remove('profile');
-	Cookies.remove('parole');
-	Cookies.remove('SkillId');
-
-	$('#Builder_Engine').empty("", function(){
-		location.reload();
 	});
 
 });
@@ -443,6 +435,20 @@ $(document).ready(function(){
 		$.onsetEngine(user, passw);
 
 	}
+
+});
+
+$(document).on('click', '#logout-builder', function(){
+
+	Cookies.remove('id');
+	Cookies.remove('name');
+	Cookies.remove('profile');
+	Cookies.remove('parole');
+	Cookies.remove('SkillId');
+
+	$('#Builder_Engine').empty("", function(){
+		location.reload();
+	});
 
 });
 
@@ -497,8 +503,8 @@ function onsetEngineError(data){
 
 $.cssEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 		if(skillidx == data[i].skillsId){
@@ -513,8 +519,8 @@ $.cssEngine = function(data){
 
 $.baselayoutEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -558,8 +564,8 @@ $.baselayoutEngine = function(data){
 
 $.captureRenderEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	$('.advisory_capture').append('<h3 class="text-center">Campos Captura Asesor</h3>');
 
@@ -604,8 +610,8 @@ $.captureRenderEngine = function(data){
 
 $.typificationsEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -638,8 +644,8 @@ $.typificationsEngine = function(data){
 
 $.productsEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -673,10 +679,12 @@ $.productsEngine = function(data){
 
 $.typiHistoryEngine = function(data){
 
+	//var myid = "12";
 	var myid = Cookies.get('id');
-	//var myid =  = "12";
 
-	var clientesId = "1"
+	var clientesId = Cookies.get('clientesId');
+	console.log("esto es lo que quiero optener", clientesId);
+	
 	var servicesid = data[0].serviciosId;
 
 	var url = ws+"rg_ListClienteHistorico";
@@ -687,7 +695,6 @@ $.typiHistoryEngine = function(data){
   $.ajax({
     type: "GET",
     url: url,
-    //cache: false,
     crossDomain: true,
     data: oData,
     contentType: "application/json; charset=utf-8",
