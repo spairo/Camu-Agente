@@ -1,4 +1,6 @@
-/* Main Camu.Agente */
+/*============================
+      Main Fusion Agente
+=============================*/
 
 //Settings
 
@@ -59,7 +61,7 @@ function LoginOnSuccess(response){
 						var name = Cookies.set('name', response[0].usuario);
 						var profile = Cookies.set('profile', response[0].perfil);
 						var dataM = response[0].menu;
-						var dataS = response[0].skills;
+						var dataS = response[0].configuracion;
 						var dataServices = response[0].configuracion;
 
 						Cookies.set('parole', password);
@@ -127,6 +129,8 @@ $.skills = function(data){
 	//var skills_evals = Object.keys(data).length; //IE8 sucks
 	var skills_evals = data;
 
+	console.log("ooo", skills_evals);
+
 	if(skills_evals.length > 1){
 
 		$("#skills").slideDown().show();
@@ -135,8 +139,9 @@ $.skills = function(data){
 		for(var i = 0; i < skills_evals.length; i++){
 			var skill = skills_evals[i].skill;
 			var skillsId = skills_evals[i].skillsId;
+			var serviciosId = skills_evals[i].serviciosId;
 
-			var content = '<option value="'+skillsId+'" name="'+skill+'">'+skill+'</option>';
+			var content = '<option class="skilloption" value="'+skillsId+'" alt="'+serviciosId+'" name="'+skill+'">'+skill+'</option>';
 			$('.box-skills select.skillchoice').append(content);
 		}
 
@@ -155,8 +160,9 @@ $.search = function(name, pat, mat, phone){
 	var url = ws+"rg_ListClientes";
 	var myid = Cookies.get('id');
 	var skillID = Cookies.get('SkillId');
+	var serviciosID = Cookies.get('serviciosId');
 
-  var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, valorClave: phone, usuarioId: myid, skillid: skillID };
+  var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, valorClave: phone, usuarioId: myid, skillid: skillID, serviciosId: serviciosID };
 
   $.support.cors = true;
   $.ajax({
@@ -179,22 +185,23 @@ function SearchOnSuccess(data){
 
 	if(search_evals != ""){
 
-			$('.result').empty().append('<table class="search_evals table table-striped"><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Valor Clave</th><th>Lada Telefono</th><th>Ext</th><th>Servicio</th><th>Build it</th></tr></thead><tbody></tbody></table>');
+			$('.result').empty().append('<table class="search_evals table table-striped"><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Valor Clave</th><th>Lada Telefono</th><th>Ext</th><th>ClaveId</th><th></th></tr></thead><tbody></tbody></table>');
 
 			for(var i = 0; i < search_evals.length; i++){
 
 					var id = search_evals[i].clientesId;
+					var clientesClaveId = search_evals[i].clientesClaveId;
 					var name = search_evals[i].nombre1;
 					var second_name = search_evals[i].nombre2;
 					var pat_name = search_evals[i].apellido1;
 					var mat_name = search_evals[i].apellido2;
-					var service = search_evals[i].servicio;
 					var clave = search_evals[i].valorClave;
 					var lada = search_evals[i].lada;
 					var extension = search_evals[i].extension;
 
-					var content = '<tr><th class="nr">'+id+'</th><th>'+name+' '+second_name+'</th><th>'+pat_name+'</th><th>'+mat_name+'</th><th>'+clave+'</th><th>'+lada+'</th><th>'+extension+'</th><th>'+service+'</th><th><button class="btn btn-engine build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
+					var content = '<tr><th class="nr">'+id+'</th><th>'+name+' '+second_name+'</th><th>'+pat_name+'</th><th>'+mat_name+'</th><th>'+clave+'</th><th>'+lada+'</th><th>'+extension+'</th><th class="cd">'+clientesClaveId+'</th><th><button class="btn btn-engine build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
 					$('.result table.search_evals').append(content);
+
 			}
 
 	}else{
@@ -306,6 +313,10 @@ $(document).on('click', '#logout', function(){
 	Cookies.remove('profile');
 	Cookies.remove('parole');
 	Cookies.remove('SkillId');
+	Cookies.remove('serviciosId');
+	Cookies.remove('clientesId');
+	Cookies.remove('clientesClaveId');
+
 	location.reload();
 
 });
@@ -329,9 +340,12 @@ $(document).on('click', '.choice-service', function(){
 $(document).on('click', '.choice-skill', function(){
 
 	var skillID = $(".skillchoice").val();
-	//var skillstd = $(".skillchoice option:selected").attr('name');
 
 	Cookies.set('SkillId', skillID);
+
+	var serviciosID = $(".skilloption").attr("alt");
+
+	Cookies.set('serviciosId', serviciosID);
 
 	$("#skills").slideUp("slow", function(){
 		$("#search").slideDown("slow").show();
@@ -405,11 +419,15 @@ $(document).on('click', '.search-back', function(){
 $(document).on('click', '.build', function(){
 
 	var $row = $(this).closest("tr");    // Find the row
-	var $text = $row.find(".nr").text(); // Find the text
+
+	var $text = $row.find(".nr").text(); // Find the id
+	var $textcid = $row.find(".cd").text(); // Find the clientesClaveId
 
 	var clientesId = $text;
-	
+	var clientesClaveid = $textcid;
+
 	Cookies.set('clientesId', clientesId);
+	Cookies.set('clientesClaveId', clientesClaveid);
 
 	// Let's build it out
 
@@ -445,11 +463,40 @@ $(document).on('click', '#logout-builder', function(){
 	Cookies.remove('profile');
 	Cookies.remove('parole');
 	Cookies.remove('SkillId');
+	Cookies.remove('serviciosId');
+	Cookies.remove('clientesId');
+	Cookies.remove('clientesClaveId');
 
 	$('#Builder_Engine').empty("", function(){
 		location.reload();
 	});
 
+});
+
+$(document).on('click', '.btn-engine-done', function(){
+
+		$(".form-build").removeClass('has-error');
+
+		if($(".input-dinamic").val() == ""){
+			alert("Los campos marcados con rojo son obligatorios");
+			$(".form-build").addClass('has-error');
+		}
+		else{
+			alert("salvando");
+		}
+		/*
+		if(required == "1"){
+			$(".form-build").addClass('has-error');
+		}
+
+
+
+		if ($(".form-build").hasClass("has-error") ||  ) {
+			alert("Los campos marcados con rojo son obligatorios");
+		}else{
+			alert("Salvando");
+		}
+		*/
 });
 
 $.onsetEngine = function(user, passw){
@@ -546,8 +593,10 @@ $.baselayoutEngine = function(data){
 						//HTML elements
 
 						if(form == "input" || form == "Input"){
-							var content = '<div class="form-group"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
+
+							var content = '<div class="form-group form-build"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-dinamic" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
 							$('.base_layout').append(content);
+
 						}
 
 					}
@@ -560,7 +609,6 @@ $.baselayoutEngine = function(data){
 	}
 
 };
-
 
 $.captureRenderEngine = function(data){
 
@@ -594,6 +642,11 @@ $.captureRenderEngine = function(data){
 						if(form == "input" || form == "Input"){
 							var content = '<div class="form-group"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
 							$('.advisory_capture').append(content);
+
+							/*if(required == "1"){
+								$(".form-build").addClass('has-error');
+							}*/
+
 						}
 
 					}
@@ -635,6 +688,7 @@ $.typificationsEngine = function(data){
 				$('.tree div.list-group').append(content);
 
 			}
+			$('.tree').append('<div class="textarea"></div>');
 
 		}
 
