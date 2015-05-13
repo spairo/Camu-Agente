@@ -408,7 +408,7 @@ $(document).on('click', '.build', function(){
 	var $text = $row.find(".nr").text(); // Find the text
 
 	var clientesId = $text;
-	console.log("esto es lo que guardo", clientesId);
+	
 	Cookies.set('clientesId', clientesId);
 
 	// Let's build it out
@@ -683,8 +683,7 @@ $.typiHistoryEngine = function(data){
 	var myid = Cookies.get('id');
 
 	var clientesId = Cookies.get('clientesId');
-	console.log("esto es lo que quiero optener", clientesId);
-	
+
 	var servicesid = data[0].serviciosId;
 
 	var url = ws+"rg_ListClienteHistorico";
