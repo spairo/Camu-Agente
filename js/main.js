@@ -477,19 +477,43 @@ $(document).on('click', '.btn-engine-done', function(){
 
 		$(".form-build").removeClass('has-error');
 
-		if($(".input-dinamic").val() == ""){
+		$('.input-dinamic').each(function(){
+
+
+				if(!$(this).val() == "" && $(this).hasClass('required')){
+
+					alert("Los campos marcados con rojo son obligatorios");
+					$(".form-build").addClass('has-error');
+
+					return;
+			  }
+				else{
+					alert("seguir adelante");
+				}
+
+		});
+
+		//$(".form-build").removeClass('has-error');
+
+		/*
+
+		if($(".input-dinamic").val() == "" && $(".input-dinamic").hasClass('required')){
+
 			alert("Los campos marcados con rojo son obligatorios");
 			$(".form-build").addClass('has-error');
+
 		}
 		else{
+
 			alert("salvando");
+
 		}
+		*/
+
 		/*
 		if(required == "1"){
 			$(".form-build").addClass('has-error');
 		}
-
-
 
 		if ($(".form-build").hasClass("has-error") ||  ) {
 			alert("Los campos marcados con rojo son obligatorios");
@@ -497,6 +521,17 @@ $(document).on('click', '.btn-engine-done', function(){
 			alert("Salvando");
 		}
 		*/
+});
+
+$(document).on('click', '.list-product li', function(){
+
+	var skillidx = Cookies.get('SkillId');
+	var skillidx = Cookies.get('SkillId');
+
+	alert(this.id); // get id of clicked li
+	//skillsId={SKILLSID}&serviciosId={SERVICIOSID}&clientesId={CLIENTESID}&clientesClavesId={CLIENTESCLAVESID}&skillsProductosId={SKILLSPRODUCTOSID}&usuariosId={USUARIOSID}
+
+
 });
 
 $.onsetEngine = function(user, passw){
@@ -597,6 +632,10 @@ $.baselayoutEngine = function(data){
 							var content = '<div class="form-group form-build"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-dinamic" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
 							$('.base_layout').append(content);
 
+							if(required == "1"){
+								$(".input-dinamic").addClass('required');
+							}
+
 						}
 
 					}
@@ -640,12 +679,13 @@ $.captureRenderEngine = function(data){
 						//HTML elements
 
 						if(form == "input" || form == "Input"){
-							var content = '<div class="form-group"><label for="">'+title+'</label><input type="'+form+'" class="form-control input-lg" id="'+name+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
+
+							var content = '<div class="form-group"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-dinamic" id="'+name+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
 							$('.advisory_capture').append(content);
 
-							/*if(required == "1"){
-								$(".form-build").addClass('has-error');
-							}*/
+							if(required == "1"){
+								$(".input-dinamic").addClass('required');
+							}
 
 						}
 
@@ -707,7 +747,7 @@ $.productsEngine = function(data){
 
 			var items = data[i].productos;
 
-			$('.products').append('<h3 class="text-center">Productos</h3><div class="list-group"></div>');
+			$('.products').append('<h3 class="text-center">Productos</h3><ul class="list-product list-group"></ul>');
 
 			for(var i = 0; i < items.length; i++){
 
@@ -719,9 +759,9 @@ $.productsEngine = function(data){
 				var userAt = items[i].usuarioCreacion;
 				var dateAt = items[i].fechaCreacion;
 
-				var content = '<a href="#" class="list-group-item"><span class="badge">'+skillsProductosId+'</span>'+product+'</a>';
+				var content = '<li id="'+skillsProductosId+'" class="list-group-item"><span class="badge">'+skillsProductosId+'</span>'+product+'</li>';
 
-				$('.products div.list-group').append(content);
+				$('.products .list-group').append(content);
 
 			}
 
