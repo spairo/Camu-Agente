@@ -282,7 +282,6 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-
   src: url('../fonts/glyphicons-halflings-regular.eot');
   src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
@@ -6245,7 +6244,7 @@ button.close {
   text-align: center;
   list-style: none;
 }
-.carousel-indicators li {
+.carousel-indicators li{
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -6257,7 +6256,7 @@ button.close {
   border: 1px solid #fff;
   border-radius: 10px;
 }
-.carousel-indicators .active {
+.carousel-indicators .active{
   width: 12px;
   height: 12px;
   margin: 0;
@@ -6971,7 +6970,6 @@ button.close {
     -webkit-box-shadow: none;
     box-shadow: none;
   }
-
   #search-result .btn-engine{
     background: #95a5a6;
     margin: 0 auto;
@@ -7004,7 +7002,6 @@ button.close {
     -webkit-box-shadow: none;
     box-shadow: none;
   }
-
   #search-result th, td{
     color: #7F8C97;
   }
@@ -7032,8 +7029,55 @@ button.close {
     text-align: center;
     font-weight: bold;
   }
+  #Builder_Engine h4{
+    color: #7f8c8d;
+    text-align: center;
+    font-weight: bold;
+  }
   #Builder_Engine label{
     color: #7f8c8d;
+  }
+  #Builder_Engine .tag{
+    border-bottom: 2px solid #d35400;
+    background: #e67e22;
+    border-radius: 3px 0 0 3px;
+    color: #fff;
+    display: inline-block;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 20px 0 23px;
+    position: relative;
+    margin: 0 10px 10px 0;
+    text-decoration: none;
+    -webkit-transition: color 0.2s;
+  }
+  #Builder_Engine .tag::before {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
+    content: '';
+    height: 6px;
+    left: 10px;
+    position: absolute;
+    width: 6px;
+    top: 10px;
+  }
+  #Builder_Engine .tag::after {
+    background: #fff;
+    border-bottom: 13px solid transparent;
+    border-left: 10px solid #e67e22;
+    border-top: 13px solid transparent;
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  #Builder_Engine .tag:hover {
+    background-color: #c0392b;
+    color: #fff;
+  }
+  #Builder_Engine .tag:hover::after {
+     border-left-color: #c0392b;
   }
   #Builder_Engine .btn-engine-done{
     background: #95a5a6;

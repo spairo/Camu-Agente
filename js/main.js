@@ -475,6 +475,8 @@ $(document).on('click', '#logout-builder', function(){
 
 $(document).on('click', '.btn-engine-done', function(){
 
+
+		/*
 		$(".form-build").removeClass('has-error');
 
 		$('.input-dinamic').each(function(){
@@ -492,6 +494,9 @@ $(document).on('click', '.btn-engine-done', function(){
 				}
 
 		});
+		*/
+
+		//alert("Salvare productos");
 
 		//$(".form-build").removeClass('has-error');
 
@@ -523,16 +528,26 @@ $(document).on('click', '.btn-engine-done', function(){
 		*/
 });
 
-$(document).on('click', '.list-product li', function(){
+$(document).on('click', '.list-product', function(){
 
-	var skillidx = Cookies.get('SkillId');
-	var skillidx = Cookies.get('SkillId');
+	var skillsProductosId = this.id;
+	var product = $(this).attr('title');
 
-	alert(this.id); // get id of clicked li
-	//skillsId={SKILLSID}&serviciosId={SERVICIOSID}&clientesId={CLIENTESID}&clientesClavesId={CLIENTESCLAVESID}&skillsProductosId={SKILLSPRODUCTOSID}&usuariosId={USUARIOSID}
-
+	var content = '<a href="#" id="'+skillsProductosId+'" class="tag">'+product+'</a>';
+	$('.products .tags').empty().append(content);
 
 });
+
+$(document).on('click', '.list-typing', function(){
+
+	var typingId = this.id;
+	var tipologia = $(this).attr('title');
+
+	var content = '<a href="#" id="'+typingId+'" class="tag">'+tipologia+'</a>';
+	$('.tree .tags').empty().append(content);
+
+});
+
 
 $.onsetEngine = function(user, passw){
 
@@ -585,8 +600,8 @@ function onsetEngineError(data){
 
 $.cssEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 		if(skillidx == data[i].skillsId){
@@ -601,8 +616,8 @@ $.cssEngine = function(data){
 
 $.baselayoutEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -651,8 +666,8 @@ $.baselayoutEngine = function(data){
 
 $.captureRenderEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	$('.advisory_capture').append('<h3 class="text-center">Campos Captura Asesor</h3>');
 
@@ -703,8 +718,8 @@ $.captureRenderEngine = function(data){
 
 $.typificationsEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -712,7 +727,7 @@ $.typificationsEngine = function(data){
 
 			var typs = data[i].tipologias;
 
-			$('.tree').append('<h3 class="text-center">Tipificaciones</h3><div class="list-group"></div>');
+			$('.tree').append('<h3 class="text-center">Tipificaciones</h3><div class="list-group"></div><div class="tags"></div><h4>Comentarios</h4><textarea class="form-control well-sm" rows="3"></textarea>');
 
 			for(var i = 0; i < typs.length; i++){
 
@@ -723,12 +738,11 @@ $.typificationsEngine = function(data){
 				var agendaLlamada = typs[i].agendaLlamada;
 				var confirmaVenta = typs[i].confirmaVenta;
 
-				var content = '<a href="#" class="list-group-item"><span class="badge">'+skillTipologiasId+'</span>'+tipologia+'</a>';
+				var content = '<a href="#" id="'+skillTipologiasId+'" title="'+tipologia+'" class="list-typing list-group-item">'+tipologia+'</a>';
 
-				$('.tree div.list-group').append(content);
+				$('.tree .list-group').append(content);
 
 			}
-			$('.tree').append('<div class="textarea"></div>');
 
 		}
 
@@ -738,8 +752,8 @@ $.typificationsEngine = function(data){
 
 $.productsEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -747,7 +761,7 @@ $.productsEngine = function(data){
 
 			var items = data[i].productos;
 
-			$('.products').append('<h3 class="text-center">Productos</h3><ul class="list-product list-group"></ul>');
+			$('.products').append('<h3 class="text-center">Productos</h3><ul class="list-product list-group"></ul><div class="tags"></div>');
 
 			for(var i = 0; i < items.length; i++){
 
@@ -759,9 +773,9 @@ $.productsEngine = function(data){
 				var userAt = items[i].usuarioCreacion;
 				var dateAt = items[i].fechaCreacion;
 
-				var content = '<li id="'+skillsProductosId+'" class="list-group-item"><span class="badge">'+skillsProductosId+'</span>'+product+'</li>';
+				var content = '<li id="'+skillsProductosId+'" title="'+product+'" class="list-group-item">'+product+'</li>';
 
-				$('.products .list-group').append(content);
+				$('.products .list-product').append(content);
 
 			}
 
@@ -773,12 +787,14 @@ $.productsEngine = function(data){
 
 $.typiHistoryEngine = function(data){
 
-	//var myid = "12";
-	var myid = Cookies.get('id');
+	var myid = "12";
+	//var myid = Cookies.get('id');
 
-	var clientesId = Cookies.get('clientesId');
+	var clientesId = "2012640";
+	//var clientesId = Cookies.get('clientesId');
 
-	var servicesid = data[0].serviciosId;
+	var servicesid = "1";
+	//var servicesid = data[0].serviciosId;
 
 	var url = ws+"rg_ListClienteHistorico";
 
@@ -817,3 +833,13 @@ $.typiHistoryEngine = function(data){
   });
 
 };
+
+//Save
+
+function triggerProducts(){
+
+}
+
+function doSomething(){
+
+}
