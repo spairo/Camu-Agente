@@ -129,8 +129,6 @@ $.skills = function(data){
 	//var skills_evals = Object.keys(data).length; //IE8 sucks
 	var skills_evals = data;
 
-	console.log("ooo", skills_evals);
-
 	if(skills_evals.length > 1){
 
 		$("#skills").slideDown().show();
@@ -205,6 +203,8 @@ function SearchOnSuccess(data){
 			}
 
 	}else{
+
+		$('#search-result').empty().append('<div class="btn-group btn-group-lg pull-left" role="group" aria-label="config"><button class="btn btn-search search-back">Nueva Busqueda <span class="glyphicon glyphicon-search"></button></div><div class="btn-group btn-group-lg pull-right" role="group" aria-label="config"><button class="btn btn-search add-client">Crear Cliente <span class="glyphicon glyphicon-plus"></button></div><div class="result"></div>')
 		$(".result").empty().append('<span class="not-found">No hay resultados</span>');
 	}
 
@@ -212,6 +212,68 @@ function SearchOnSuccess(data){
 
 function SearchOnError(data){
   //alert("Perror", data);
+}
+
+$.addclient = function(name, name2, pat, mat, phone){
+
+	var url = ws+"rg_GuardaCliente";
+
+	var myid = Cookies.get('id');
+	var skillID = Cookies.get('SkillId');
+	var serviciosID = Cookies.get('serviciosId');
+
+	var Data = {
+		skillsId: skillID,
+		serviciosId: serviciosID,
+		nombre1: name,
+		nombre2: name2,
+		apellido1: pat,
+		apellido2: mat,
+	  valorClave: phone,
+		usuariosId: myid
+	}
+
+  $.support.cors = true;
+  $.ajax({
+    type: "GET",
+    url: url,
+    cache: false,
+    crossDomain: true,
+    data: Data,
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: addOnSuccess,
+    error: addOnError
+  });
+
+};
+
+function addOnSuccess(data){
+
+	$("#add-client .add-result").empty().append('<h3>Cliente Creado con exito <span class="glyphicon glyphicon-ok"></span></h3>').hide().fadeIn('slow').delay(10000);
+
+	$('.result').empty();
+	$(".form-group").removeClass('has-error');
+  $("#add-name").val("");
+	$("#add-2name").val("");
+  $("#add-pat").val("");
+  $("#add-mat").val("");
+  $("#add-phone").val("");
+
+	$("#add-client").slideUp("slow", function(){
+		$("#search").slideDown("slow");
+	});
+
+	//$("p").hide("slow", function(){
+		//	alert("The paragraph is now hidden");
+	//});
+
+	//$("#add-client").hide("slow").fadeOut("slow");
+	//$("#search").show().fadeIn("slow");
+}
+
+function addOnError(data){
+
 }
 
 //Build  Menu
@@ -384,17 +446,6 @@ $(document).on('click', '.search-case', function(){
 
 });
 
-	/*
-	//only numbers input
-	$("#box-phone").keypress(function (e){
-     if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
-        //display error message
-        $(".numbers").html("Solo Numeros").show().fadeOut("slow");
-        return false;
-     }
-  });
-	*/
-
 $(document).on('click', '.search-back', function(){
 
   $('.result').empty();
@@ -409,6 +460,58 @@ $(document).on('click', '.search-back', function(){
 	});
 
 });
+
+	/*
+	//only numbers input
+	$("#box-phone").keypress(function (e){
+     if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
+        //display error message
+        $(".numbers").html("Solo Numeros").show().fadeOut("slow");
+        return false;
+     }
+  });
+	*/
+
+$(document).on('click', '.add-client', function(){
+
+	$("#search-result").slideUp("slow", function(){
+		$("#add-client").slideDown("slow");
+	});
+
+});
+
+$(document).on('click', '.btn-add', function(){
+
+	console.log('voy a crear nuevo user');
+
+	if($("#add-name").val() == '' &&  $("#box-pat").val() == '' &&   $("#box-mat").val() == '' &&  $("#box-phone").val() == ''){
+
+			alert("Los campas son obligatorios");
+			$(".add-group").addClass('has-error');
+			return;
+
+	}
+	else if($("#add-name").val().length < 3 && $("#add-pat").val().length < 3 && $("#add-mat").val().length < 3 && $("#add-phone").val().length < 3){
+
+		alert("Debe ser mayor a 3 caracteres");
+		return;
+
+	}else{
+
+		var name = $(".box-add #add-name").val();
+		var name2 = $(".box-add #add-2name").val();
+		var pat = $(".box-add #add-pat").val();
+		var mat = $(".box-add #add-mat").val();
+		var phone = $(".box-add #add-phone").val();
+
+		console.log(name + name2 + pat + mat + phone);
+
+		$.addclient(name, name2, pat, mat, phone);
+
+	}
+
+});
+
 
 
 /*+++++++++++++++++++++++++++++++
@@ -475,6 +578,68 @@ $(document).on('click', '#logout-builder', function(){
 
 $(document).on('click', '.btn-engine-done', function(){
 
+		//$(".btn-engine-done").prop( "disabled", true );
+
+		// Get typing selected
+		var treetagid = $('.tree .tag').attr('title');
+		var treecomment = $('.tree .comment').val();
+
+		//$.onsaveTyping(treetagid, treecomment);
+
+		// Get product selected
+		var producttag = $('.products .tag').text();
+		var producttagid = $('.products .tag').attr('title');
+
+		//$.onsaveProducts(producttagid);
+
+		//Get Inputs data Fields
+
+		var fields = {};
+
+		$(".form-dinamic .input-dinamic").each(function(){
+			fields[$(this).attr("type")] = $(this).attr("name");
+		});
+
+		alert(JSON.stringify(fields));
+
+		console.log(fields);
+		console.log(JSON.stringify(fields));
+
+
+
+		/*var inputTypes = [];
+
+		$('.form-dinamic input[name][id][value]').each(function(){
+
+			inputTypes.push($(this).attr('type'));
+
+		});
+
+		console.log(inputTypes);
+		*/
+
+		/*
+		<input type="'+form+'" class="input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'">
+		*/
+
+		//var map = {};
+
+    ///$(".form-dinamic .input-dinamic").each(function(){
+
+			 	//var map = $(this).val();
+				//map[$(this).val()];
+
+				//map[$(this).attr("id")] = $(this).val();
+			//	map[$(this).attr("name")] = $(this).val();
+    //});
+
+  	//alert(map.key1); // "red"
+
+		//alert(map);
+
+		//console.log(JSON.stringify(map));
+
+		//var d = num.toString(16);
 
 		/*
 		$(".form-build").removeClass('has-error');
@@ -528,22 +693,22 @@ $(document).on('click', '.btn-engine-done', function(){
 		*/
 });
 
-$(document).on('click', '.list-product', function(){
+$(document).on('click', '.list-product .list-group-item', function(){
 
 	var skillsProductosId = this.id;
 	var product = $(this).attr('title');
 
-	var content = '<a href="#" id="'+skillsProductosId+'" class="tag">'+product+'</a>';
+	var content = '<a href="#" title="'+skillsProductosId+'" class="tag">'+product+'</a>';
 	$('.products .tags').empty().append(content);
 
 });
 
-$(document).on('click', '.list-typing', function(){
+$(document).on('click', '.list-group .list-typing', function(){
 
 	var typingId = this.id;
 	var tipologia = $(this).attr('title');
 
-	var content = '<a href="#" id="'+typingId+'" class="tag">'+tipologia+'</a>';
+	var content = '<a href="#" title="'+typingId+'" class="tag">'+tipologia+'</a>';
 	$('.tree .tags').empty().append(content);
 
 });
@@ -600,8 +765,8 @@ function onsetEngineError(data){
 
 $.cssEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 		if(skillidx == data[i].skillsId){
@@ -617,7 +782,7 @@ $.cssEngine = function(data){
 $.baselayoutEngine = function(data){
 
 	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = "";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -695,7 +860,7 @@ $.captureRenderEngine = function(data){
 
 						if(form == "input" || form == "Input"){
 
-							var content = '<div class="form-group"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-dinamic" id="'+name+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
+							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
 							$('.advisory_capture').append(content);
 
 							if(required == "1"){
@@ -727,7 +892,7 @@ $.typificationsEngine = function(data){
 
 			var typs = data[i].tipologias;
 
-			$('.tree').append('<h3 class="text-center">Tipificaciones</h3><div class="list-group"></div><div class="tags"></div><h4>Comentarios</h4><textarea class="form-control well-sm" rows="3"></textarea>');
+			$('.tree').append('<h3 class="text-center">Tipificaciones</h3><div class="list-group"></div><div class="tags"></div><h4>Comentarios</h4><textarea class="form-control comment well-sm" rows="3"></textarea>');
 
 			for(var i = 0; i < typs.length; i++){
 
@@ -787,18 +952,20 @@ $.productsEngine = function(data){
 
 $.typiHistoryEngine = function(data){
 
-	var myid = "12";
-	//var myid = Cookies.get('id');
-
-	var clientesId = "2012640";
-	//var clientesId = Cookies.get('clientesId');
-
-	var servicesid = "1";
-	//var servicesid = data[0].serviciosId;
-
 	var url = ws+"rg_ListClienteHistorico";
 
-  var oData = { clientesId: clientesId, serviciosid: servicesid, usuariosId: myid  };
+	var myid = Cookies.get('id');
+	var skillsId = Cookies.get('SkillId');
+	var serviciosId = Cookies.get('serviciosId');
+	var clientesId = Cookies.get('clientesId');
+	var clientesClavesId = Cookies.get('clientesClaveId');
+
+	var oData = {
+		clientesId: clientesId,
+		serviciosid: serviciosId,
+		usuariosId: myid,
+		skillsId: skillsId
+	}
 
 	$.support.cors = true;
   $.ajax({
@@ -810,7 +977,7 @@ $.typiHistoryEngine = function(data){
     dataType: "json",
 		success: function(data){
 
-			$('.historical').append('<h3 class="text-center">Historico Tipificaciones</h3><ul class="list-group"></ul>');
+			$('.historical').empty().append('<h3 class="text-center">Historico Tipificaciones</h3><ul class="list-group"></ul>');
 
 			for(var i = 0; i < data.length; i++){
 
@@ -836,10 +1003,131 @@ $.typiHistoryEngine = function(data){
 
 //Save
 
-function triggerProducts(){
+$.onsaveTyping = function(id, comment){
 
-}
+	var url = ws+"rg_GuardaTipificacion";
 
-function doSomething(){
+	var myid = Cookies.get('id');
+	var skillsId = Cookies.get('SkillId');
+	var serviciosId = Cookies.get('serviciosId');
+	var clientesId = Cookies.get('clientesId');
+	var clientesClavesId = Cookies.get('clientesClaveId');
+	var skillsTipologiasid = id;
+	var comentario = comment;
 
-}
+	var Data = {
+		 skillsId: skillsId,
+		 serviciosId: serviciosId,
+		 clientesId: clientesId,
+		 clientesClavesId: clientesClavesId,
+		 skillsTipologiasId: skillsTipologiasid,
+		 comentario: comentario,
+		 usuariosId: myid
+	};
+
+	$.support.cors = true;
+	$.ajax({
+		type: "GET",
+		url: url,
+		crossDomain: true,
+		data: Data,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(data){
+
+		console.log("grabaste typing", data);
+
+		$.typiHistoryEngine();
+
+
+
+		},error: function(data){
+			//console.log("algo salio mal");
+		}
+
+	});
+
+};
+
+$.onsaveProducts = function(spid){
+
+	var url = ws+"rg_GuardaProductos";
+
+	var myid = Cookies.get('id');
+	var skillsId = Cookies.get('SkillId');
+	var serviciosId = Cookies.get('serviciosId');
+	var clientesId = Cookies.get('clientesId');
+	var clientesClavesId = Cookies.get('clientesClaveId');
+	var skillsProductosid = spid;
+
+	var Data = {
+		skillsId: skillsId,
+		serviciosId: serviciosId,
+		clientesId: clientesId,
+		clientesClavesId: clientesClavesId,
+		skillsProductosId: skillsProductosid,
+		usuariosId: myid
+	};
+
+	$.support.cors = true;
+
+	$.ajax({
+		type: "GET",
+		url: url,
+		crossDomain: true,
+		data: Data,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(data){
+
+			console.log("grabaste producto", data);
+
+		},error: function(data){
+			//console.log("algo salio mal");
+		}
+
+	});
+
+};
+
+
+$.onSave = function(){
+
+	var url = ws+"rg_GuardaDatos";
+
+	var myid = Cookies.get('id');
+	var skillsId = Cookies.get('SkillId');
+	var serviciosId = Cookies.get('serviciosId');
+	var clientesId = Cookies.get('clientesId');
+	var clientesClavesId = Cookies.get('clientesClaveId');
+	var skillsProductosid = spid;
+
+	var Data = {
+		skillsId: skillsId,
+		serviciosId: serviciosId,
+		clientesId: clientesId,
+		clientesClavesId: clientesClavesId,
+		skillsProductosId: skillsProductosid,
+		usuariosId: myid
+	};
+
+	$.support.cors = true;
+
+	$.ajax({
+		type: "GET",
+		url: url,
+		crossDomain: true,
+		data: Data,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(data){
+
+			console.log("grabaste producto", data);
+
+		},error: function(data){
+			//console.log("algo salio mal");
+		}
+
+	});
+
+};
