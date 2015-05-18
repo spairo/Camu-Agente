@@ -250,7 +250,7 @@ $.addclient = function(name, name2, pat, mat, phone){
 
 function addOnSuccess(data){
 
-	$("#add-client .add-result").empty().append('<h3>Cliente Creado con exito <span class="glyphicon glyphicon-ok"></span></h3>').hide().fadeIn('slow').delay(10000);
+	$("#add-client .add-result").empty().append('<h3>Cliente Creado con exito <span class="glyphicon glyphicon-ok"></span></h3>').fadeIn('slow').delay(10000);
 
 	$('.result').empty();
 	$(".form-group").removeClass('has-error');
@@ -425,8 +425,7 @@ $(document).on('click', '.search-case', function(){
 			$(".box-group").addClass('has-error');
 			return;
 
-	}
-	else if($("#box-name").val().length < 3 && $("#box-pat").val().length < 3 && $("#box-mat").val().length < 3 && $("#box-phone").val().length < 3){
+	}else if($("#box-name").val().length < 3 && $("#box-pat").val().length < 3 && $("#box-mat").val().length < 3 && $("#box-phone").val().length < 3){
 
 		alert("Debe ser mayor a 3 caracteres");
 		return;
@@ -446,14 +445,14 @@ $(document).on('click', '.search-case', function(){
 
 });
 
-$(document).on('click', '.search-back', function(){
+$(document).on('click', '#search-result .search-back', function(){
 
-  $('.result').empty();
+  $('#search-result .result').empty();
 	$(".form-group").removeClass('has-error');
-  $("#box-name").val("");
-  $("#box-pat").val("");
-  $("#box-mat").val("");
-  $("#box-phone").val("");
+  $(".box-search #box-name").val("");
+  $(".box-search #box-pat").val("");
+  $(".box-search #box-mat").val("");
+  $(".box-search #box-phone").val("");
 
 	$("#search-result").slideUp("slow", function(){
 		$("#search").slideDown("slow");
@@ -462,7 +461,9 @@ $(document).on('click', '.search-back', function(){
 });
 
 	/*
+
 	//only numbers input
+
 	$("#box-phone").keypress(function (e){
      if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
         //display error message
@@ -474,19 +475,19 @@ $(document).on('click', '.search-back', function(){
 
 $(document).on('click', '.add-client', function(){
 
+	$("#add-client .add-result").empty();
+
 	$("#search-result").slideUp("slow", function(){
 		$("#add-client").slideDown("slow");
 	});
 
 });
 
-$(document).on('click', '.btn-add', function(){
-
-	console.log('voy a crear nuevo user');
+$(document).on('click', '.box-add .btn-add', function(){
 
 	if($("#add-name").val() == '' &&  $("#box-pat").val() == '' &&   $("#box-mat").val() == '' &&  $("#box-phone").val() == ''){
 
-			alert("Los campas son obligatorios");
+			alert("Los campos son obligatorios");
 			$(".add-group").addClass('has-error');
 			return;
 
@@ -504,14 +505,27 @@ $(document).on('click', '.btn-add', function(){
 		var mat = $(".box-add #add-mat").val();
 		var phone = $(".box-add #add-phone").val();
 
-		console.log(name + name2 + pat + mat + phone);
-
 		$.addclient(name, name2, pat, mat, phone);
 
 	}
 
 });
 
+$(document).on('click', '.box-add .search-back', function(){
+
+  $('#search-result .result').empty();
+	$(".box-add .form-group").removeClass('has-error');
+  $(".box-add #add-name").val("");
+	$(".box-add #add-2name").val("");
+  $(".box-add #add-pat").val("");
+  $(".box-add #add-mat").val("");
+  $(".box-add #add-phone").val("");
+
+	$("#add-client").slideUp("slow", function(){
+		$("#search").slideDown("slow");
+	});
+
+});
 
 
 /*+++++++++++++++++++++++++++++++
@@ -570,8 +584,9 @@ $(document).on('click', '#logout-builder', function(){
 	Cookies.remove('clientesId');
 	Cookies.remove('clientesClaveId');
 
-	$('#Builder_Engine').empty("", function(){
-		location.reload();
+	$(".loader").fadeIn("slow", function(){
+		$('#Builder_Engine').empty();
+		//location.reload();
 	});
 
 });
@@ -584,26 +599,36 @@ $(document).on('click', '.btn-engine-done', function(){
 		var treetagid = $('.tree .tag').attr('title');
 		var treecomment = $('.tree .comment').val();
 
-		//$.onsaveTyping(treetagid, treecomment);
+		$.onsaveTyping(treetagid, treecomment);
 
 		// Get product selected
 		var producttag = $('.products .tag').text();
 		var producttagid = $('.products .tag').attr('title');
 
-		//$.onsaveProducts(producttagid);
+		$.onsaveProducts(producttagid);
 
 		//Get Inputs data Fields
+		var inputarry = new Array();
+		var labelarry = new Array();
 
-		var fields = {};
+		$('.form-dinamic .input-dinamic').each(function(){
 
-		$(".form-dinamic .input-dinamic").each(function(){
-			fields[$(this).attr("type")] = $(this).attr("name");
+			inputarry.push($(this).val());
+			labelarry.push($(this).attr("name"));
+
 		});
 
-		alert(JSON.stringify(fields));
+		$.onSaveData(labelarry, inputarry);
 
-		console.log(fields);
-		console.log(JSON.stringify(fields));
+
+
+		//console.log("inputs", x);
+
+
+		//alert(JSON.stringify(fields));
+
+		//console.log(fields);
+		//console.log(JSON.stringify(fields));
 
 
 
@@ -739,7 +764,8 @@ function onsetEngineSuccess(data){
 
 	var factory = data[0].configuracion;
 
-	$('.navbar-top').addClass('navbar-top-fixed');
+
+	//$('.navbar-top').addClass('navbar-top-fixed'); //position fixed header
 
 	$(".loader").slideDown("slow", function(){
 
@@ -765,8 +791,8 @@ function onsetEngineError(data){
 
 $.cssEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 		if(skillidx == data[i].skillsId){
@@ -781,8 +807,8 @@ $.cssEngine = function(data){
 
 $.baselayoutEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -831,8 +857,8 @@ $.baselayoutEngine = function(data){
 
 $.captureRenderEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	$('.advisory_capture').append('<h3 class="text-center">Campos Captura Asesor</h3>');
 
@@ -883,8 +909,8 @@ $.captureRenderEngine = function(data){
 
 $.typificationsEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -917,8 +943,8 @@ $.typificationsEngine = function(data){
 
 $.productsEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -1091,7 +1117,9 @@ $.onsaveProducts = function(spid){
 };
 
 
-$.onSave = function(){
+$.onSaveData = function(labels, inputs){
+
+	console.log("guardare datos");
 
 	var url = ws+"rg_GuardaDatos";
 
@@ -1100,14 +1128,15 @@ $.onSave = function(){
 	var serviciosId = Cookies.get('serviciosId');
 	var clientesId = Cookies.get('clientesId');
 	var clientesClavesId = Cookies.get('clientesClaveId');
-	var skillsProductosid = spid;
+	var label = labels.toString();
+	var input = inputs.toString();
 
 	var Data = {
 		skillsId: skillsId,
 		serviciosId: serviciosId,
-		clientesId: clientesId,
-		clientesClavesId: clientesClavesId,
-		skillsProductosId: skillsProductosid,
+		clientesClaveId: clientesClavesId,
+		campos: label,
+		valores: input,
 		usuariosId: myid
 	};
 
@@ -1122,10 +1151,12 @@ $.onSave = function(){
 		dataType: "json",
 		success: function(data){
 
-			console.log("grabaste producto", data);
+			console.log("guardaste datos", data);
 
 		},error: function(data){
-			//console.log("algo salio mal");
+
+			console.log("algo salio mal", data);
+
 		}
 
 	});
