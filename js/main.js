@@ -591,7 +591,7 @@ $(document).on('click', '#logout-builder', function(){
 
 });
 
-$(document).on('click', '.btn-engine-done', function(){
+$(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 		//$(".btn-engine-done").prop( "disabled", true );
 
@@ -611,6 +611,14 @@ $(document).on('click', '.btn-engine-done', function(){
 		var inputarry = new Array();
 		var labelarry = new Array();
 
+		$("#box-phone").keypress(function(e){
+			if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
+					//display error message
+					//$(".numbers").html("Solo Numeros").show().fadeOut("slow");
+					return false;
+			}
+		});
+
 		$('.form-dinamic .input-dinamic').each(function(){
 
 			inputarry.push($(this).val());
@@ -620,102 +628,6 @@ $(document).on('click', '.btn-engine-done', function(){
 
 		$.onSaveData(labelarry, inputarry);
 
-
-
-		//console.log("inputs", x);
-
-
-		//alert(JSON.stringify(fields));
-
-		//console.log(fields);
-		//console.log(JSON.stringify(fields));
-
-
-
-		/*var inputTypes = [];
-
-		$('.form-dinamic input[name][id][value]').each(function(){
-
-			inputTypes.push($(this).attr('type'));
-
-		});
-
-		console.log(inputTypes);
-		*/
-
-		/*
-		<input type="'+form+'" class="input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'">
-		*/
-
-		//var map = {};
-
-    ///$(".form-dinamic .input-dinamic").each(function(){
-
-			 	//var map = $(this).val();
-				//map[$(this).val()];
-
-				//map[$(this).attr("id")] = $(this).val();
-			//	map[$(this).attr("name")] = $(this).val();
-    //});
-
-  	//alert(map.key1); // "red"
-
-		//alert(map);
-
-		//console.log(JSON.stringify(map));
-
-		//var d = num.toString(16);
-
-		/*
-		$(".form-build").removeClass('has-error');
-
-		$('.input-dinamic').each(function(){
-
-
-				if(!$(this).val() == "" && $(this).hasClass('required')){
-
-					alert("Los campos marcados con rojo son obligatorios");
-					$(".form-build").addClass('has-error');
-
-					return;
-			  }
-				else{
-					alert("seguir adelante");
-				}
-
-		});
-		*/
-
-		//alert("Salvare productos");
-
-		//$(".form-build").removeClass('has-error');
-
-		/*
-
-		if($(".input-dinamic").val() == "" && $(".input-dinamic").hasClass('required')){
-
-			alert("Los campos marcados con rojo son obligatorios");
-			$(".form-build").addClass('has-error');
-
-		}
-		else{
-
-			alert("salvando");
-
-		}
-		*/
-
-		/*
-		if(required == "1"){
-			$(".form-build").addClass('has-error');
-		}
-
-		if ($(".form-build").hasClass("has-error") ||  ) {
-			alert("Los campos marcados con rojo son obligatorios");
-		}else{
-			alert("Salvando");
-		}
-		*/
 });
 
 $(document).on('click', '.list-product .list-group-item', function(){
@@ -764,7 +676,6 @@ function onsetEngineSuccess(data){
 
 	var factory = data[0].configuracion;
 
-
 	//$('.navbar-top').addClass('navbar-top-fixed'); //position fixed header
 
 	$(".loader").slideDown("slow", function(){
@@ -777,7 +688,9 @@ function onsetEngineSuccess(data){
 		$.typiHistoryEngine(factory);
 
 		$(".loader").slideUp("slow", function(){
-			$('.logout').html('<a href="#" id="logout-builder"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
+			$('#Builder_Engine .logout').html('<a href="#" id="logout-builder"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
+			$("#Builder_Engine .engine-config").html('<div class="col-md-4 col-md-offset-4 well-sm"><button class="btn btn-block btn-engine-done">Guardar Configuracion <span class="glyphicon glyphicon-cog"></span></button></div>');
+
 		});
 
 	});
@@ -818,7 +731,7 @@ $.baselayoutEngine = function(data){
 
 				if(Fields != ""){
 
-					$('.base_layout').append('<h3 class="text-center">Campos Layout Base</h3><br />');
+					$('.base_layout').append('<h3 class="text-center"><span class="glyphicon glyphicon-eye-open"></span> Campos Layout Base</h3>');
 
 					for(var i = 0; i < Fields.length; i++){
 
@@ -835,12 +748,13 @@ $.baselayoutEngine = function(data){
 
 						if(form == "input" || form == "Input"){
 
-							var content = '<div class="form-group form-build"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-dinamic" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
+							var content = '<div class="form-group form-build"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-read" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
 							$('.base_layout').append(content);
 
 							if(required == "1"){
 								$(".input-dinamic").addClass('required');
 							}
+							$(".base_layout .input-read").prop('disabled', true);
 
 						}
 
@@ -860,7 +774,7 @@ $.captureRenderEngine = function(data){
 	var skillidx = Cookies.get('SkillId');
 	//var skillidx = "3";
 
-	$('.advisory_capture').append('<h3 class="text-center">Campos Captura Asesor</h3>');
+	$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Campos Captura Asesor</h3>');
 
 	for(var i = 0; i < data.length; i++){
 
@@ -894,11 +808,22 @@ $.captureRenderEngine = function(data){
 							}
 
 						}
+						else if(form == "input" || form == "Input"){
+
+							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
+							$('.advisory_capture').append(content);
+
+							if(required == "1"){
+								$(".input-dinamic").addClass('required');
+							}
+
+						}
+
 
 					}
 
 				}else{
-					$('.advisory_capture').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Captura Asesor.</div>');
+					//$('.advisory_capture').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Captura Asesor.</div>');
 				}
 
 		}
@@ -918,7 +843,7 @@ $.typificationsEngine = function(data){
 
 			var typs = data[i].tipologias;
 
-			$('.tree').append('<h3 class="text-center">Tipificaciones</h3><div class="list-group"></div><div class="tags"></div><h4>Comentarios</h4><textarea class="form-control comment well-sm" rows="3"></textarea>');
+			$('.tree').append('<h3 class="text-center"><span class="glyphicon glyphicon-tags"></span> Tipificaciones</h3><div class="list-group"></div><div class="tags"></div><h4>Comentarios</h4><textarea class="form-control comment well-sm" rows="3"></textarea>');
 
 			for(var i = 0; i < typs.length; i++){
 
@@ -952,7 +877,7 @@ $.productsEngine = function(data){
 
 			var items = data[i].productos;
 
-			$('.products').append('<h3 class="text-center">Productos</h3><ul class="list-product list-group"></ul><div class="tags"></div>');
+			$('.products').append('<h3 class="text-center"><span class="glyphicon glyphicon-tag"></span> Productos</h3><ul class="list-product list-group"></ul><div class="tags"></div>');
 
 			for(var i = 0; i < items.length; i++){
 
@@ -964,7 +889,7 @@ $.productsEngine = function(data){
 				var userAt = items[i].usuarioCreacion;
 				var dateAt = items[i].fechaCreacion;
 
-				var content = '<li id="'+skillsProductosId+'" title="'+product+'" class="list-group-item">'+product+'</li>';
+				var content = '<li id="'+skillsProductosId+'" title="'+product+'" class="list-group-item"><span class="glyphicon glyphicon-menu-right"></span> '+product+'</li>';
 
 				$('.products .list-product').append(content);
 
@@ -1003,7 +928,7 @@ $.typiHistoryEngine = function(data){
     dataType: "json",
 		success: function(data){
 
-			$('.historical').empty().append('<h3 class="text-center">Historico Tipificaciones</h3><ul class="list-group"></ul>');
+			$('.historical').empty().append('<h3 class="text-center"><span class="glyphicon glyphicon-time"></span> Historico Tipificaciones</h3><ul class="list-group"></ul>');
 
 			for(var i = 0; i < data.length; i++){
 

@@ -7117,7 +7117,8 @@ button.close {
   #Builder_Engine .base_layout{
     overflow: auto;
     min-height: 50px;
-    max-height: 400px;
+    max-height: 350px;
+    margin-bottom: 30px;
   }
   #Builder_Engine h3{
     color: #7f8c8d;
