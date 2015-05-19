@@ -214,6 +214,38 @@ function SearchOnError(data){
   //alert("Perror", data);
 }
 
+$.updateSession = function(serviciosID, skillID){
+
+	var url = ws+"rg_ActualizaSesion";
+
+	var myid = Cookies.get('id');
+
+	var Data = {
+		serviciosId: serviciosID,
+		skillsId: skillID,
+		usuariosId: myid,
+		disponible: "1"
+	}
+
+	$.ajax({
+		type: "GET",
+		url: url,
+		crossDomain: true,
+		data: Data,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(data){
+
+			console.info("U P D A T E session: success", data);
+
+		},error: function(data){
+			console.log("U P D A T E session: unsuccess");
+		}
+
+	});
+
+};
+
 $.addclient = function(name, name2, pat, mat, phone){
 
 	var url = ws+"rg_GuardaCliente";
@@ -408,6 +440,8 @@ $(document).on('click', '.choice-skill', function(){
 	var serviciosID = $(".skilloption").attr("alt");
 
 	Cookies.set('serviciosId', serviciosID);
+
+	$.updateSession(serviciosID, skillID);
 
 	$("#skills").slideUp("slow", function(){
 		$("#search").slideDown("slow").show();
@@ -686,6 +720,7 @@ function onsetEngineSuccess(data){
 		$.typificationsEngine(factory);
 		$.productsEngine(factory);
 		$.typiHistoryEngine(factory);
+		$.loadCustomersQuotes(factory);
 
 		$(".loader").slideUp("slow", function(){
 			$('#Builder_Engine .logout').html('<a href="#" id="logout-builder"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
@@ -721,7 +756,7 @@ $.cssEngine = function(data){
 $.baselayoutEngine = function(data){
 
 	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "";
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -731,7 +766,7 @@ $.baselayoutEngine = function(data){
 
 				if(Fields != ""){
 
-					$('.base_layout').append('<h3 class="text-center"><span class="glyphicon glyphicon-eye-open"></span> Campos Layout Base</h3>');
+					$('.base_layout').append('<h3 class="text-center"><span class="glyphicon glyphicon-eye-open"></span> Campos Layout Base</h3><div class="fields"></div>');
 
 					for(var i = 0; i < Fields.length; i++){
 
@@ -749,12 +784,12 @@ $.baselayoutEngine = function(data){
 						if(form == "input" || form == "Input"){
 
 							var content = '<div class="form-group form-build"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-read" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
-							$('.base_layout').append(content);
+							$('.base_layout .fields').append(content);
 
 							if(required == "1"){
-								$(".input-dinamic").addClass('required');
+								$(".fields .input-dinamic").addClass('required');
 							}
-							$(".base_layout .input-read").prop('disabled', true);
+							$(".base_layout .fields .input-read").prop('disabled', true);
 
 						}
 
@@ -774,7 +809,7 @@ $.captureRenderEngine = function(data){
 	var skillidx = Cookies.get('SkillId');
 	//var skillidx = "3";
 
-	$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Campos Captura Asesor</h3>');
+	$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Campos Captura Asesor</h3><div class="fields"></div>');
 
 	for(var i = 0; i < data.length; i++){
 
@@ -801,24 +836,84 @@ $.captureRenderEngine = function(data){
 						if(form == "input" || form == "Input"){
 
 							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
+							$('.advisory_capture .fields').append(content);
+
+							if(required == "1"){
+								$(".fields .input-dinamic").addClass('required');
+							}
+
+						}
+						else if(form == "radio" || form == "Radio"){
+
+							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><div class="radio"><label><input type="'+form+'" class="input-dinamic" name="'+name+'" id="" value="" checked>'+title+'</label></div></div>';
+
+							$('.advisory_capture .fields').append(content);
+
+							if(required == "1"){
+								$(".fields .input-dinamic").addClass('required');
+							}
+
+						}
+						else if(form == "checkbox" || form == "Checkbox"){
+
+							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><div class="checkbox"><label><input type="'+form+'" class="input-dinamic" value="">'+title+'</label></div></div>';
+
+							$('.advisory_capture .fields').append(content);
+
+							if(required == "1"){
+								$(".fields .input-dinamic").addClass('required');
+							}
+
+						}
+						else if(form == "label" || form == "Label"){
+
+							var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label></div>';
+
+							$('.advisory_capture .fields').append(content);
+
+						}
+						else if(form == "combo" || form == "Combo"){
+
+							//var array = defaultvalue;
+							//var array = JSON.parse("{ \"foo\" : 1, }");
+							//var array = JSON.parse(defaultvalue);
+
+							//console.log("["+array+"]");
+
+							//var content = '<div>'+defaultvalue+'</div>';
+
+							//$('.advisory_capture').append(content);
+
+							/*var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label></div>';
+
+							var select = document.getElementById("selectNumber");
+
+							var options = ["1", "2", "3", "4", "5"];
+
+							for(var i = 0; i < options.length; i++) {
+							    var opt = options[i];
+							    var el = document.createElement("option");
+							    el.textContent = opt;
+							    el.value = opt;
+							    select.appendChild(el);
+							}
+
+							<select class="form-control">
+							  <option>1</option>
+							  <option>2</option>
+							  <option>3</option>
+							  <option>4</option>
+							  <option>5</option>
+							</select>
+
+
 							$('.advisory_capture').append(content);
 
 							if(required == "1"){
 								$(".input-dinamic").addClass('required');
-							}
+							}*/
 
-						}
-						else if(form == "input" || form == "Input"){
-
-							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
-							$('.advisory_capture').append(content);
-
-							if(required == "1"){
-								$(".input-dinamic").addClass('required');
-							}
-
-						}
-
+						 }
 
 					}
 
@@ -889,7 +984,7 @@ $.productsEngine = function(data){
 				var userAt = items[i].usuarioCreacion;
 				var dateAt = items[i].fechaCreacion;
 
-				var content = '<li id="'+skillsProductosId+'" title="'+product+'" class="list-group-item"><span class="glyphicon glyphicon-menu-right"></span> '+product+'</li>';
+				var content = '<li id="'+skillsProductosId+'" title="'+product+'" class="list-group-item">'+product+'</li>';
 
 				$('.products .list-product').append(content);
 
@@ -898,6 +993,13 @@ $.productsEngine = function(data){
 		}
 
 	}
+
+};
+
+$.loadCustomersQuotes = function(data){
+
+	$('.customers_quotes').empty().append('<h3 class="text-center"><span class="glyphicon glyphicon-book"></span> Clientes Citas</h3><div class="well-lg"><div class="form-group"><label for="Nombre">Nombre</label><input type="text" class="form-control" id="nombre" placeholder="Nombre"></div><div class="form-group"><label for="nombre2">Segundo Nombre</label><input type="text" class="form-control" id="nombre2" placeholder="Segundo Nombre"></div><div class="form-group"><label for="nombre2">Apellido Paterno</label><input type="text" class="form-control" id="nombre2" placeholder="Apellido Paterno"></div><div class="form-group"><label for="nombre2">Apellido Materno</label><input type="text" class="form-control" id="nombre2" placeholder="Apellido Materno"></div><div class="form-group"><label for="valorclave">ValorClave</label><input type="text" class="form-control" id="valorclave" placeholder="ValorClave"></div></div>');
+
 
 };
 

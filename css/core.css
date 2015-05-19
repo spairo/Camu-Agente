@@ -7114,12 +7114,36 @@ button.close {
   #Builder_Engine .container-fluid{
     margin-top: 1px;
   }
-  #Builder_Engine .base_layout{
-    overflow: auto;
+  #Builder_Engine .customers_quotes{
+    height: 500px;
+    max-height: 500px;
     min-height: 50px;
-    max-height: 350px;
-    margin-bottom: 30px;
+    overflow: hidden;
   }
+  #Builder_Engine .advisory_capture{
+    height: 450px;
+    max-height: 400px;
+    min-height: 50px;
+    overflow: hidden;
+  }
+    #Builder_Engine .advisory_capture .fields{
+      overflow: auto;
+      max-height: 350px;
+      height: 350px;
+    }
+
+  #Builder_Engine .base_layout{
+    min-height: 50px;
+    max-height: 400px;
+    margin-bottom: 30px;
+    overflow: hidden;
+  }
+    #Builder_Engine .base_layout .fields{
+      overflow: auto;
+      max-height: 350px;
+      height: 350px;
+    }
+
   #Builder_Engine h3{
     color: #7f8c8d;
     text-align: center;
@@ -7150,7 +7174,7 @@ button.close {
     text-decoration: none;
     -webkit-transition: color 0.2s;
   }
-  #Builder_Engine .tag::before {
+  #Builder_Engine .tag::before{
     background: #fff;
     border-radius: 10px;
     box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
@@ -7215,7 +7239,16 @@ button.close {
   }
   #Builder_Engine .tree{
     padding: 0px 20px;
+    min-height: 50px;
+    max-height: 500px;
+    overflow: auto;
   }
+    #Builder_Engine .tree .list-group{
+      background: #333;
+      min-height: 50px;
+      max-height: 250px;
+      overflow: auto;
+    }
     #Builder_Engine .tree h3{
       color: #7F8C97;
       text-align: center;
