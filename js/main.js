@@ -882,67 +882,75 @@ $.captureRenderEngine = function(data){
 							}
 
 						}
-						else if(form == "label" || form == "Label"){
-
-							var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label></div>';
-
-							$('.advisory_capture .fields').append(content);
-
-						}
 						else if(form == "combo" || form == "Combo"){
 
-							var array = defaultvalue;
+							console.log("mama si entro a combo");
 
-							console.log("["+array+"]");
+							var array = defaultvalue.split(',');
 
-							var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select class="form-control fill-select"></select></div>';
+							console.log(array);
+
+							var foo = array.JSONPAr
+
+							//var content = '<div class="form-group form-dinamic foo"><label class="control-label">'+name+'</label><select class="form-control input-lg fill-select"></select></div>';
+
+							//$('.advisory_capture .fields').append(content);
+
+							//$('.advisory_capture .fields').append('<div class="form-group form-dinamic foo"><label class="control-label">'+name+'</label><select class="form-control input-lg fill-select"></select></div>');
+
+							//var options = array;
+
+							//var numbers = [1, 2, 3, 4, 5];
+							/*
+							for (var i=0;i<numbers.length;i++){
+   								$('<option/>').val(numbers[i]).html(numbers[i]).appendTo('#items');
+							}
+							*/
+							/*
+							for(var i = 0; i < numbers.length; i++){
+
+								var content = '<option class="skilloption" value="'+numbers[i]+'" name="'+numbers[i]+'">'+numbers[i]+'</option>';
+								$('.advisory_capture .fields .foo .fill-select').append(content);
+
+							}
+							*/
+
+							/*
+							var option = '';
+
+							for(var i = 0; i < array.length; i++){
+   							option += '<option value="'+ array[i] + '">' + array[i] + '</option>';
+								$('.foo .fill-select').empty().append(option);
+							}
+							*
+
+							//$('.fill-select').append(option);
+
+							/*
+
+							var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select class="form-control input-lg fill-select"></select></div>';
 
 							$('.advisory_capture .fields').append(content);
 
-							for(var i = 0; i < array.length; i++){
-							    var opt = array[i];
-							    var el = $(".form-dinamic .fill-select");
-							    el.textContent = opt;
-							    el.value = opt;
+							var option = '';
 
-									$(".form-dinamic .fill-select").append(el);
-									//$('.products .list-product').append(content);
-
-							    //select.appendChild(el);
+							for(var i = 0; i < array.length; i ++){
+   							option += '<option value="'+ array[i] + '">' + array[i] + '</option>';
 							}
 
-							//var content = '<div>'+defaultvalue+'</div>';
-
-							//$('.advisory_capture').append(content);
-
-							/*var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label></div>';
-
-							var select = document.getElementById("selectNumber");
-
-							var options = ["1", "2", "3", "4", "5"];
-
-							for(var i = 0; i < options.length; i++) {
-							    var opt = options[i];
-							    var el = document.createElement("option");
-							    el.textContent = opt;
-							    el.value = opt;
-							    select.appendChild(el);
-							}
-
-							<select class="form-control"></select>
-							  <option>1</option>
-							  <option>2</option>
-							  <option>3</option>
-							  <option>4</option>
-							  <option>5</option>
-							</select>
-
-
-							$('.advisory_capture').append(content);
+							$('.form-dinamic select.fill-select').append(option);
 
 							if(required == "1"){
-								$(".input-dinamic").addClass('required');
-							}*/
+								$(".advisory_capture .input-dinamic").addClass('required');
+							}
+							*/
+
+						 }
+						 else if(form == "label" || form == "Label"){
+
+								var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label></div>';
+
+								$('.advisory_capture .fields').append(content);
 
 						 }
 
