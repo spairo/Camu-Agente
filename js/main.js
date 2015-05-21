@@ -114,10 +114,8 @@ $.services = function(data){
 		//$("#services").slideDown().show();
 
 	}else{
-
 		//$("#services").hide();
 		//$("#skills").slideDown().show();
-
 	}
 
 };
@@ -160,7 +158,16 @@ $.search = function(name, pat, mat, phone){
 	var skillID = Cookies.get('SkillId');
 	var serviciosID = Cookies.get('serviciosId');
 
-  var Data = { nombre1: name, nombre2: "", apellido1: pat, apellido2: mat, valorClave: phone, usuarioId: myid, skillid: skillID, serviciosId: serviciosID };
+  var Data = {
+		nombre1: name,
+		nombre2: "",
+		apellido1: pat,
+		apellido2: mat,
+		valorClave: phone,
+		usuarioId: myid,
+		skillid: skillID,
+		serviciosId: serviciosID
+	};
 
   $.support.cors = true;
   $.ajax({
@@ -197,7 +204,7 @@ function SearchOnSuccess(data){
 					var lada = search_evals[i].lada;
 					var extension = search_evals[i].extension;
 
-					var content = '<tr><th class="nr">'+id+'</th><th>'+name+' '+second_name+'</th><th>'+pat_name+'</th><th>'+mat_name+'</th><th>'+clave+'</th><th>'+lada+'</th><th>'+extension+'</th><th class="cd">'+clientesClaveId+'</th><th><button class="btn btn-engine build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
+					var content = '<tr><th class="nr">'+id+'</th><th class="Clientnames">'+name+' '+second_name+'</th><th class="Clientpat">'+pat_name+'</th><th class="Clientmat">'+mat_name+'</th><th class="Clientclave">'+clave+'</th><th class="ClientLada">'+lada+'</th><th class="Clientext">'+extension+'</th><th class="cd">'+clientesClaveId+'</th><th><button class="btn btn-engine build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
 					$('.result table.search_evals').append(content);
 
 			}
@@ -211,7 +218,7 @@ function SearchOnSuccess(data){
 }
 
 function SearchOnError(data){
-  //alert("Perror", data);
+  //alert("Perro", data);
 }
 
 $.updateSession = function(serviciosID, skillID){
@@ -571,14 +578,23 @@ $(document).on('click', '.build', function(){
 
 	var $row = $(this).closest("tr");    // Find the row
 
-	var $text = $row.find(".nr").text(); // Find the id
-	var $textcid = $row.find(".cd").text(); // Find the clientesClaveId
+	var $text = $row.find(".nr").text();
+	var $textnames = $row.find(".Clientnames").text();
+	var $textpat = $row.find(".Clientpat").text();
+	var $textmat = $row.find(".Clientmat").text();
+	var $textclave = $row.find(".Clientclave").text();
+	var $textlada = $row.find(".ClientLada").text();
+	var $textext = $row.find(".Clientext").text();
+	var $textcid = $row.find(".cd").text();
 
-	var clientesId = $text;
-	var clientesClaveid = $textcid;
-
-	Cookies.set('clientesId', clientesId);
-	Cookies.set('clientesClaveId', clientesClaveid);
+	Cookies.set('clientesId', $text);
+	Cookies.set('clientesNames', $textnames);
+	Cookies.set('clientesPat', $textpat);
+	Cookies.set('clientesMat', $textmat);
+	Cookies.set('clientesClave', $textclave);
+	Cookies.set('clientesLada', $textlada);
+	Cookies.set('clientesExt', $textext);
+	Cookies.set('clientesClaveId', $textcid);
 
 	// Let's build it out
 
@@ -720,6 +736,7 @@ function onsetEngineSuccess(data){
 		$.typificationsEngine(factory);
 		$.productsEngine(factory);
 		$.typiHistoryEngine(factory);
+		$.loadCustomersDefault(factory);
 		$.loadCustomersQuotes(factory);
 
 		$(".loader").slideUp("slow", function(){
@@ -874,11 +891,9 @@ $.captureRenderEngine = function(data){
 						}
 						else if(form == "combo" || form == "Combo"){
 
-							//var array = defaultvalue;
-							//var array = JSON.parse("{ \"foo\" : 1, }");
-							//var array = JSON.parse(defaultvalue);
+							var array = defaultvalue;
 
-							//console.log("["+array+"]");
+							console.log("["+array+"]");
 
 							//var content = '<div>'+defaultvalue+'</div>';
 
@@ -898,7 +913,7 @@ $.captureRenderEngine = function(data){
 							    select.appendChild(el);
 							}
 
-							<select class="form-control">
+							<select class="form-control"></select>
 							  <option>1</option>
 							  <option>2</option>
 							  <option>3</option>
@@ -929,9 +944,60 @@ $.captureRenderEngine = function(data){
 
 $.typificationsEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
+	$('.tree').append('<h3 class="text-center"><span class="glyphicon glyphicon-tags"></span> Tipificaciones</h3><div class="list-group"></div><div class="tags"></div><h4>Comentarios</h4><textarea class="form-control comment well-sm" rows="3"></textarea>');
+
+	for(var i = 0; i < data.length; i++){
+
+		if(skillidx == data[i].skillsId){
+
+			var data = data[i].tipologias;
+
+			var builddata = function(){
+
+		    var source = [];
+		    var items = [];
+		    // build hierarchical source.
+		    for (i = 0; i < data.length; i++){
+		        var item = data[i];
+		        var label = item["tipologia"];
+		        var parentid = item["skillTipologiasIdSup"];
+		        var id = item["skillTipologiasId"];
+
+		        if (items[parentid]) {
+		            var item = { parentid: parentid, label: label, item: item };
+		            if (!items[parentid].items) {
+		                items[parentid].items = [];
+		            }
+		            items[parentid].items[items[parentid].items.length] = item;
+		            items[id] = item;
+		        }
+		        else {
+		            items[id] = { parentid: parentid, label: label, item: item };
+		            source[id] = items[id];
+		        }
+		    }
+		    return source;
+
+
+			}
+
+
+		}
+
+	}
+
+	var source = builddata();
+	// create jqxTree
+
+	$('.tree .list-group').jqxTree({ source: source, width: 'auto' });
+
+
+
+
+	/*
 	for(var i = 0; i < data.length; i++){
 
 		if(skillidx == data[i].skillsId){
@@ -958,6 +1024,7 @@ $.typificationsEngine = function(data){
 		}
 
 	}
+	*/
 
 };
 
@@ -996,10 +1063,97 @@ $.productsEngine = function(data){
 
 };
 
+$(window).load(function(){
+
+	$.loadCustomersDefault = function(data){
+
+		var names = Cookies.get('clientesNames');
+		var pat = Cookies.get('clientesPat');
+		var mat = Cookies.get('clientesMat');
+		var Vclave = Cookies.get('clientesClave');
+		var lada = Cookies.get('clientesLada');
+		var ext = Cookies.get('clientesExt');
+
+		var content = '<div class="form-group"><label for="valorclave">Nombres</label><input type="text" class="form-control input-sm" id="names" val="'+names+'" placeholder=""></div><div class="form-group"><label for="valorclave">Apellido Paterno</label><input type="text" class="form-control input-sm" id="pat" val="'+pat+'" ></div><div class="form-group"><label for="valorclave">Apellido Materno</label><input type="text" class="form-control input-sm" id="mat" val="'+mat+'" placeholder="Apellido Materno"></div><div class="form-group"><label for="valorclave">ValorClave</label><input type="text" class="form-control input-sm" id="vclave" val="'+Vclave+'"></div><div class="row"><div class="col-md-6"><div class="form-group"><label for="Lada">Lada</label><input type="text" class="form-control input-sm" id="lada" val="'+lada+'"></div></div><div class="col-md-6"><div class="form-group"><label for="valorclave">Extension</label><input type="text" class="form-control input-sm" id="ext" val="'+ext+'"></div></div></div>';
+
+		$('#Builder_Engine .customer_default').empty().append(content);
+
+		$('.customer_default #names').val(names);
+		$('.customer_default #pat').val(pat);
+		$('.customer_default #mat').val(mat);
+		$('.customer_default #vclave').val(Vclave);
+		$('.customer_default #lada').val(lada);
+		$('.customer_default #ext').val(ext);
+
+	};
+
+});
+
 $.loadCustomersQuotes = function(data){
 
-	$('.customers_quotes').empty().append('<h3 class="text-center"><span class="glyphicon glyphicon-book"></span> Clientes Citas</h3><div class="well-lg"><div class="form-group"><label for="Nombre">Nombre</label><input type="text" class="form-control" id="nombre" placeholder="Nombre"></div><div class="form-group"><label for="nombre2">Segundo Nombre</label><input type="text" class="form-control" id="nombre2" placeholder="Segundo Nombre"></div><div class="form-group"><label for="nombre2">Apellido Paterno</label><input type="text" class="form-control" id="nombre2" placeholder="Apellido Paterno"></div><div class="form-group"><label for="nombre2">Apellido Materno</label><input type="text" class="form-control" id="nombre2" placeholder="Apellido Materno"></div><div class="form-group"><label for="valorclave">ValorClave</label><input type="text" class="form-control" id="valorclave" placeholder="ValorClave"></div></div>');
 
+	//var skillidx = Cookies.get('SkillId');
+
+	/*
+	Cookies.get('clientesId');
+	Cookies.get('clientesNames');
+	Cookies.get('clientesPat');
+	Cookies.get('clientesMat');
+	Cookies.get('clientesClave');
+	Cookies.get('clientesLada');
+	Cookies.get('clientesExt');
+	Cookies.get('clientesClaveId');
+	*/
+
+	/*
+	serviciosId:,
+	skillsId:,
+
+	nombre1:,
+	nombre2:,
+	apellido1:,
+	apellido2:,
+	valorClave:,
+
+	lada:,
+	telefono:,
+	extension:,
+	direccion:,
+	codigoPostal:,
+	colonia:,
+	usuarioVisita:,
+	fechaVisita:,
+	usuariosId:,
+	tipoCitaId:
+
+	*/
+
+	/*
+	$('.customers_quotes').empty().append('
+	<h3 class="text-center"><span class="glyphicon glyphicon-book"></span> Clientes Citas</h3>
+	<div class="well-lg">
+		<div class="form-group">
+			<label for="Nombre">Nombre</label>
+			<input type="text" class="form-control" id="nombre" placeholder="Nombre">
+		</div>
+		<div class="form-group">
+			<label for="nombre2">Segundo Nombre</label>
+			<input type="text" class="form-control" id="nombre2" placeholder="Segundo Nombre">
+		</div>
+		<div class="form-group">
+			<label for="nombre2">Apellido Paterno</label>
+			<input type="text" class="form-control" id="nombre2" placeholder="Apellido Paterno">
+		</div>
+		<div class="form-group">
+			<label for="nombre2">Apellido Materno</label>
+			<input type="text" class="form-control" id="nombre2" placeholder="Apellido Materno">
+		</div>
+		<div class="form-group">
+			<label for="valorclave">ValorClave</label>
+			<input type="text" class="form-control" id="valorclave" placeholder="ValorClave">
+		</div>
+	</div>');
+	*/
 
 };
 

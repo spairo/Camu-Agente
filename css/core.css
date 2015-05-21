@@ -7114,34 +7114,41 @@ button.close {
   #Builder_Engine .container-fluid{
     margin-top: 1px;
   }
+  #Builder_Engine .customer_default{
+    height: 350px;
+    max-height: 350px;
+    min-height: 10px;
+    overflow: hidden;
+  }
   #Builder_Engine .customers_quotes{
-    height: 500px;
+    /*height: 500px;*/
     max-height: 500px;
-    min-height: 50px;
+    min-height: 10px;
     overflow: hidden;
   }
   #Builder_Engine .advisory_capture{
-    height: 450px;
-    max-height: 400px;
+    height: 600px;
+    max-height: 600px;
     min-height: 50px;
     overflow: hidden;
   }
     #Builder_Engine .advisory_capture .fields{
       overflow: auto;
-      max-height: 350px;
-      height: 350px;
+      max-height: 500px;
+      height: 500px;
     }
 
   #Builder_Engine .base_layout{
     min-height: 50px;
-    max-height: 400px;
+    max-height: 600px;
+    height: 600px;
     margin-bottom: 30px;
     overflow: hidden;
   }
     #Builder_Engine .base_layout .fields{
       overflow: auto;
-      max-height: 350px;
-      height: 350px;
+      max-height: 500px;
+      height: 500px;
     }
 
   #Builder_Engine h3{
@@ -7244,7 +7251,6 @@ button.close {
     overflow: auto;
   }
     #Builder_Engine .tree .list-group{
-      background: #333;
       min-height: 50px;
       max-height: 250px;
       overflow: auto;
