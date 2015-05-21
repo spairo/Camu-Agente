@@ -823,8 +823,8 @@ $.baselayoutEngine = function(data){
 
 $.captureRenderEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Campos Captura Asesor</h3><div class="fields"></div>');
 
@@ -894,6 +894,22 @@ $.captureRenderEngine = function(data){
 							var array = defaultvalue;
 
 							console.log("["+array+"]");
+
+							var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select class="form-control fill-select"></select></div>';
+
+							$('.advisory_capture .fields').append(content);
+
+							for(var i = 0; i < array.length; i++){
+							    var opt = array[i];
+							    var el = $(".form-dinamic .fill-select");
+							    el.textContent = opt;
+							    el.value = opt;
+
+									$(".form-dinamic .fill-select").append(el);
+									//$('.products .list-product').append(content);
+
+							    //select.appendChild(el);
+							}
 
 							//var content = '<div>'+defaultvalue+'</div>';
 
@@ -1091,6 +1107,7 @@ $(window).load(function(){
 
 $.loadCustomersQuotes = function(data){
 
+	/*/
 
 	//var skillidx = Cookies.get('SkillId');
 
