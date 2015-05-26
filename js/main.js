@@ -136,10 +136,10 @@ $.services = function(data){
 $.skills = function(data){
 
 
-	var CtiPhone = $.UrlDecode()["phone"];
+	var CtiVclave = $.UrlDecode()["vclave"];
 	var CtiClientesId = $.UrlDecode()["clientesId"];
 
-	console.log(CtiPhone);
+	console.log(CtiVclave);
 
 	var skills_evals = data;
 	//var skills_evals = Object.keys(data).length; //IE8 sucks
@@ -457,6 +457,7 @@ $(document).on('click', '.choice-service', function(){
 	//$("#skills").slideUp("slow", function(){
 		//$("#search").slideDown("slow").show();
 	//});
+
 });
 
 /*Skills Box*/
@@ -648,7 +649,7 @@ $(document).ready(function(){
 		};
 
 		//var name = Cookies.get('name');
-	//	var passw = Cookies.get('parole');
+	  //var passw = Cookies.get('parole');
 		var name = "master";
 		var passw = "master";
 
@@ -668,12 +669,6 @@ $(document).ready(function(){
 			$.onsetEngine(name, passw);
 
 		}
-
-
-		//console.log(name);
-		//console.log(passw);
-
-		//$.onsetEngine(name, passw);
 
 	}
 
@@ -698,15 +693,6 @@ $(document).on('click', '#logout-builder', function(){
 });
 
 $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
-
-		/*
-		Caddress
-		Ccol
-		Ccp
-		Cusuariov
-		Ctc
-		date
-		*/
 
 		//$(".btn-engine-done").prop( "disabled", true );
 

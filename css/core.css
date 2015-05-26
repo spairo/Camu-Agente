@@ -7284,8 +7284,8 @@ button.close {
   }
   #Builder_Engine .tree{
     padding: 0px 20px;
-    min-height: 50px;
-    max-height: 350px;
+    min-height: 10px;
+    max-height: 250px;
     overflow: auto;
   }
     #Builder_Engine .tree .list-group{
