@@ -103,6 +103,17 @@ $.main = function(id,	name, profile){
 
 };
 
+//Search URL params
+
+$.UrlDecode = function(){
+	var vars = {};
+       
+	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value){
+			vars[key] = value;			 
+	});
+	return vars;
+};
+
 //Service
 
 $.services = function(data){
@@ -124,28 +135,41 @@ $.services = function(data){
 
 $.skills = function(data){
 
-	//var skills_evals = Object.keys(data).length; //IE8 sucks
-	var skills_evals = data;
+	var CtiClientesId = $.UrlDecode()["clientesId"];
 
-	if(skills_evals.length > 1){
+	if(CtiClientesId == undefined || CtiClientesId == ""){
 
-		$("#skills").slideDown().show();
-		$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
+		var skills_evals = data;
+		//var skills_evals = Object.keys(data).length; //IE8 sucks
 
-		for(var i = 0; i < skills_evals.length; i++){
-			var skill = skills_evals[i].skill;
-			var skillsId = skills_evals[i].skillsId;
-			var serviciosId = skills_evals[i].serviciosId;
+		if(skills_evals.length > 1){
 
-			var content = '<option class="skilloption" value="'+skillsId+'" alt="'+serviciosId+'" name="'+skill+'">'+skill+'</option>';
-			$('.box-skills select.skillchoice').append(content);
+			$("#skills").slideDown().show();
+			$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
+
+			for(var i = 0; i < skills_evals.length; i++){
+				var skill = skills_evals[i].skill;
+				var skillsId = skills_evals[i].skillsId;
+				var serviciosId = skills_evals[i].serviciosId;
+
+				var content = '<option class="skilloption" value="'+skillsId+'" alt="'+serviciosId+'" name="'+skill+'">'+skill+'</option>';
+				$('.box-skills select.skillchoice').append(content);
+			}
+
+		}else{
+
+			$("#skills").hide();
+			$("#search").slideDown().show();
 		}
 
 	}else{
 
-		$("#skills").hide();
-		$("#search").slideDown().show();
+		console.log("voy a buscar el id del cliente", CtiClientesId);
+
+		var CtiClientesId;
+
 	}
+
 
 };
 
@@ -153,10 +177,14 @@ $.skills = function(data){
 
 $.search = function(name, pat, mat, phone){
 
+	var CtiClientesId = $.UrlDecode()["clientesId"];
+
 	var url = ws+"rg_ListClientes";
 	var myid = Cookies.get('id');
 	var skillID = Cookies.get('SkillId');
 	var serviciosID = Cookies.get('serviciosId');
+
+	if(CtiClientesId)
 
   var Data = {
 		nombre1: name,
@@ -231,7 +259,7 @@ $.updateSession = function(serviciosID, skillID){
 		serviciosId: serviciosID,
 		skillsId: skillID,
 		usuariosId: myid,
-		disponible: "1"
+		disponible: "0"
 	}
 
 	$.ajax({
@@ -399,6 +427,7 @@ $(document).on('click', '#login', function(){
 			//$("#login").prop( "disabled", false );
 
       return false;
+
   }else{
 		$.login(user, password);
   }
@@ -613,11 +642,44 @@ $(document).ready(function(){
 
 	if(path == "/engine.html"){
 
-		//var name = Cookies.get('name');
-		//var passw = Cookies.get('parole');
-		var user = "master";
-		var passw = "master";
-		$.onsetEngine(user, passw);
+		//Catch all params url
+
+		$.UrlDecode = function(){
+			var vars = {};
+		       
+			var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value){
+					vars[key] = value;			 
+			});
+			return vars;
+		};
+
+		var name = Cookies.get('name');
+		var passw = Cookies.get('parole');
+		//var name = "master";
+		//var passw = "master";
+
+		console.log("cookie name", name);
+		console.log("cooke passw", passw);
+
+		if((name == "" || name == undefined) && (passw == "" || passw == undefined)){
+
+			var CtiClientesId = $.UrlDecode()["clientesId"];
+			window.location.href='index.html?clientesId='+CtiClientesId+'';
+
+			console.log("URL F L O W");
+
+		}else{
+
+			console.log("C O O K I E F L O W");
+			$.onsetEngine(name, passw);
+
+		}
+
+
+		//console.log(name);
+		//console.log(passw);
+
+		//$.onsetEngine(name, passw);
 
 	}
 
@@ -643,30 +705,48 @@ $(document).on('click', '#logout-builder', function(){
 
 $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
+		/*
+		Caddress
+		Ccol
+		Ccp
+		Cusuariov
+		Ctc
+		date
+		*/
+
 		//$(".btn-engine-done").prop( "disabled", true );
 
 		// Get typing selected
+
+		/*
 		var treetagid = $('.tree .tag').attr('title');
 		var treecomment = $('.tree .comment').val();
 
 		$.onsaveTyping(treetagid, treecomment);
+		*/
 
 		// Get product selected
+
+		/*
 		var producttag = $('.products .tag').text();
 		var producttagid = $('.products .tag').attr('title');
 
 		$.onsaveProducts(producttagid);
+		*/
 
 		//Get Inputs data Fields
+		/*
 		var inputarry = new Array();
 		var labelarry = new Array();
 
 		$("#box-phone").keypress(function(e){
+
 			if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
 					//display error message
 					//$(".numbers").html("Solo Numeros").show().fadeOut("slow");
 					return false;
 			}
+
 		});
 
 		$('.form-dinamic .input-dinamic').each(function(){
@@ -677,7 +757,7 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 		});
 
 		$.onSaveData(labelarry, inputarry);
-
+		*/
 });
 
 $(document).on('click', '.list-product .list-group-item', function(){
@@ -693,19 +773,34 @@ $(document).on('click', '.list-product .list-group-item', function(){
 $(document).on('click', '.list-group .list-typing', function(){
 
 	var typingId = this.id;
-	var tipologia = $(this).attr('title');
+	var tipologia = $(this).text();
 
 	var content = '<a href="#" title="'+typingId+'" class="tag">'+tipologia+'</a>';
 	$('.tree .tags').empty().append(content);
 
 });
 
+$(document).on('click', '.schedule_appointments .choice-meeting', function(){
+
+		var select = $(".Ctc option:selected").val();
+
+		console.log(select);
+
+});
+
+$.onloadUrl = function(){
+
+	var CtiClientesId = $.UrlDecode()["clientesId"];
+
+
+
+}
 
 $.onsetEngine = function(user, passw){
 
   var url = ws+"rg_seguridadLogin";
 
-  var oData = { User: user, Password: passw };
+  var Data = { User: user, Password: passw };
 
 	$.support.cors = true;
   $.ajax({
@@ -713,7 +808,7 @@ $.onsetEngine = function(user, passw){
     url: url,
     //cache: false,
     crossDomain: true,
-    data: oData,
+    data: Data,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: onsetEngineSuccess,
@@ -723,6 +818,8 @@ $.onsetEngine = function(user, passw){
 };
 
 function onsetEngineSuccess(data){
+
+	console.log("eraclito", data);
 
 	var factory = data[0].configuracion;
 
@@ -740,7 +837,11 @@ function onsetEngineSuccess(data){
 		$.loadCustomersQuotes(factory);
 
 		$(".loader").slideUp("slow", function(){
+
 			$('#Builder_Engine .logout').html('<a href="#" id="logout-builder"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
+
+			$('#Builder_Engine .schedule_appointments').html('<div class="form-group"><label for="">Seleccione Tipo de Cita</label><select class="form-control input-sm Ctc"><option value="1">Cita Llamada</option><option value="2">Cita Presencial</option></select><br /><button class="btn choice-meeting">Seleccionar</button></div>');
+
 			$("#Builder_Engine .engine-config").html('<div class="col-md-4 col-md-offset-4 well-sm"><button class="btn btn-block btn-engine-done">Guardar Configuracion <span class="glyphicon glyphicon-cog"></span></button></div>');
 
 		});
@@ -756,16 +857,17 @@ function onsetEngineError(data){
 
 $.cssEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
 
 	for(var i = 0; i < data.length; i++){
+
 		if(skillidx == data[i].skillsId){
 
 			var cssDinamic = data[i].cssAgente;
 			$("head").append("<!-- Dinamic Css --><style>" + cssDinamic + "</style><!-- //Dinamic Css -->");
 
 		}
+
 	}
 
 };
@@ -773,7 +875,6 @@ $.cssEngine = function(data){
 $.baselayoutEngine = function(data){
 
 	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -800,7 +901,7 @@ $.baselayoutEngine = function(data){
 
 						if(form == "input" || form == "Input"){
 
-							var content = '<div class="form-group form-build"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-read" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
+							var content = '<div class="form-group form-build"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-sm input-read" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
 							$('.base_layout .fields').append(content);
 
 							if(required == "1"){
@@ -813,7 +914,7 @@ $.baselayoutEngine = function(data){
 					}
 
 				}else{
-					$('.base_layout').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Layout Base.</div>');
+					//$('.base_layout').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Layout Base.</div>');
 				}
 		}
 
@@ -823,8 +924,8 @@ $.baselayoutEngine = function(data){
 
 $.captureRenderEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Campos Captura Asesor</h3><div class="fields"></div>');
 
@@ -850,9 +951,36 @@ $.captureRenderEngine = function(data){
 
 						//HTML elements
 
+						if(form == "combo" || form == "Combo"){
+
+								var array = defaultvalue.split(',');
+
+								var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select id="fill-select" class="form-control input-sm"></select></div>';
+
+								$('.advisory_capture .fields').append(content);
+
+								var options = array;
+
+								var select = document.getElementById('fill-select');
+
+								for(option in options){
+									select.add(new Option(options[option]));
+								};
+
+						}
+						if(form == "checkbox" || form == "Checkbox"){
+
+								console.log(defaultvalue);
+
+								var array = defaultvalue.split(',');
+
+								console.log("array checkbox", array);
+
+
+						}
 						if(form == "input" || form == "Input"){
 
-							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-lg input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
+							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-sm input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
 							$('.advisory_capture .fields').append(content);
 
 							if(required == "1"){
@@ -860,7 +988,7 @@ $.captureRenderEngine = function(data){
 							}
 
 						}
-						else if(form == "radio" || form == "Radio"){
+						if(form == "radio" || form == "Radio"){
 
 							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><div class="radio"><label><input type="'+form+'" class="input-dinamic" name="'+name+'" id="" value="" checked>'+title+'</label></div></div>';
 
@@ -871,88 +999,14 @@ $.captureRenderEngine = function(data){
 							}
 
 						}
-						else if(form == "checkbox" || form == "Checkbox"){
-
-							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><div class="checkbox"><label><input type="'+form+'" class="input-dinamic" value="">'+title+'</label></div></div>';
-
-							$('.advisory_capture .fields').append(content);
-
-							if(required == "1"){
-								$(".fields .input-dinamic").addClass('required');
-							}
-
-						}
-						else if(form == "combo" || form == "Combo"){
-
-							console.log("mama si entro a combo");
-
-							var array = defaultvalue.split(',');
-
-							console.log(array);
-
-							var foo = array.JSONPAr
-
-							//var content = '<div class="form-group form-dinamic foo"><label class="control-label">'+name+'</label><select class="form-control input-lg fill-select"></select></div>';
-
-							//$('.advisory_capture .fields').append(content);
-
-							//$('.advisory_capture .fields').append('<div class="form-group form-dinamic foo"><label class="control-label">'+name+'</label><select class="form-control input-lg fill-select"></select></div>');
-
-							//var options = array;
-
-							//var numbers = [1, 2, 3, 4, 5];
-							/*
-							for (var i=0;i<numbers.length;i++){
-   								$('<option/>').val(numbers[i]).html(numbers[i]).appendTo('#items');
-							}
-							*/
-							/*
-							for(var i = 0; i < numbers.length; i++){
-
-								var content = '<option class="skilloption" value="'+numbers[i]+'" name="'+numbers[i]+'">'+numbers[i]+'</option>';
-								$('.advisory_capture .fields .foo .fill-select').append(content);
-
-							}
-							*/
-
-							/*
-							var option = '';
-
-							for(var i = 0; i < array.length; i++){
-   							option += '<option value="'+ array[i] + '">' + array[i] + '</option>';
-								$('.foo .fill-select').empty().append(option);
-							}
-							*
-
-							//$('.fill-select').append(option);
-
-							/*
-
-							var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select class="form-control input-lg fill-select"></select></div>';
-
-							$('.advisory_capture .fields').append(content);
-
-							var option = '';
-
-							for(var i = 0; i < array.length; i ++){
-   							option += '<option value="'+ array[i] + '">' + array[i] + '</option>';
-							}
-
-							$('.form-dinamic select.fill-select').append(option);
-
-							if(required == "1"){
-								$(".advisory_capture .input-dinamic").addClass('required');
-							}
-							*/
-
-						 }
-						 else if(form == "label" || form == "Label"){
+						if(form == "label" || form == "Label"){
 
 								var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label></div>';
 
 								$('.advisory_capture .fields').append(content);
 
-						 }
+						}
+
 
 					}
 
@@ -979,76 +1033,41 @@ $.typificationsEngine = function(data){
 
 			var data = data[i].tipologias;
 
-			var builddata = function(){
+			//skillTipologiasId
 
-		    var source = [];
-		    var items = [];
-		    // build hierarchical source.
-		    for (i = 0; i < data.length; i++){
-		        var item = data[i];
-		        var label = item["tipologia"];
-		        var parentid = item["skillTipologiasIdSup"];
-		        var id = item["skillTipologiasId"];
+			var source =
+			{
+					datatype: "json",
+					datafields: [
+							{ name: 'skillTipologiasId' },
+							{ name: 'skillTipologiasIdSup' },
+							{ name: 'tipologia' },
+							{ name: 'skillTipologiasId' }
+					],
+					id: 'skillTipologiasId',
+					localdata: data
+			};
 
-		        if (items[parentid]) {
-		            var item = { parentid: parentid, label: label, item: item };
-		            if (!items[parentid].items) {
-		                items[parentid].items = [];
-		            }
-		            items[parentid].items[items[parentid].items.length] = item;
-		            items[id] = item;
-		        }
-		        else {
-		            items[id] = { parentid: parentid, label: label, item: item };
-		            source[id] = items[id];
-		        }
-		    }
-		    return source;
+			// create data adapter.
 
+			var dataAdapter = new $.jqx.dataAdapter(source);
 
-			}
+			// perform Data Binding.
 
+			dataAdapter.dataBind();
+
+			var records = dataAdapter.getRecordsHierarchy('skillTipologiasId', 'skillTipologiasIdSup', 'items', [{ name: 'tipologia', map: 'label'}]);
+
+			$('.tree .list-group').jqxTree({ source: records, width: '100%'});
 
 		}
 
 	}
 
-	var source = builddata();
-	// create jqxTree
-
-	$('.tree .list-group').jqxTree({ source: source, width: 'auto' });
-
-
-
-
-	/*
-	for(var i = 0; i < data.length; i++){
-
-		if(skillidx == data[i].skillsId){
-
-			var typs = data[i].tipologias;
-
-			$('.tree').append('<h3 class="text-center"><span class="glyphicon glyphicon-tags"></span> Tipificaciones</h3><div class="list-group"></div><div class="tags"></div><h4>Comentarios</h4><textarea class="form-control comment well-sm" rows="3"></textarea>');
-
-			for(var i = 0; i < typs.length; i++){
-
-				var skillTipologiasId = typs[i].skillTipologiasId;
-				var tipologia = typs[i].tipologia;
-				var nivel = typs[i].nivel;
-				var skillTipologiasIdSup = typs[i].skillTipologiasIdSup;
-				var agendaLlamada = typs[i].agendaLlamada;
-				var confirmaVenta = typs[i].confirmaVenta;
-
-				var content = '<a href="#" id="'+skillTipologiasId+'" title="'+tipologia+'" class="list-typing list-group-item">'+tipologia+'</a>';
-
-				$('.tree .list-group').append(content);
-
-			}
-
-		}
-
-	}
-	*/
+	$(".tree .list-group li").each(function(i){
+		$(this).addClass("list-typing");
+		//$(this).attr('id', 'value');
+	});
 
 };
 
@@ -1091,96 +1110,92 @@ $(window).load(function(){
 
 	$.loadCustomersDefault = function(data){
 
-		var names = Cookies.get('clientesNames');
-		var pat = Cookies.get('clientesPat');
-		var mat = Cookies.get('clientesMat');
-		var Vclave = Cookies.get('clientesClave');
-		var lada = Cookies.get('clientesLada');
-		var ext = Cookies.get('clientesExt');
+		var url = ws+"rg_MuestraCliente";
 
-		var content = '<div class="form-group"><label for="valorclave">Nombres</label><input type="text" class="form-control input-sm" id="names" val="'+names+'" placeholder=""></div><div class="form-group"><label for="valorclave">Apellido Paterno</label><input type="text" class="form-control input-sm" id="pat" val="'+pat+'" ></div><div class="form-group"><label for="valorclave">Apellido Materno</label><input type="text" class="form-control input-sm" id="mat" val="'+mat+'" placeholder="Apellido Materno"></div><div class="form-group"><label for="valorclave">ValorClave</label><input type="text" class="form-control input-sm" id="vclave" val="'+Vclave+'"></div><div class="row"><div class="col-md-6"><div class="form-group"><label for="Lada">Lada</label><input type="text" class="form-control input-sm" id="lada" val="'+lada+'"></div></div><div class="col-md-6"><div class="form-group"><label for="valorclave">Extension</label><input type="text" class="form-control input-sm" id="ext" val="'+ext+'"></div></div></div>';
+		var myid = Cookies.get('id');
+		var skillsId = Cookies.get('SkillId');
+		var serviciosId = Cookies.get('serviciosId');
+		var clientesId = Cookies.get('clientesId');
 
-		$('#Builder_Engine .customer_default').empty().append(content);
+		var Data = {
+			serviciosId: serviciosId,
+			skillId: skillsId,
+			clientesId: clientesId,
+			usuarioId: myid
+		}
 
-		$('.customer_default #names').val(names);
-		$('.customer_default #pat').val(pat);
-		$('.customer_default #mat').val(mat);
-		$('.customer_default #vclave').val(Vclave);
-		$('.customer_default #lada').val(lada);
-		$('.customer_default #ext').val(ext);
+		$.support.cors = true;
+
+	  $.ajax({
+	    type: "GET",
+	    url: url,
+	    crossDomain: true,
+	    data: Data,
+	    contentType: "application/json; charset=utf-8",
+	    dataType: "json",
+			success: function(data){
+
+				var names = data[0].nombre1 + ' ' + data[0].nombre2;
+				var pat = data[0].apellido1;
+				var mat = data[0].apellido2;
+				var Vclave = data[0].valorClave;
+				var lada = data[0].lada;
+				var ext = data[0].extension;
+
+				var content = '<h3 class="text-center"><span class="glyphicon glyphicon-book"></span> Clientes Citas</h3><div class="form-group"><label for="valorclave">Nomnbre</label><input type="text" class="form-control input-sm" id="names" val="'+names+'" placeholder=""></div><div class="form-group"><label for="valorclave">Apellido Paterno</label><input type="text" class="form-control input-sm" id="pat" val="'+pat+'" ></div><div class="form-group"><label for="valorclave">Apellido Materno</label><input type="text" class="form-control input-sm" id="mat" val="'+mat+'" placeholder="Apellido Materno"></div><div class="form-group"><label for="valorclave">Valor Clave</label><input type="text" class="form-control input-sm" id="vclave" val="'+Vclave+'"></div><div class="row"><div class="col-md-6"><div class="form-group"><label for="Lada">Lada</label><input type="text" class="form-control input-sm" id="lada" val="'+lada+'"></div></div><div class="col-md-6"><div class="form-group"><label for="valorclave">Extension</label><input type="text" class="form-control input-sm" id="ext" val="'+ext+'"></div></div></div>';
+
+				$('#Builder_Engine .customer_default').empty().append(content);
+
+
+				$('.customer_default #names').val(names).prop('disabled', true);
+				$('.customer_default #pat').val(pat).prop('disabled', true);
+				$('.customer_default #mat').val(mat).prop('disabled', true);
+				$('.customer_default #vclave').val(Vclave).prop('disabled', true);
+				$('.customer_default #lada').val(lada).prop('disabled', true);
+				$('.customer_default #ext').val(ext).prop('disabled', true);
+
+
+			},error: function(data){
+					console.log("no cargo default name");
+			}
+
+		});
+
+	};
+
+	$.loadCustomersQuotes = function(data){
+
+		//rg_CargaClientesCitas
+		//var skillidx = Cookies.get('SkillId');
+
+		/*
+		Cookies.get('clientesId');
+		Cookies.get('clientesNames');
+		Cookies.get('clientesPat');
+		Cookies.get('clientesMat');
+		Cookies.get('clientesClave');
+		Cookies.get('clientesLada');
+		Cookies.get('clientesExt');
+		Cookies.get('clientesClaveId');
+		*/
+
+		/*
+		direccion:,
+		codigoPostal:,
+		colonia:,
+		usuarioVisita:,
+		fechaVisita:,
+		usuariosId:,
+		tipoCitaId:
+		*/
+
+		//$('.customers_quotes').empty().append('<div class=""><div class="form-group"><label for="Nombre">Direccion</label><input type="text" class="form-control input-sm" id="" placeholder=""></div><div class="form-group"><label for="Colonia">Colonia</label><input type="text" class="form-control input-sm" id="" placeholder=""></div><div class="row"><div class="col-md-6"><div class="form-group"><label for="Colonia">Codigo Postal</label><input type="text" class="form-control input-sm" id="" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label for="Colonia">Usuario Visita</label><input type="text" class="form-control input-sm" id="" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label for="Colonia">Tipo de Cita</label><select class="form-control input-sm"><option value="1">Cita Llamada</option><option value="2">Cita Presencial</option></select></div></div><div class="col-md-6"><div class="form-group"><label for="Colonia">Fecha</label><div class="input-group date" id="datetimepicker1"><input type="text" class="form-control input-sm" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div></div></div></div>');
+		//$('.customers_quotes').empty().append('<div class="input-group date" id="datetimepicker1"><input type="text" class="form-control" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>');
 
 	};
 
 });
 
-$.loadCustomersQuotes = function(data){
-
-	/*/
-
-	//var skillidx = Cookies.get('SkillId');
-
-	/*
-	Cookies.get('clientesId');
-	Cookies.get('clientesNames');
-	Cookies.get('clientesPat');
-	Cookies.get('clientesMat');
-	Cookies.get('clientesClave');
-	Cookies.get('clientesLada');
-	Cookies.get('clientesExt');
-	Cookies.get('clientesClaveId');
-	*/
-
-	/*
-	serviciosId:,
-	skillsId:,
-
-	nombre1:,
-	nombre2:,
-	apellido1:,
-	apellido2:,
-	valorClave:,
-
-	lada:,
-	telefono:,
-	extension:,
-	direccion:,
-	codigoPostal:,
-	colonia:,
-	usuarioVisita:,
-	fechaVisita:,
-	usuariosId:,
-	tipoCitaId:
-
-	*/
-
-	/*
-	$('.customers_quotes').empty().append('
-	<h3 class="text-center"><span class="glyphicon glyphicon-book"></span> Clientes Citas</h3>
-	<div class="well-lg">
-		<div class="form-group">
-			<label for="Nombre">Nombre</label>
-			<input type="text" class="form-control" id="nombre" placeholder="Nombre">
-		</div>
-		<div class="form-group">
-			<label for="nombre2">Segundo Nombre</label>
-			<input type="text" class="form-control" id="nombre2" placeholder="Segundo Nombre">
-		</div>
-		<div class="form-group">
-			<label for="nombre2">Apellido Paterno</label>
-			<input type="text" class="form-control" id="nombre2" placeholder="Apellido Paterno">
-		</div>
-		<div class="form-group">
-			<label for="nombre2">Apellido Materno</label>
-			<input type="text" class="form-control" id="nombre2" placeholder="Apellido Materno">
-		</div>
-		<div class="form-group">
-			<label for="valorclave">ValorClave</label>
-			<input type="text" class="form-control" id="valorclave" placeholder="ValorClave">
-		</div>
-	</div>');
-	*/
-
-};
 
 $.typiHistoryEngine = function(data){
 
@@ -1233,7 +1248,16 @@ $.typiHistoryEngine = function(data){
 
 };
 
-//Save
+/***********************
+				Saving
+************************/
+
+$.onsaveCita = function(){
+
+	//rg_CargaClientesCitas
+	alert("listo para enviar");
+
+};
 
 $.onsaveTyping = function(id, comment){
 
@@ -1267,7 +1291,7 @@ $.onsaveTyping = function(id, comment){
 		dataType: "json",
 		success: function(data){
 
-		console.log("grabaste typing", data);
+		//console.log("grabaste typing", data);
 
 		$.typiHistoryEngine();
 

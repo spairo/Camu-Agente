@@ -133,10 +133,11 @@
 		return !api(key);
 	};
 
-	if ( $ ) {
+	if($){
 		$.cookie = api;
 		$.removeCookie = api.remove;
 	}
 
 	return api;
+
 }));
