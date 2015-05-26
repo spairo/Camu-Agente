@@ -7285,7 +7285,7 @@ button.close {
   #Builder_Engine .tree{
     padding: 0px 20px;
     min-height: 50px;
-    max-height: 500px;
+    max-height: 350px;
     overflow: auto;
   }
     #Builder_Engine .tree .list-group{
@@ -7313,7 +7313,9 @@ button.close {
     }
 
   #Builder_Engine .products{
+    margin-top: 40px;
     padding: 0px 20px;
+    height: 100px;
   }
     #Builder_Engine .products h3{
       color: #7F8C97;

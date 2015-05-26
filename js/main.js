@@ -135,41 +135,35 @@ $.services = function(data){
 
 $.skills = function(data){
 
+
+	var CtiPhone = $.UrlDecode()["phone"];
 	var CtiClientesId = $.UrlDecode()["clientesId"];
 
-	if(CtiClientesId == undefined || CtiClientesId == ""){
+	console.log(CtiPhone);
 
-		var skills_evals = data;
-		//var skills_evals = Object.keys(data).length; //IE8 sucks
+	var skills_evals = data;
+	//var skills_evals = Object.keys(data).length; //IE8 sucks
 
-		if(skills_evals.length > 1){
+	if(skills_evals.length > 1){
 
-			$("#skills").slideDown().show();
-			$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
+		$("#skills").slideDown().show();
+		$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
 
-			for(var i = 0; i < skills_evals.length; i++){
-				var skill = skills_evals[i].skill;
-				var skillsId = skills_evals[i].skillsId;
-				var serviciosId = skills_evals[i].serviciosId;
+		for(var i = 0; i < skills_evals.length; i++){
+			var skill = skills_evals[i].skill;
+			var skillsId = skills_evals[i].skillsId;
+			var serviciosId = skills_evals[i].serviciosId;
 
-				var content = '<option class="skilloption" value="'+skillsId+'" alt="'+serviciosId+'" name="'+skill+'">'+skill+'</option>';
-				$('.box-skills select.skillchoice').append(content);
-			}
-
-		}else{
-
-			$("#skills").hide();
-			$("#search").slideDown().show();
+			var content = '<option class="skilloption" value="'+skillsId+'" alt="'+serviciosId+'" name="'+skill+'">'+skill+'</option>';
+			$('.box-skills select.skillchoice').append(content);
 		}
 
 	}else{
 
-		console.log("voy a buscar el id del cliente", CtiClientesId);
-
-		var CtiClientesId;
+		$("#skills").hide();
+		$("#search").slideDown().show();
 
 	}
-
 
 };
 
@@ -653,10 +647,10 @@ $(document).ready(function(){
 			return vars;
 		};
 
-		var name = Cookies.get('name');
-		var passw = Cookies.get('parole');
-		//var name = "master";
-		//var passw = "master";
+		//var name = Cookies.get('name');
+	//	var passw = Cookies.get('parole');
+		var name = "master";
+		var passw = "master";
 
 		console.log("cookie name", name);
 		console.log("cooke passw", passw);
@@ -788,14 +782,6 @@ $(document).on('click', '.schedule_appointments .choice-meeting', function(){
 
 });
 
-$.onloadUrl = function(){
-
-	var CtiClientesId = $.UrlDecode()["clientesId"];
-
-
-
-}
-
 $.onsetEngine = function(user, passw){
 
   var url = ws+"rg_seguridadLogin";
@@ -857,7 +843,8 @@ function onsetEngineError(data){
 
 $.cssEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -874,7 +861,8 @@ $.cssEngine = function(data){
 
 $.baselayoutEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -924,8 +912,8 @@ $.baselayoutEngine = function(data){
 
 $.captureRenderEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Campos Captura Asesor</h3><div class="fields"></div>');
 
@@ -1025,7 +1013,7 @@ $.typificationsEngine = function(data){
 	//var skillidx = Cookies.get('SkillId');
 	var skillidx = "3";
 
-	$('.tree').append('<h3 class="text-center"><span class="glyphicon glyphicon-tags"></span> Tipificaciones</h3><div class="list-group"></div><div class="tags"></div><h4>Comentarios</h4><textarea class="form-control comment well-sm" rows="3"></textarea>');
+	$('#Builder_Engine .tree').append('<h3 class="text-center"><span class="glyphicon glyphicon-tags"></span> Tipificaciones</h3>');
 
 	for(var i = 0; i < data.length; i++){
 
@@ -1033,72 +1021,30 @@ $.typificationsEngine = function(data){
 
 			var data = data[i].tipologias;
 
-			//skillTipologiasId
-
-			var source =
-			{
-					datatype: "json",
-					datafields: [
-							{ name: 'skillTipologiasId' },
-							{ name: 'skillTipologiasIdSup' },
-							{ name: 'tipologia' },
-							{ name: 'skillTipologiasId' }
-					],
-					id: 'skillTipologiasId',
-					localdata: data
-			};
-
-			// create data adapter.
-
-			var dataAdapter = new $.jqx.dataAdapter(source);
-
-			// perform Data Binding.
-
-			dataAdapter.dataBind();
-
-			var records = dataAdapter.getRecordsHierarchy('skillTipologiasId', 'skillTipologiasIdSup', 'items', [{ name: 'tipologia', map: 'label'}]);
-
-			$('.tree .list-group').jqxTree({ source: records, width: '100%'});
+			$('#Builder_Engine .tree').jstree({ 'core' : {
+				data
+			}});
 
 		}
 
 	}
 
-	$(".tree .list-group li").each(function(i){
-		$(this).addClass("list-typing");
-		//$(this).attr('id', 'value');
-	});
-
 };
 
 $.productsEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
 		if(skillidx == data[i].skillsId){
 
-			var items = data[i].productos;
-
-			$('.products').append('<h3 class="text-center"><span class="glyphicon glyphicon-tag"></span> Productos</h3><ul class="list-product list-group"></ul><div class="tags"></div>');
-
-			for(var i = 0; i < items.length; i++){
-
-				var skillsProductosId = items[i].skillsProductosId;
-				var skillsId = items[i].skillsId;
-				var product = items[i].producto;
-				var skillsProductosIdSup = items[i].skillsProductosIdSup;
-				var active = items[i].activo;
-				var userAt = items[i].usuarioCreacion;
-				var dateAt = items[i].fechaCreacion;
-
-				var content = '<li id="'+skillsProductosId+'" title="'+product+'" class="list-group-item">'+product+'</li>';
-
-				$('.products .list-product').append(content);
-
-			}
+			var data = data[i].productos;
+			$('#Builder_Engine .products').append('<h3 class="text-center"><span class="glyphicon glyphicon-tag"></span> Productos</h3>');
+			$('#Builder_Engine .products').jstree({ 'core' : {
+				data
+			}});
 
 		}
 
