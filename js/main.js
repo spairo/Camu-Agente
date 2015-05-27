@@ -49,35 +49,46 @@ function LoginOnSuccess(response){
 
 	if(response != ""){
 
-		$("#user").val('');
-		$("#password").val('');
+		console.log(response[0].Informacion);
 
-		$("#logdIn").slideUp(1000, function(){
-			$(".loader").fadeIn("slow", function(){
-				$(".loader").fadeOut("slow", function(){
+		if(response[0].Informacion == "Error:Usuario caducado, necesita renovar las credenciales."){
 
-						//cookies everywhere
-						var id = Cookies.set('id', response[0].usuariosId);
-						var name = Cookies.set('name', response[0].usuario);
-						var profile = Cookies.set('profile', response[0].perfil);
-						var dataM = response[0].menu;
-						var dataS = response[0].configuracion;
-						var dataServices = response[0].configuracion;
+			alert("Usuario caducado, necesita renovar las credenciales");
+			return false;
 
-						Cookies.set('parole', password);
+		}else{
 
-						$.main(id, name, profile);
-						$.Menu(dataM);
-						$.skills(dataS);
-						$.services(dataS);
+			$("#user").val('');
+			$("#password").val('');
 
-						$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
-						$(".form-group").removeClass('has-error');
-						$("#main").slideDown().show();
+			$("#logdIn").slideUp(1000, function(){
+				$(".loader").fadeIn("slow", function(){
+					$(".loader").fadeOut("slow", function(){
 
+							//cookies everywhere
+							var id = Cookies.set('id', response[0].usuariosId);
+							var name = Cookies.set('name', response[0].usuario);
+							var profile = Cookies.set('profile', response[0].perfil);
+							var dataM = response[0].menu;
+							var dataS = response[0].configuracion;
+							var dataServices = response[0].configuracion;
+
+							Cookies.set('parole', password);
+
+							$.main(id, name, profile);
+							$.Menu(dataM);
+							$.skills(dataS);
+							$.services(dataS);
+
+							$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
+							$(".form-group").removeClass('has-error');
+							$("#main").slideDown().show();
+
+					});
 				});
 			});
-		});
+
+		}
 
 	}else{
 
@@ -167,6 +178,102 @@ $.skills = function(data){
 
 };
 
+//Search Url Params
+
+$.searchGet = function(){
+
+	var CtiClientesId = $.UrlDecode()["clientesId"];
+	var CtiVclave = $.UrlDecode()["vclave"];
+	var myid = Cookies.get('id');
+	var skillid = Cookies.get('SkillId');
+	var servicioid = Cookies.get('serviciosId');
+
+
+	var url = ws+"rg_MuestraCliente";
+
+	var Data = {
+		serviciosId: servicioid,
+		skillId: skillid,
+		clientesId: CtiClientesId,
+		usuarioId: myid,
+		valorClave: CtiVclave
+	};
+
+	$.support.cors = true;
+	$.ajax({
+		type: "GET",
+		url: url,
+		crossDomain: true,
+		data: Data,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(data){
+
+			console.log("resultado de search get", data);
+
+			if(data != ""){
+
+				console.log(data);
+
+				if(data.length > 1){
+
+					console.log("despliega la busqueda completa tengo mas de 1");
+
+					$('#search-result-get .result').empty().fadeIn("slow").append('<h1>Clientes</h1><table class="search_evals table table-striped"><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Valor Clave</th><th>Lada Telefono</th><th>Ext</th><th>ClaveId</th><th></th></tr></thead><tbody></tbody></table>');
+
+
+					for(var i = 0; i < data.length; i++){
+
+							var id = data[i].clientesId;
+							var clientesClaveId = data[i].clientesClaveId;
+							var name = data[i].nombre1;
+							var second_name = data[i].nombre2;
+							var pat_name = data[i].apellido1;
+							var mat_name = data[i].apellido2;
+							var clave = data[i].valorClave;
+							var lada = data[i].lada;
+							var extension = data[i].extension;
+
+							var content = '<tr><th class="nr">'+id+'</th><th class="Clientnames">'+name+' '+second_name+'</th><th class="Clientpat">'+pat_name+'</th><th class="Clientmat">'+mat_name+'</th><th class="Clientclave">'+clave+'</th><th class="ClientLada">'+lada+'</th><th class="Clientext">'+extension+'</th><th class="cd">'+clientesClaveId+'</th><th><button class="btn btn-engine build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
+							$('.result table.search_evals').append(content);
+
+					}
+
+				}else{
+
+					$('#search-result-get .result').empty().slideDown("slow").append('<h1>Cliente</h1><table class="search_evals table table-striped"><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Valor Clave</th><th>Lada Telefono</th><th>Ext</th><th>ClaveId</th><th></th></tr></thead><tbody></tbody></table>');
+
+					for(var i = 0; i < data.length; i++){
+
+							var id = data[i].clientesId;
+							var clientesClaveId = data[i].clientesClaveId;
+							var name = data[i].nombre1;
+							var second_name = data[i].nombre2;
+							var pat_name = data[i].apellido1;
+							var mat_name = data[i].apellido2;
+							var clave = data[i].valorClave;
+							var lada = data[i].lada;
+							var extension = data[i].extension;
+
+							var content = '<tr><th class="nr">'+id+'</th><th class="Clientnames">'+name+' '+second_name+'</th><th class="Clientpat">'+pat_name+'</th><th class="Clientmat">'+mat_name+'</th><th class="Clientclave">'+clave+'</th><th class="ClientLada">'+lada+'</th><th class="Clientext">'+extension+'</th><th class="cd">'+clientesClaveId+'</th><th><button class="btn btn-engine build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
+							$('.result table.search_evals').append(content);
+					}
+				}
+
+			}else{
+				console.log("vasio, voy a agregar boton de crear");
+				$('#search-result-get').empty().slideDown("slow").append('<div class="btn-group btn-group-lg pull-left" role="group" aria-label="config"><button class="btn btn-search add-client">Crear Cliente <span class="glyphicon glyphicon-plus"></button></div><div class="result"></div>');
+				$(".result").empty().slideDown("slow").append('<span class="not-found">No hay resultados</span>');
+			}
+
+		},error: function(data){
+			//console.log("algo salio mal en search get");
+		}
+
+	});
+
+};
+
 //Search
 
 $.search = function(name, pat, mat, phone){
@@ -233,7 +340,7 @@ function SearchOnSuccess(data){
 
 	}else{
 
-		$('#search-result').empty().append('<div class="btn-group btn-group-lg pull-left" role="group" aria-label="config"><button class="btn btn-search search-back">Nueva Busqueda <span class="glyphicon glyphicon-search"></button></div><div class="btn-group btn-group-lg pull-right" role="group" aria-label="config"><button class="btn btn-search add-client">Crear Cliente <span class="glyphicon glyphicon-plus"></button></div><div class="result"></div>')
+		$('#search-result').empty().append('<div class="btn-group btn-group-lg pull-left" role="group" aria-label="config"><button class="btn btn-search search-back">Nueva Busqueda <span class="glyphicon glyphicon-search"></button></div><div class="btn-group btn-group-lg pull-right" role="group" aria-label="config"><button class="btn btn-search add-client">Crear Cliente <span class="glyphicon glyphicon-plus"></button></div><div class="result"></div>');
 		$(".result").empty().append('<span class="not-found">No hay resultados</span>');
 	}
 
@@ -333,9 +440,7 @@ function addOnSuccess(data){
 	//$("#search").show().fadeIn("slow");
 }
 
-function addOnError(data){
-
-}
+function addOnError(data){}
 
 //Build  Menu
 
@@ -474,9 +579,39 @@ $(document).on('click', '.choice-skill', function(){
 
 	$.updateSession(serviciosID, skillID);
 
-	$("#skills").slideUp("slow", function(){
-		$("#search").slideDown("slow").show();
-	});
+	var CtiVclave = $.UrlDecode()["vclave"];
+	var CtiClientesId = $.UrlDecode()["clientesId"];
+
+	console.log("vc", CtiVclave);
+	console.log("cid", CtiClientesId);
+
+	if(CtiClientesId == null && CtiVclave == null){
+		alert("Error CTi");
+	}else{
+
+		if(CtiClientesId == null || CtiClientesId == undefined && CtiVclave == undefined || CtiVclave == null){
+
+			console.log("voy por flujo manual");
+
+			$("#skills").slideUp("slow", function(){
+				$("#search").slideDown("slow").show();
+			});
+
+		}else{
+
+			console.log("voy por flujo url");
+			alert("Flow url");
+
+			$("#skills").slideUp("slow", function(){
+
+				$("#search-result-get").slideDown("slow");
+				$.searchGet();
+
+			});
+
+		}
+
+	}
 
 });
 
@@ -542,7 +677,7 @@ $(document).on('click', '.add-client', function(){
 
 	$("#add-client .add-result").empty();
 
-	$("#search-result").slideUp("slow", function(){
+	$("#search-result, #search-result-get").slideUp("slow", function(){
 		$("#add-client").slideDown("slow");
 	});
 
@@ -656,7 +791,7 @@ $(document).ready(function(){
 		console.log("cookie name", name);
 		console.log("cooke passw", passw);
 
-		if((name == "" || name == undefined) && (passw == "" || passw == undefined)){
+		if((name == null || name == undefined) && (passw == null || passw == undefined)){
 
 			var CtiClientesId = $.UrlDecode()["clientesId"];
 			window.location.href='index.html?clientesId='+CtiClientesId+'';

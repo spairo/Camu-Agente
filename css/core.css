@@ -7022,6 +7022,93 @@ button.close {
     box-shadow: none;
   }
 
+/* Box Search Get Result*/
+
+#search-result-get{
+  margin-top: 50px;
+}
+  #search-result-get h1{
+    text-align: center;
+    color: #7F8C97;
+    margin-bottom: 10px;
+  }
+  #search-result-get th, td{
+    color: #7F8C97;
+  }
+  #search-result-get .result{
+    margin-top: 120px;
+  }
+  #search-result-get .not-found{
+    display: block;
+    color: #7F8C97;
+    text-align: center;
+    font-weight: bold;
+    font-size: 26px;
+  }
+  #search-result-get .btn-engine{
+    background: #95a5a6;
+    margin: 0 auto;
+    width:100%;
+    padding: 5px 5px;
+    color: #fff;
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #7f8c8d;
+    cursor: pointer;
+    -webkit-box-shadow: inset 0 -2px #7f8c8d;
+    box-shadow: inset 0 -2px #7f8c8d;
+  }
+  #search-result-get .btn-engine:hover{
+    background: #e74c3c;
+    margin: 0 auto;
+    width:100%;
+    padding: 5px 5px;
+    color: #fff;
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #c0392b;
+    cursor: pointer;
+    -webkit-box-shadow: inset 0 -2px #c0392b;
+    box-shadow: inset 0 -2px #c0392b;
+  }
+  #search-result-get .btn-engine:active{
+    top: 1px;
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+  #search-result-get .add-client{
+    background: #95a5a6;
+    margin: 0 auto;
+    width:100%;
+    padding: 10px 5px;
+    color: #fff;
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #7f8c8d;
+    cursor: pointer;
+    -webkit-box-shadow: inset 0 -2px #7f8c8d;
+    box-shadow: inset 0 -2px #7f8c8d;
+  }
+  #search-result-get .add-client:hover{
+    background: #e74c3c;
+    margin: 0 auto;
+    width:100%;
+    padding: 10px 5px;
+    color: #fff;
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #c0392b;
+    cursor: pointer;
+    -webkit-box-shadow: inset 0 -2px #c0392b;
+    box-shadow: inset 0 -2px #c0392b;
+  }
+  #search-result-get .add-client:active{
+    top: 1px;
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
 
 /* Box Search Result */
 
