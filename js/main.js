@@ -5,6 +5,7 @@
 //Settings
 
 window.ws = "http://172.18.149.21/Servicios/REST.svc/";
+window.match = location.hash.match(/^#?(.*)$/)[1];
 var path = window.location.pathname;
 
 //Higher scope
@@ -29,77 +30,75 @@ $.login = function(user, password){
 
   var url = ws+"rg_seguridadLogin";
 
-  var oData = { User: user, Password: password };
+  var Data = { User: user, Password: password };
 
 	$.support.cors = true;
   $.ajax({
     type: "GET",
     url: url,
     crossDomain: true,
-    data: oData,
+    data: Data,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    success: LoginOnSuccess,
-    error: LoginOnError
+		success: function(response){
+
+			if(response != ""){
+
+				var logResp = response[0].Informacion;
+
+				if (typeof logResp === 'undefined') {
+
+					$("#user").val('');
+					$("#password").val('');
+
+					$("#logdIn").slideUp(1000, function(){
+						$(".loader").fadeIn("slow", function(){
+							$(".loader").fadeOut("slow", function(){
+
+									//cookies everywhere
+									var id = Cookies.set('id', response[0].usuariosId);
+									var name = Cookies.set('name', response[0].usuario);
+									var profile = Cookies.set('profile', response[0].perfil);
+									var dataM = response[0].menu;
+									var dataS = response[0].configuracion;
+									var dataServices = response[0].configuracion;
+
+									Cookies.set('hermetic', password);
+
+									$.main(id, name, profile);
+									$.Menu(dataM);
+									$.skills(dataS);
+									$.services(dataS);
+
+									$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
+									$(".form-group").removeClass('has-error');
+									$("#main").slideDown().show();
+
+							});
+						});
+					});
+
+				}else{
+
+					if(logResp.indexOf("Error") > -1 == true){
+						alert(response[0].Informacion);
+						return false;
+					}
+
+				}
+
+			}else{
+				alert("Usuario no Valido");
+				return false;
+			}
+
+		},error: function(response){
+			alert("Error44: " + response.status + " " + response.statusText);
+		}
+		
   });
 
 };
-
-function LoginOnSuccess(response){
-
-	if(response != ""){
-
-		console.log(response[0].Informacion);
-
-		if(response[0].Informacion == "Error:Usuario caducado, necesita renovar las credenciales."){
-
-			alert("Usuario caducado, necesita renovar las credenciales");
-			return false;
-
-		}else{
-
-			$("#user").val('');
-			$("#password").val('');
-
-			$("#logdIn").slideUp(1000, function(){
-				$(".loader").fadeIn("slow", function(){
-					$(".loader").fadeOut("slow", function(){
-
-							//cookies everywhere
-							var id = Cookies.set('id', response[0].usuariosId);
-							var name = Cookies.set('name', response[0].usuario);
-							var profile = Cookies.set('profile', response[0].perfil);
-							var dataM = response[0].menu;
-							var dataS = response[0].configuracion;
-							var dataServices = response[0].configuracion;
-
-							Cookies.set('parole', password);
-
-							$.main(id, name, profile);
-							$.Menu(dataM);
-							$.skills(dataS);
-							$.services(dataS);
-
-							$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
-							$(".form-group").removeClass('has-error');
-							$("#main").slideDown().show();
-
-					});
-				});
-			});
-
-		}
-
-	}else{
-
-			alert("Usuario no Valido");
-			return false;
-
-	}
-}
-function LoginOnError(response){
-	alert("Error44: " + response.status + " " + response.statusText);
-}
 
 //main
 
@@ -146,11 +145,8 @@ $.services = function(data){
 
 $.skills = function(data){
 
-
 	var CtiVclave = $.UrlDecode()["vclave"];
 	var CtiClientesId = $.UrlDecode()["clientesId"];
-
-	console.log(CtiVclave);
 
 	var skills_evals = data;
 	//var skills_evals = Object.keys(data).length; //IE8 sucks
@@ -172,7 +168,7 @@ $.skills = function(data){
 	}else{
 
 		$("#skills").hide();
-		$("#search").slideDown().show();
+		$("#search").slideDown("slow").show();
 
 	}
 
@@ -184,6 +180,7 @@ $.searchGet = function(){
 
 	var CtiClientesId = $.UrlDecode()["clientesId"];
 	var CtiVclave = $.UrlDecode()["vclave"];
+
 	var myid = Cookies.get('id');
 	var skillid = Cookies.get('SkillId');
 	var servicioid = Cookies.get('serviciosId');
@@ -278,14 +275,10 @@ $.searchGet = function(){
 
 $.search = function(name, pat, mat, phone){
 
-	var CtiClientesId = $.UrlDecode()["clientesId"];
-
 	var url = ws+"rg_ListClientes";
 	var myid = Cookies.get('id');
 	var skillID = Cookies.get('SkillId');
 	var serviciosID = Cookies.get('serviciosId');
-
-	if(CtiClientesId)
 
   var Data = {
 		nombre1: name,
@@ -315,31 +308,29 @@ $.search = function(name, pat, mat, phone){
 
 function SearchOnSuccess(data){
 
-	var search_evals = data;
+	var search_clients = data;
 
-	if(search_evals != ""){
+	if(search_clients != ""){
 
-			$('.result').empty().append('<table class="search_evals table table-striped"><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Valor Clave</th><th>Lada Telefono</th><th>Ext</th><th>ClaveId</th><th></th></tr></thead><tbody></tbody></table>');
+			$('.result').empty().append('<table class="search_clients table table-striped"><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Valor Clave</th><th>Lada Telefono</th><th>Ext</th><th>ClaveId</th><th></th></tr></thead><tbody></tbody></table>');
 
-			for(var i = 0; i < search_evals.length; i++){
+			for(var i = 0; i < search_clients.length; i++){
 
-					var id = search_evals[i].clientesId;
-					var clientesClaveId = search_evals[i].clientesClaveId;
-					var name = search_evals[i].nombre1;
-					var second_name = search_evals[i].nombre2;
-					var pat_name = search_evals[i].apellido1;
-					var mat_name = search_evals[i].apellido2;
-					var clave = search_evals[i].valorClave;
-					var lada = search_evals[i].lada;
-					var extension = search_evals[i].extension;
+					var id = search_clients[i].clientesId;
+					var clientesClaveId = search_clients[i].clientesClaveId;
+					var name = search_clients[i].nombre1;
+					var second_name = search_clients[i].nombre2;
+					var pat_name = search_clients[i].apellido1;
+					var mat_name = search_clients[i].apellido2;
+					var clave = search_clients[i].valorClave;
+					var lada = search_clients[i].lada;
+					var extension = search_clients[i].extension;
 
-					var content = '<tr><th class="nr">'+id+'</th><th class="Clientnames">'+name+' '+second_name+'</th><th class="Clientpat">'+pat_name+'</th><th class="Clientmat">'+mat_name+'</th><th class="Clientclave">'+clave+'</th><th class="ClientLada">'+lada+'</th><th class="Clientext">'+extension+'</th><th class="cd">'+clientesClaveId+'</th><th><button class="btn btn-engine build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
-					$('.result table.search_evals').append(content);
-
+					var content = '<tr><th class="nr">'+id+'</th><th>'+name+' '+second_name+'</th><th>'+pat_name+'</th><th>'+mat_name+'</th><th>'+clave+'</th><th>'+lada+'</th><th>'+extension+'</th><th class="cd">'+clientesClaveId+'</th><th><button class="btn btn-engine build"><span class="glyphicon glyphicon-cog"></span></button></th></tr>';
+					$('.result table.search_clients').append(content);
 			}
 
 	}else{
-
 		$('#search-result').empty().append('<div class="btn-group btn-group-lg pull-left" role="group" aria-label="config"><button class="btn btn-search search-back">Nueva Busqueda <span class="glyphicon glyphicon-search"></button></div><div class="btn-group btn-group-lg pull-right" role="group" aria-label="config"><button class="btn btn-search add-client">Crear Cliente <span class="glyphicon glyphicon-plus"></button></div><div class="result"></div>');
 		$(".result").empty().append('<span class="not-found">No hay resultados</span>');
 	}
@@ -347,7 +338,7 @@ function SearchOnSuccess(data){
 }
 
 function SearchOnError(data){
-  //alert("Perro", data);
+	alert("Error44: " + data.status + " " + data.statusText);
 }
 
 $.updateSession = function(serviciosID, skillID){
@@ -371,11 +362,9 @@ $.updateSession = function(serviciosID, skillID){
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: function(data){
-
-			console.info("U P D A T E session: success", data);
-
+			//console.info("U P D A T E session: success", data);
 		},error: function(data){
-			console.log("U P D A T E session: unsuccess");
+			//console.log("U P D A T E session: unsuccess");
 		}
 
 	});
@@ -510,26 +499,33 @@ $.Menu = function(data){
 
 };
 
+
 /*Login*/
 
 $(document).on('click', '#login', function(){
 
-	//business logic...
+	event.preventDefault();
 
-  var user = $('#user').val();
-  var password = $('#password').val();
+	var user = $('#user').val();
+	var password = $('#password').val();
 
-  if($("#user").val() == '' || $("#password").val() == ''){
+	$(this).button('loading').delay(1000).queue(function(){
 
-			alert("Los campos son obligatorios");
-      $(".form-group").addClass('has-error');
-			//$("#login").prop( "disabled", false );
+		if($("#user").val() == '' || $("#password").val() == ''){
 
-      return false;
+				alert("Los campos son obligatorios");
+				$(".form-group").addClass('has-error')
+				$("#login").removeAttr("disabled");
+				return false;
 
-  }else{
-		$.login(user, password);
-  }
+		}else{
+			$.login(user, password);
+		}
+
+		$(this).button('reset');
+		$(this).dequeue();
+
+  });
 
 });
 
@@ -540,7 +536,7 @@ $(document).on('click', '#logout', function(){
 	Cookies.remove('id');
 	Cookies.remove('name');
 	Cookies.remove('profile');
-	Cookies.remove('parole');
+	Cookies.remove('hermetic');
 	Cookies.remove('SkillId');
 	Cookies.remove('serviciosId');
 	Cookies.remove('clientesId');
@@ -569,6 +565,8 @@ $(document).on('click', '.choice-service', function(){
 
 $(document).on('click', '.choice-skill', function(){
 
+
+
 	var skillID = $(".skillchoice").val();
 
 	Cookies.set('SkillId', skillID);
@@ -582,24 +580,20 @@ $(document).on('click', '.choice-skill', function(){
 	var CtiVclave = $.UrlDecode()["vclave"];
 	var CtiClientesId = $.UrlDecode()["clientesId"];
 
-	console.log("vc", CtiVclave);
-	console.log("cid", CtiClientesId);
+	//console.log("vc", CtiVclave);
+	//console.log("cid", CtiClientesId);
 
-	if(CtiClientesId == null && CtiVclave == null){
-		alert("Error CTi");
-	}else{
+	if(CtiClientesId == null || CtiClientesId == undefined && CtiVclave == undefined || CtiVclave == null){
 
-		if(CtiClientesId == null || CtiClientesId == undefined && CtiVclave == undefined || CtiVclave == null){
-
-			console.log("voy por flujo manual");
+			//console.log("voy por flujo manual");
 
 			$("#skills").slideUp("slow", function(){
 				$("#search").slideDown("slow").show();
 			});
 
-		}else{
+	}else{
 
-			console.log("voy por flujo url");
+			//console.log("voy por flujo url");
 			alert("Flow url");
 
 			$("#skills").slideUp("slow", function(){
@@ -608,8 +602,6 @@ $(document).on('click', '.choice-skill', function(){
 				$.searchGet();
 
 			});
-
-		}
 
 	}
 
@@ -783,10 +775,10 @@ $(document).ready(function(){
 			return vars;
 		};
 
-		//var name = Cookies.get('name');
-	  //var passw = Cookies.get('parole');
-		var name = "master";
-		var passw = "master";
+		var name = Cookies.get('name');
+	  var passw = Cookies.get('hermetic');
+		//var name = "master";
+		//var passw = "master";
 
 		console.log("cookie name", name);
 		console.log("cooke passw", passw);
@@ -794,13 +786,12 @@ $(document).ready(function(){
 		if((name == null || name == undefined) && (passw == null || passw == undefined)){
 
 			var CtiClientesId = $.UrlDecode()["clientesId"];
-			window.location.href='index.html?clientesId='+CtiClientesId+'';
-
-			console.log("URL F L O W");
+			var CtiVclave = $.UrlDecode()["vclave"];
+			//http://192.168.137.43/engine.html?clientesId=1&vclave=1111
+			window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
 
 		}else{
 
-			console.log("C O O K I E F L O W");
 			$.onsetEngine(name, passw);
 
 		}
@@ -814,7 +805,7 @@ $(document).on('click', '#logout-builder', function(){
 	Cookies.remove('id');
 	Cookies.remove('name');
 	Cookies.remove('profile');
-	Cookies.remove('parole');
+	Cookies.remove('hermetic');
 	Cookies.remove('SkillId');
 	Cookies.remove('serviciosId');
 	Cookies.remove('clientesId');
@@ -964,8 +955,8 @@ function onsetEngineError(data){
 
 $.cssEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -1143,7 +1134,7 @@ $.typificationsEngine = function(data){
 			var data = data[i].tipologias;
 
 			$('#Builder_Engine .tree').jstree({ 'core' : {
-				data
+				//data
 			}});
 
 		}
@@ -1164,7 +1155,7 @@ $.productsEngine = function(data){
 			var data = data[i].productos;
 			$('#Builder_Engine .products').append('<h3 class="text-center"><span class="glyphicon glyphicon-tag"></span> Productos</h3>');
 			$('#Builder_Engine .products').jstree({ 'core' : {
-				data
+				//data
 			}});
 
 		}
