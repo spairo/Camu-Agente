@@ -14,15 +14,7 @@ var str_;
 
 $(window).load(function(){
 	$(".loader").fadeOut("slow");
-})
-
-/*
-$(window).bind('beforeunload', function(){
-	return 'Salir de la aplicacion.';
-	Cookies.remove('name');
-	Cookies.remove('profile');
 });
-*/
 
 //login
 
@@ -95,7 +87,7 @@ $.login = function(user, password){
 		},error: function(response){
 			alert("Error44: " + response.status + " " + response.statusText);
 		}
-		
+
   });
 
 };
@@ -113,7 +105,7 @@ $.main = function(id,	name, profile){
 
 };
 
-//Search URL params
+//Search Get params
 
 $.UrlDecode = function(){
 	var vars = {};
@@ -399,37 +391,29 @@ $.addclient = function(name, name2, pat, mat, phone){
     data: Data,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    success: addOnSuccess,
-    error: addOnError
+		success: function(data){
+
+			$("#add-client .add-result").empty().append('<h3>Cliente Creado con exito <span class="glyphicon glyphicon-ok"></span></h3>').fadeIn('slow').delay(10000);
+
+			$('.result').empty();
+			$(".form-group").removeClass('has-error');
+		  $("#add-name").val("");
+			$("#add-2name").val("");
+		  $("#add-pat").val("");
+		  $("#add-mat").val("");
+		  $("#add-phone").val("");
+
+			$("#add-client").slideUp("slow", function(){
+				$("#search").slideDown("slow");
+			});
+
+		},error: function(data){
+
+		}
+
   });
 
 };
-
-function addOnSuccess(data){
-
-	$("#add-client .add-result").empty().append('<h3>Cliente Creado con exito <span class="glyphicon glyphicon-ok"></span></h3>').fadeIn('slow').delay(10000);
-
-	$('.result').empty();
-	$(".form-group").removeClass('has-error');
-  $("#add-name").val("");
-	$("#add-2name").val("");
-  $("#add-pat").val("");
-  $("#add-mat").val("");
-  $("#add-phone").val("");
-
-	$("#add-client").slideUp("slow", function(){
-		$("#search").slideDown("slow");
-	});
-
-	//$("p").hide("slow", function(){
-		//	alert("The paragraph is now hidden");
-	//});
-
-	//$("#add-client").hide("slow").fadeOut("slow");
-	//$("#search").show().fadeIn("slow");
-}
-
-function addOnError(data){}
 
 //Build  Menu
 
@@ -504,7 +488,7 @@ $.Menu = function(data){
 
 $(document).on('click', '#login', function(){
 
-	event.preventDefault();
+	//event.preventDefault();
 
 	var user = $('#user').val();
 	var password = $('#password').val();
@@ -730,21 +714,9 @@ $(document).on('click', '.build', function(){
 	var $row = $(this).closest("tr");    // Find the row
 
 	var $text = $row.find(".nr").text();
-	var $textnames = $row.find(".Clientnames").text();
-	var $textpat = $row.find(".Clientpat").text();
-	var $textmat = $row.find(".Clientmat").text();
-	var $textclave = $row.find(".Clientclave").text();
-	var $textlada = $row.find(".ClientLada").text();
-	var $textext = $row.find(".Clientext").text();
 	var $textcid = $row.find(".cd").text();
 
 	Cookies.set('clientesId', $text);
-	Cookies.set('clientesNames', $textnames);
-	Cookies.set('clientesPat', $textpat);
-	Cookies.set('clientesMat', $textmat);
-	Cookies.set('clientesClave', $textclave);
-	Cookies.set('clientesLada', $textlada);
-	Cookies.set('clientesExt', $textext);
 	Cookies.set('clientesClaveId', $textcid);
 
 	// Let's build it out
@@ -764,9 +736,10 @@ $(document).ready(function(){
 
 	if(path == "/engine.html"){
 
-		//Catch all params url
-
 		$.UrlDecode = function(){
+
+			//Catch all params url
+
 			var vars = {};
 		       
 			var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value){
@@ -775,25 +748,20 @@ $(document).ready(function(){
 			return vars;
 		};
 
-		var name = Cookies.get('name');
-	  var passw = Cookies.get('hermetic');
-		//var name = "master";
-		//var passw = "master";
-
-		console.log("cookie name", name);
-		console.log("cooke passw", passw);
+		//var name = Cookies.get('name');
+	  //var passw = Cookies.get('hermetic');
+		var name = "master";
+		var passw = "master";
 
 		if((name == null || name == undefined) && (passw == null || passw == undefined)){
 
 			var CtiClientesId = $.UrlDecode()["clientesId"];
 			var CtiVclave = $.UrlDecode()["vclave"];
-			//http://192.168.137.43/engine.html?clientesId=1&vclave=1111
+
 			window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
 
 		}else{
-
 			$.onsetEngine(name, passw);
-
 		}
 
 	}
@@ -894,6 +862,8 @@ $(document).on('click', '.schedule_appointments .choice-meeting', function(){
 
 });
 
+// Render Engine
+
 $.onsetEngine = function(user, passw){
 
   var url = ws+"rg_seguridadLogin";
@@ -904,7 +874,6 @@ $.onsetEngine = function(user, passw){
   $.ajax({
     type: "GET",
     url: url,
-    //cache: false,
     crossDomain: true,
     data: Data,
     contentType: "application/json; charset=utf-8",
@@ -917,11 +886,7 @@ $.onsetEngine = function(user, passw){
 
 function onsetEngineSuccess(data){
 
-	console.log("eraclito", data);
-
 	var factory = data[0].configuracion;
-
-	//$('.navbar-top').addClass('navbar-top-fixed'); //position fixed header
 
 	$(".loader").slideDown("slow", function(){
 
@@ -947,7 +912,6 @@ function onsetEngineSuccess(data){
 	});
 
 }
-
 function onsetEngineError(data){
 	alert("Error44: " + data.status + " " + data.statusText);
 	$(".loader").slideDown("slow");
@@ -955,8 +919,8 @@ function onsetEngineError(data){
 
 $.cssEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -1051,33 +1015,6 @@ $.captureRenderEngine = function(data){
 
 						//HTML elements
 
-						if(form == "combo" || form == "Combo"){
-
-								var array = defaultvalue.split(',');
-
-								var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select id="fill-select" class="form-control input-sm"></select></div>';
-
-								$('.advisory_capture .fields').append(content);
-
-								var options = array;
-
-								var select = document.getElementById('fill-select');
-
-								for(option in options){
-									select.add(new Option(options[option]));
-								};
-
-						}
-						if(form == "checkbox" || form == "Checkbox"){
-
-								console.log(defaultvalue);
-
-								var array = defaultvalue.split(',');
-
-								console.log("array checkbox", array);
-
-
-						}
 						if(form == "input" || form == "Input"){
 
 							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-sm input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
@@ -1088,25 +1025,53 @@ $.captureRenderEngine = function(data){
 							}
 
 						}
-						if(form == "radio" || form == "Radio"){
+						if(form == "combo" || form == "Combo"){
 
-							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><div class="radio"><label><input type="'+form+'" class="input-dinamic" name="'+name+'" id="" value="" checked>'+title+'</label></div></div>';
+								var arrayselect = defaultvalue.split(',');
 
-							$('.advisory_capture .fields').append(content);
-
-							if(required == "1"){
-								$(".fields .input-dinamic").addClass('required');
-							}
-
-						}
-						if(form == "label" || form == "Label"){
-
-								var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label></div>';
+								var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select id="fill-select" class="form-control input-sm"></select></div>';
 
 								$('.advisory_capture .fields').append(content);
 
-						}
+								var options = arrayselect;
 
+								var select = document.getElementById('fill-select');
+
+								for(option in options){
+									select.add(new Option(options[option]));
+								};
+
+						}
+						if(form == "checkbox" || form == "Checkbox"){
+
+								var arrycheckbox = defaultvalue.split(',');
+
+								for(arry in arrycheckbox){
+									var content = '<div class="checkbox"><label><input type="checkbox" value="">'+arrycheckbox[arry]+'</label></div>';
+									$('.advisory_capture .fields').append(content);
+								};
+
+						}
+						if(form == "radio" || form == "Radio"){
+
+							var arryrdio = defaultvalue.split(',');
+
+							for(arry in arryrdio){
+								var content = '<div class="radio"><label><input type="radio" value="">'+arryrdio[arry]+'</label></div>';
+								$('.advisory_capture .fields').append(content);
+							};
+							//if(required == "1"){
+								//$(".fields .input-dinamic").addClass('required');
+							//}
+						}
+						if(form == "date" || form == "Date"){
+								var content = '<div class="form-group"><label for="Colonia">Fecha</label><div class="input-group date" id="datetimepicker1"><input type="text" class="form-control input-sm" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div></div>';
+								$('.advisory_capture .fields').append(content);
+						}
+						if(form == "label" || form == "Label"){
+								var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label></div>';
+								$('.advisory_capture .fields').append(content);
+						}
 
 					}
 
@@ -1134,7 +1099,7 @@ $.typificationsEngine = function(data){
 			var data = data[i].tipologias;
 
 			$('#Builder_Engine .tree').jstree({ 'core' : {
-				//data
+				data
 			}});
 
 		}
@@ -1155,7 +1120,7 @@ $.productsEngine = function(data){
 			var data = data[i].productos;
 			$('#Builder_Engine .products').append('<h3 class="text-center"><span class="glyphicon glyphicon-tag"></span> Productos</h3>');
 			$('#Builder_Engine .products').jstree({ 'core' : {
-				//data
+				data
 			}});
 
 		}
@@ -1214,7 +1179,7 @@ $(window).load(function(){
 
 
 			},error: function(data){
-					console.log("no cargo default name");
+				alert("ErrorWS: " + data.status + " " + data.statusText);
 			}
 
 		});
@@ -1273,6 +1238,7 @@ $.typiHistoryEngine = function(data){
 	}
 
 	$.support.cors = true;
+
   $.ajax({
     type: "GET",
     url: url,
@@ -1299,7 +1265,7 @@ $.typiHistoryEngine = function(data){
 			}
 
 		},error: function(data){
-			//console.log("algo salio mal");
+			alert("ErrorWS: " + data.status + " " + data.statusText);
 		}
 
   });
