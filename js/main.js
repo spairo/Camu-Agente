@@ -1,16 +1,18 @@
 /*============================
-      Main Fusion Agente
+      Main Fusion Agente.
+			Atento Mexico.
 =============================*/
 
 //Settings
 
 window.ws = "http://172.18.149.21/Servicios/REST.svc/";
+window.ctiurl = "http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm";
 window.match = location.hash.match(/^#?(.*)$/)[1];
 var path = window.location.pathname;
 
 //Higher scope
 
-var str_;
+var str;
 
 $(window).load(function(){
 	$(".loader").fadeOut("slow");
@@ -53,14 +55,18 @@ $.login = function(user, password){
 									var profile = Cookies.set('profile', response[0].perfil);
 									var dataM = response[0].menu;
 									var dataS = response[0].configuracion;
-									var dataServices = response[0].configuracion;
 
+									Cookies.set('UserLogin', user);
 									Cookies.set('hermetic', password);
 
 									$.main(id, name, profile);
 									$.Menu(dataM);
 									$.skills(dataS);
 									$.services(dataS);
+
+									str = dataS;
+
+									//$.ctiInterface(dataS);
 
 									$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
 									$(".form-group").removeClass('has-error');
@@ -116,19 +122,24 @@ $.UrlDecode = function(){
 	return vars;
 };
 
-//Service
+//Services
 
 $.services = function(data){
 
+	$("#services").slideDown().show();
+
 	var services_evals = data;
 
-	if(services_evals.length > 1){
+	$('.box-services').append('<select class="form-control input-lg servicechoice"></select><button class="service-choice btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
 
-		//$("#services").slideDown().show();
+	for(var i = 0; i < services_evals.length; i++){
 
-	}else{
-		//$("#services").hide();
-		//$("#skills").slideDown().show();
+		var serviciosId = services_evals[i].serviciosId;
+		var servicio = services_evals[i].servicio;
+
+		var content = '<option class="serviceoption" value="'+serviciosId+'">'+servicio+'</option>';
+		$('.box-services select.servicechoice').append(content);
+
 	}
 
 };
@@ -137,31 +148,17 @@ $.services = function(data){
 
 $.skills = function(data){
 
-	var CtiVclave = $.UrlDecode()["vclave"];
-	var CtiClientesId = $.UrlDecode()["clientesId"];
-
-	var skills_evals = data;
 	//var skills_evals = Object.keys(data).length; //IE8 sucks
+	var skills_evals = data;
 
-	if(skills_evals.length > 1){
+	$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
 
-		$("#skills").slideDown().show();
-		$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
+	for(var i = 0; i < skills_evals.length; i++){
+		var skill = skills_evals[i].skill;
+		var skillsId = skills_evals[i].skillsId;
 
-		for(var i = 0; i < skills_evals.length; i++){
-			var skill = skills_evals[i].skill;
-			var skillsId = skills_evals[i].skillsId;
-			var serviciosId = skills_evals[i].serviciosId;
-
-			var content = '<option class="skilloption" value="'+skillsId+'" alt="'+serviciosId+'" name="'+skill+'">'+skill+'</option>';
-			$('.box-skills select.skillchoice').append(content);
-		}
-
-	}else{
-
-		$("#skills").hide();
-		$("#search").slideDown("slow").show();
-
+		var content = '<option class="skilloption" value="'+skillsId+'">'+skill+'</option>';
+		$('.box-skills select.skillchoice').append(content);
 	}
 
 };
@@ -333,11 +330,12 @@ function SearchOnError(data){
 	alert("Error44: " + data.status + " " + data.statusText);
 }
 
-$.updateSession = function(serviciosID, skillID){
+$.updateSession = function(skillID){
 
 	var url = ws+"rg_ActualizaSesion";
 
 	var myid = Cookies.get('id');
+  var serviciosID = Cookies.get('serviciosId')
 
 	var Data = {
 		serviciosId: serviciosID,
@@ -356,7 +354,7 @@ $.updateSession = function(serviciosID, skillID){
 		success: function(data){
 			//console.info("U P D A T E session: success", data);
 		},error: function(data){
-			//console.log("U P D A T E session: unsuccess");
+			alert("Error44: " + data.status + " " + data.statusText);
 		}
 
 	});
@@ -488,8 +486,6 @@ $.Menu = function(data){
 
 $(document).on('click', '#login', function(){
 
-	//event.preventDefault();
-
 	var user = $('#user').val();
 	var password = $('#password').val();
 
@@ -520,6 +516,7 @@ $(document).on('click', '#logout', function(){
 	Cookies.remove('id');
 	Cookies.remove('name');
 	Cookies.remove('profile');
+	Cookies.remove('UserLogin');
 	Cookies.remove('hermetic');
 	Cookies.remove('SkillId');
 	Cookies.remove('serviciosId');
@@ -532,44 +529,136 @@ $(document).on('click', '#logout', function(){
 
 /*Services Box*/
 
-$(document).on('click', '.choice-service', function(){
+$(document).on('click', '.service-choice', function(){
 
-	//var skillID = $(".skillchoice").val();
-	//var skillstd = $(".skillchoice option:selected").attr('name');
+	console.log("haciendo click");
 
-	//Cookies.set('SkillId', skillID);
-
-	//$("#skills").slideUp("slow", function(){
-		//$("#search").slideDown("slow").show();
-	//});
-
-});
-
-/*Skills Box*/
-
-$(document).on('click', '.choice-skill', function(){
-
-
-
-	var skillID = $(".skillchoice").val();
-
-	Cookies.set('SkillId', skillID);
-
-	var serviciosID = $(".skilloption").attr("alt");
-
+	var serviciosID = $(".serviceoption").val();
 	Cookies.set('serviciosId', serviciosID);
 
-	$.updateSession(serviciosID, skillID);
+	//CtiRedirect
 
+	console.log(str);
+
+	for(var i = 0; i < str.length; i++){
+
+		if(serviciosID == str[i].serviciosId){
+
+			var interfaces = str[i].interfaces;
+			console.log(interfaces);
+
+			for(var i = 0; i < interfaces.length; i++){
+
+				var interface = interfaces[0].activo;
+				console.log(interface);
+
+				if(interface == 1){
+
+					$("#services").slideUp("slow", function(){
+						$("#extension").slideDown("slow").show();
+					});
+
+				}else{
+					$("#services").slideUp("slow", function(){
+						$("#skills").slideDown("slow").show();
+					});
+				}
+
+			}
+
+		}
+
+	}
+
+	/*
+	for(var i = 0; i < str.length; i++){
+
+		if(serviciosID == str[i].serviciosId){
+
+			var interface = str[i].interfaces[i].activo;
+
+			if(interface == 1){
+
+				//window.location.href='http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm?usuariosId='+foo+'';
+				//window.open('http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm?usuariosId='+iduser+'','_blank');
+				//window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
+				console.log("Voy por flujo Cti");
+
+			}else{
+
+				console.log("Voy por flujo Manual");
+
+				//$("#skills").slideUp("slow", function(){
+					//$("#search").slideDown("slow").show();
+				//});
+			}
+
+		}
+
+	}*/
+
+		/*
+		function doSomething(someargums) {
+			return status;
+		}
+		*/
+		//var response = doSomething();
+
+		//Cookies.get('serviciosId');
+
+		/*
+		$.ctiSkill = function(serviciosID){
+			return serviciosID;
+		};
+		*/
+
+		//var testtt = $.ctiSkill();
+		//var response = $.ctiSkill();
+
+		//console.log("-", testtt);
+
+		//for(var i = 0; i < data.length; i++){
+
+			//if(serviciosID == data[i].serviciosId){
+
+				//var interface = data[0].interfaces;
+
+				//var active = interface[0].activo;
+
+				//console.log("@", interface);
+
+				/*
+				if(interface == 1){
+
+					var iduser = Cookies.get('id');
+
+					//window.location.href='http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm?usuariosId='+foo+'';
+					window.open('http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm?usuariosId='+iduser+'','_blank');
+					//window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
+				*/
+
+				//}else{
+					//$("#skills").slideUp("slow", function(){
+						//$("#search").slideDown("slow").show();
+					//});
+				//}
+
+			//}
+
+		//}
+
+	//};
+
+
+
+	/*
 	var CtiVclave = $.UrlDecode()["vclave"];
 	var CtiClientesId = $.UrlDecode()["clientesId"];
 
-	//console.log("vc", CtiVclave);
-	//console.log("cid", CtiClientesId);
+	console.log("vc", CtiVclave);
+	console.log("cid", CtiClientesId);
 
 	if(CtiClientesId == null || CtiClientesId == undefined && CtiVclave == undefined || CtiVclave == null){
-
-			//console.log("voy por flujo manual");
 
 			$("#skills").slideUp("slow", function(){
 				$("#search").slideDown("slow").show();
@@ -577,7 +666,6 @@ $(document).on('click', '.choice-skill', function(){
 
 	}else{
 
-			//console.log("voy por flujo url");
 			alert("Flow url");
 
 			$("#skills").slideUp("slow", function(){
@@ -586,6 +674,52 @@ $(document).on('click', '.choice-skill', function(){
 				$.searchGet();
 
 			});
+	}
+	*/
+
+	/*$("#services").slideUp("slow", function(){
+		$("#skills").slideDown("slow").show();
+	});*/
+
+});
+
+/*Skills Box*/
+
+$(document).on('click', '.choice-skill', function(){
+
+	var skillID = $(".skillchoice").val();
+
+	Cookies.set('SkillId', skillID);
+
+	$.updateSession(skillID);
+
+	$("#skills").slideUp("slow", function(){
+		$("#extension").slideDown("slow").show();
+	});
+
+});
+
+/*Extension Box*/
+
+$(document).on('click', '.enter-ext', function(){
+
+	$(".form-group").removeClass('has-error');
+
+	var iduser = Cookies.get('id');
+	var ext = $("#extension #ext-number").val();
+
+	console.log(ext);
+
+	if($("#ext-number").val() == ''){
+
+		alert("El campo es Obligatorio");
+		$(".form-group").addClass('has-error');
+
+		//window.open('http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm?usuariosId='+iduser+'&ext='+ext+'','_blank');
+
+	}else{
+
+		alert("puede pasar");
 
 	}
 
@@ -635,19 +769,6 @@ $(document).on('click', '#search-result .search-back', function(){
 	});
 
 });
-
-	/*
-
-	//only numbers input
-
-	$("#box-phone").keypress(function (e){
-     if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
-        //display error message
-        $(".numbers").html("Solo Numeros").show().fadeOut("slow");
-        return false;
-     }
-  });
-	*/
 
 $(document).on('click', '.add-client', function(){
 
@@ -734,6 +855,14 @@ $(document).on('click', '.build', function(){
 
 $(document).ready(function(){
 
+	$("#ext-number").keypress(function (e){
+		if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
+				//display error message
+				$(".numbers").html("Solo Numeros").show().fadeOut("slow");
+				return false;
+		}
+	});
+
 	if(path == "/engine.html"){
 
 		$.UrlDecode = function(){
@@ -748,10 +877,10 @@ $(document).ready(function(){
 			return vars;
 		};
 
-		//var name = Cookies.get('name');
-	  //var passw = Cookies.get('hermetic');
-		var name = "master";
-		var passw = "master";
+		var name = Cookies.get('name');
+	  var passw = Cookies.get('hermetic');
+		//var name = "master";
+		//var passw = "master";
 
 		if((name == null || name == undefined) && (passw == null || passw == undefined)){
 
@@ -919,8 +1048,8 @@ function onsetEngineError(data){
 
 $.cssEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -937,8 +1066,8 @@ $.cssEngine = function(data){
 
 $.baselayoutEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -988,8 +1117,8 @@ $.baselayoutEngine = function(data){
 
 $.captureRenderEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Campos Captura Asesor</h3><div class="fields"></div>');
 
@@ -1087,8 +1216,8 @@ $.captureRenderEngine = function(data){
 
 $.typificationsEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	$('#Builder_Engine .tree').append('<h3 class="text-center"><span class="glyphicon glyphicon-tags"></span> Tipificaciones</h3>');
 
@@ -1098,9 +1227,10 @@ $.typificationsEngine = function(data){
 
 			var data = data[i].tipologias;
 
-			$('#Builder_Engine .tree').jstree({ 'core' : {
-				data
-			}});
+			$('#Builder_Engine .tree').jstree({ 'core':{
+				"data": data
+				}
+			});
 
 		}
 
@@ -1110,8 +1240,8 @@ $.typificationsEngine = function(data){
 
 $.productsEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	var skillidx = Cookies.get('SkillId');
+	//var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -1120,7 +1250,7 @@ $.productsEngine = function(data){
 			var data = data[i].productos;
 			$('#Builder_Engine .products').append('<h3 class="text-center"><span class="glyphicon glyphicon-tag"></span> Productos</h3>');
 			$('#Builder_Engine .products').jstree({ 'core' : {
-				data
+				"data": data
 			}});
 
 		}
