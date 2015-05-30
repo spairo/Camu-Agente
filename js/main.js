@@ -1,7 +1,7 @@
 /*+++++++++++++++++++++++++++++++
 		Fusion Project Agente
 			  Atento Mexico
-	Developed By Ninja Developers
+	 Developed By Ninja Developers
  ++++++++++++++++++++++++++++++++*/
 
 
@@ -709,10 +709,33 @@ $(document).on('click', '.box-add .search-back', function(){
 
 $(document).ready(function(){
 
+	var name = Cookies.get('name');
+	var passw = Cookies.get('hermetic');
+
+	//var name = "master";
+	//var passw = "master";
+
 	if(path == "/" || path == "/index.html"){
 
-		alert("soy index");
+		/*if((name == null || name == undefined) && (passw == null || passw == undefined)){
 
+			//window.location.href='/';
+
+		}else{
+			//$("#logdIn").slideUp();
+			//$("#main").slideDown();
+			//$("#services").slideDown();
+
+			$("#logdIn").slideUp("slow", function(){
+				$("#main").slideDown("slow", function(){
+					$("#services").slideDown();
+				});
+			});
+
+		}
+		*/
+
+		//Extension validate
 		$("#ext-number").keypress(function(e){
 			if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
 					//display error message
@@ -734,11 +757,6 @@ $(document).ready(function(){
 			return vars;
 
 		};
-
-		var name = Cookies.get('name');
-	  var passw = Cookies.get('hermetic');
-		//var name = "master";
-		//var passw = "master";
 
 		if((name == null || name == undefined) && (passw == null || passw == undefined)){
 
@@ -1333,11 +1351,7 @@ $.onsaveTyping = function(id, comment){
 		dataType: "json",
 		success: function(data){
 
-		//console.log("grabaste typing", data);
-
-		$.typiHistoryEngine();
-
-
+			$.typiHistoryEngine();
 
 		},error: function(data){
 			//console.log("algo salio mal");
