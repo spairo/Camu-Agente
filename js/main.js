@@ -22,7 +22,7 @@ $(window).load(function(){
 
 //login
 
-$.login = function(user, password){
+$.login = function(user, password, extension){
 
   var url = ws+"rg_seguridadLogin";
 
@@ -60,6 +60,7 @@ $.login = function(user, password){
 
 									Cookies.set('UserLogin', user);
 									Cookies.set('hermetic', password);
+									Cookies.set('extension', extension);
 
 									$.main(id, name, profile);
 									$.Menu(dataM);
@@ -80,6 +81,7 @@ $.login = function(user, password){
 
 					if(logResp.indexOf("Error") > -1 == true){
 						alert(response[0].Informacion);
+						$("#logdIn #login").prop('disabled', false);
 						return false;
 					}
 
@@ -87,6 +89,7 @@ $.login = function(user, password){
 
 			}else{
 				alert("Usuario no Valido");
+				$("#logdIn #login").prop('disabled', false);
 				return false;
 			}
 
@@ -150,15 +153,24 @@ $.skills = function(data){
 
 	//var skills_evals = Object.keys(data).length; //IE8 sucks
 	var skills_evals = data;
+	var servicioid = Cookies.get('serviciosId');
 
 	$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
 
 	for(var i = 0; i < skills_evals.length; i++){
-		var skill = skills_evals[i].skill;
-		var skillsId = skills_evals[i].skillsId;
 
-		var content = '<option class="skilloption" value="'+skillsId+'">'+skill+'</option>';
-		$('.box-skills select.skillchoice').append(content);
+		var skills = skills_evals[i].skills;
+
+		for(var i = 0; i < skills.length; i++){
+
+			var skillsId = skills[i].skillsId;
+			var skill = skills[i].skill;
+
+			var content = '<option class="skilloption" value="'+skillsId+'">'+skill+'</option>';
+			$('.box-skills select.skillchoice').append(content);
+
+		}
+
 	}
 
 };
@@ -490,8 +502,11 @@ $(document).on('click', '#login', function(){
 
 	var user = $('#user').val();
 	var password = $('#password').val();
+	var extension = $("#extens").val();
 
-	if($("#user").val() == '' || $("#password").val() == ''){
+	console.log(extension);
+
+	if($("#user").val() == '' || $("#password").val() == '' || $("#extens").val() == ''){
 
 		alert("Los campos son obligatorios");
 		$(".form-group").addClass('has-error');
@@ -499,7 +514,7 @@ $(document).on('click', '#login', function(){
 		return false;
 
 	}else{
-		$.login(user, password);
+		$.login(user, password, extension);
 	}
 
 });
@@ -517,6 +532,7 @@ $(document).on('click', '#logout', function(){
 	Cookies.remove('serviciosId');
 	Cookies.remove('clientesId');
 	Cookies.remove('clientesClaveId');
+	Cookies.remove('extension');
 
 	location.reload();
 
@@ -540,13 +556,65 @@ $(document).on('click', '.service-choice', function(){
 $(document).on('click', '.choice-skill', function(){
 
 	var skillID = $(".skillchoice").val();
-
 	Cookies.set('SkillId', skillID);
+
+	var serviciosid = Cookies.get('serviciosId');
+	var iduser = Cookies.get('id');
+	var extension = Cookies.get('extension');
 
 	$.updateSession(skillID);
 
 	//CtiRedirect
 
+	for(var i = 0; i < str.length; i++){
+
+		if(serviciosid == str[i].serviciosId){
+
+			var skills = str[i].skills;
+
+			for(var i = 0; i < skills.length; i++){
+
+				if(skillID == skills[i].skillsId){
+
+					console.log(skills[i].interfaces);
+					var interfaces = skills[i].interfaces;
+
+					if(interfaces == ""){
+
+						$("#skills").slideUp("slow", function(){
+							$("#search").slideDown().show();
+						});
+
+					}else{
+
+						for(var i = 0; i < interfaces.length; i++){
+
+							var url = interfaces[i].url;
+
+							if(url == ""){
+
+								$("#skills").slideUp("slow", function(){
+									$("#search").slideDown().show();
+								});
+
+							}
+							else{
+								window.open(''+url+'?usuariosId='+iduser+'&ext='+extension+'','_blank');
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	/*
 	for(var i = 0; i < str.length; i++){
 
 		if(skillID == str[i].skillsId){
@@ -577,11 +645,12 @@ $(document).on('click', '.choice-skill', function(){
 		}
 
 	}
+	*/
 
 });
 
 /*Extension Box*/
-
+/*
 $(document).on('click', '.enter-ext', function(){
 
 	$(".form-group").removeClass('has-error');
@@ -603,6 +672,7 @@ $(document).on('click', '.enter-ext', function(){
 	}
 
 });
+*/
 
 /*Search*/
 
@@ -736,7 +806,7 @@ $(document).ready(function(){
 		*/
 
 		//Extension validate
-		$("#ext-number").keypress(function(e){
+		$("#extens").keypress(function(e){
 			if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
 					//display error message
 					$(".numbers").html("Solo Numeros").show().fadeOut("slow");

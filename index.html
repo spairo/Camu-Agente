@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
     <meta http-equiv="X-UA-Compatible" content="IE=9">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Camu.Agente</title>
 
@@ -16,7 +17,6 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-
   </head>
   <body>
     <div class="loader"></div>
@@ -71,6 +71,10 @@
                 <div class="form-group">
                   <label class="control-label" for="password">Password</label>
                   <input type="password" id="password" class="form-control" maxlength="20" placeholder="Password" value="master" required>
+                </div>
+                <div class="form-group">
+                  <label class="control-label" for="ext">Extensión <span class="numbers"></span></label>
+                  <input type="text" class="form-control input-lg" id="extens" maxlength="5" placeholder="Extension" value="85477">
                 </div>
                 <button id="login" data-loading-text="Loading..."class="btn btn-lg btn-login btn-block" autocomplete="off"><span class="glyphicon glyphicon-log-in"></span> Entrar</button>
             </div>
