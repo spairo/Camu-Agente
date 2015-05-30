@@ -1,7 +1,9 @@
-/*============================
-      Main Fusion Agente.
-			Atento Mexico.
-=============================*/
+/*+++++++++++++++++++++++++++++++
+		Fusion Project Agente
+			  Atento Mexico
+	Developed By Ninja Developers
+ ++++++++++++++++++++++++++++++++*/
+
 
 window.ws = "http://172.18.149.21/Servicios/REST.svc/";
 window.ctiurl = "http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm";
@@ -701,6 +703,57 @@ $(document).on('click', '.box-add .search-back', function(){
 
 });
 
+/*+++++++++++++++++++++++++++++++
+	Document Object Model General
+ ++++++++++++++++++++++++++++++++*/
+
+$(document).ready(function(){
+
+	if(path == "/" || path == "/index.html"){
+
+		alert("soy index");
+
+		$("#ext-number").keypress(function(e){
+			if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
+					//display error message
+					$(".numbers").html("Solo Numeros").show().fadeOut("slow");
+					return false;
+			}
+		});
+
+	}
+	if(path == "/engine.html"){
+
+		$.UrlDecode = function(){
+
+			var vars = {};
+		       
+			var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value){
+					vars[key] = value;			 
+			});
+			return vars;
+
+		};
+
+		var name = Cookies.get('name');
+	  var passw = Cookies.get('hermetic');
+		//var name = "master";
+		//var passw = "master";
+
+		if((name == null || name == undefined) && (passw == null || passw == undefined)){
+
+			var CtiClientesId = $.UrlDecode()["clientesId"];
+			var CtiVclave = $.UrlDecode()["vclave"];
+
+			window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
+
+		}else{
+			$.onsetEngine(name, passw);
+		}
+
+	}
+
+});
 
 /*+++++++++++++++++++++++++++++++
 		Template Builder Engine
@@ -727,50 +780,6 @@ $(document).on('click', '.build', function(){
 			window.open('engine.html', '_blank');
 		}
 	});
-
-});
-
-$(document).ready(function(){
-
-	$("#ext-number").keypress(function (e){
-		if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
-				//display error message
-				$(".numbers").html("Solo Numeros").show().fadeOut("slow");
-				return false;
-		}
-	});
-
-	if(path == "/engine.html"){
-
-		$.UrlDecode = function(){
-
-			//Catch all params url
-
-			var vars = {};
-		       
-			var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value){
-					vars[key] = value;			 
-			});
-			return vars;
-		};
-
-		var name = Cookies.get('name');
-	  var passw = Cookies.get('hermetic');
-		//var name = "master";
-		//var passw = "master";
-
-		if((name == null || name == undefined) && (passw == null || passw == undefined)){
-
-			var CtiClientesId = $.UrlDecode()["clientesId"];
-			var CtiVclave = $.UrlDecode()["vclave"];
-
-			window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
-
-		}else{
-			$.onsetEngine(name, passw);
-		}
-
-	}
 
 });
 
