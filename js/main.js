@@ -3,8 +3,6 @@
 			Atento Mexico.
 =============================*/
 
-//Settings
-
 window.ws = "http://172.18.149.21/Servicios/REST.svc/";
 window.ctiurl = "http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm";
 window.match = location.hash.match(/^#?(.*)$/)[1];
@@ -13,6 +11,8 @@ var path = window.location.pathname;
 //Higher scope
 
 var str;
+var scope_url;
+
 
 $(window).load(function(){
 	$(".loader").fadeOut("slow");
@@ -40,7 +40,7 @@ $.login = function(user, password){
 
 				var logResp = response[0].Informacion;
 
-				if (typeof logResp === 'undefined') {
+				if(typeof logResp === 'undefined'){
 
 					$("#user").val('');
 					$("#password").val('');
@@ -65,8 +65,6 @@ $.login = function(user, password){
 									$.services(dataS);
 
 									str = dataS;
-
-									//$.ctiInterface(dataS);
 
 									$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
 									$(".form-group").removeClass('has-error');
@@ -481,31 +479,26 @@ $.Menu = function(data){
 
 };
 
-
 /*Login*/
 
 $(document).on('click', '#login', function(){
 
+	$(".form-group").removeClass('has-error');
+	$("#logdIn #login").prop('disabled', true);
+
 	var user = $('#user').val();
 	var password = $('#password').val();
 
-	$(this).button('loading').delay(1000).queue(function(){
+	if($("#user").val() == '' || $("#password").val() == ''){
 
-		if($("#user").val() == '' || $("#password").val() == ''){
+		alert("Los campos son obligatorios");
+		$(".form-group").addClass('has-error');
+		$("#logdIn #login").prop('disabled', false);
+		return false;
 
-				alert("Los campos son obligatorios");
-				$(".form-group").addClass('has-error')
-				$("#login").removeAttr("disabled");
-				return false;
-
-		}else{
-			$.login(user, password);
-		}
-
-		$(this).button('reset');
-		$(this).dequeue();
-
-  });
+	}else{
+		$.login(user, password);
+	}
 
 });
 
@@ -531,155 +524,12 @@ $(document).on('click', '#logout', function(){
 
 $(document).on('click', '.service-choice', function(){
 
-	console.log("haciendo click");
-
 	var serviciosID = $(".serviceoption").val();
 	Cookies.set('serviciosId', serviciosID);
 
-	//CtiRedirect
-
-	console.log(str);
-
-	for(var i = 0; i < str.length; i++){
-
-		if(serviciosID == str[i].serviciosId){
-
-			var interfaces = str[i].interfaces;
-			console.log(interfaces);
-
-			for(var i = 0; i < interfaces.length; i++){
-
-				var interface = interfaces[0].activo;
-				console.log(interface);
-
-				if(interface == 1){
-
-					$("#services").slideUp("slow", function(){
-						$("#extension").slideDown("slow").show();
-					});
-
-				}else{
-					$("#services").slideUp("slow", function(){
-						$("#skills").slideDown("slow").show();
-					});
-				}
-
-			}
-
-		}
-
-	}
-
-	/*
-	for(var i = 0; i < str.length; i++){
-
-		if(serviciosID == str[i].serviciosId){
-
-			var interface = str[i].interfaces[i].activo;
-
-			if(interface == 1){
-
-				//window.location.href='http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm?usuariosId='+foo+'';
-				//window.open('http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm?usuariosId='+iduser+'','_blank');
-				//window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
-				console.log("Voy por flujo Cti");
-
-			}else{
-
-				console.log("Voy por flujo Manual");
-
-				//$("#skills").slideUp("slow", function(){
-					//$("#search").slideDown("slow").show();
-				//});
-			}
-
-		}
-
-	}*/
-
-		/*
-		function doSomething(someargums) {
-			return status;
-		}
-		*/
-		//var response = doSomething();
-
-		//Cookies.get('serviciosId');
-
-		/*
-		$.ctiSkill = function(serviciosID){
-			return serviciosID;
-		};
-		*/
-
-		//var testtt = $.ctiSkill();
-		//var response = $.ctiSkill();
-
-		//console.log("-", testtt);
-
-		//for(var i = 0; i < data.length; i++){
-
-			//if(serviciosID == data[i].serviciosId){
-
-				//var interface = data[0].interfaces;
-
-				//var active = interface[0].activo;
-
-				//console.log("@", interface);
-
-				/*
-				if(interface == 1){
-
-					var iduser = Cookies.get('id');
-
-					//window.location.href='http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm?usuariosId='+foo+'';
-					window.open('http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm?usuariosId='+iduser+'','_blank');
-					//window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
-				*/
-
-				//}else{
-					//$("#skills").slideUp("slow", function(){
-						//$("#search").slideDown("slow").show();
-					//});
-				//}
-
-			//}
-
-		//}
-
-	//};
-
-
-
-	/*
-	var CtiVclave = $.UrlDecode()["vclave"];
-	var CtiClientesId = $.UrlDecode()["clientesId"];
-
-	console.log("vc", CtiVclave);
-	console.log("cid", CtiClientesId);
-
-	if(CtiClientesId == null || CtiClientesId == undefined && CtiVclave == undefined || CtiVclave == null){
-
-			$("#skills").slideUp("slow", function(){
-				$("#search").slideDown("slow").show();
-			});
-
-	}else{
-
-			alert("Flow url");
-
-			$("#skills").slideUp("slow", function(){
-
-				$("#search-result-get").slideDown("slow");
-				$.searchGet();
-
-			});
-	}
-	*/
-
-	/*$("#services").slideUp("slow", function(){
-		$("#skills").slideDown("slow").show();
-	});*/
+	$("#services").slideUp("slow", function(){
+		$("#skills").slideDown().show();
+	});
 
 });
 
@@ -693,9 +543,38 @@ $(document).on('click', '.choice-skill', function(){
 
 	$.updateSession(skillID);
 
-	$("#skills").slideUp("slow", function(){
-		$("#extension").slideDown("slow").show();
-	});
+	//CtiRedirect
+
+	for(var i = 0; i < str.length; i++){
+
+		if(skillID == str[i].skillsId){
+
+			var interfaces = str[i].interfaces;
+
+			if(interfaces == ""){
+
+				$("#skills").slideUp("slow", function(){
+					$("#search").slideDown().show();
+				});
+
+			}else{
+
+				for(var i = 0; i < interfaces.length; i++){
+
+					var interface = interfaces[i].url;
+					scope_url = interface;
+
+					$("#skills").slideUp("slow", function(){
+						$("#extension").slideDown().show();
+					});
+
+				}
+
+			}
+
+		}
+
+	}
 
 });
 
@@ -715,11 +594,9 @@ $(document).on('click', '.enter-ext', function(){
 		alert("El campo es Obligatorio");
 		$(".form-group").addClass('has-error');
 
-		//window.open('http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm?usuariosId='+iduser+'&ext='+ext+'','_blank');
-
 	}else{
 
-		alert("puede pasar");
+		window.open(''+scope_url+'?usuariosId='+iduser+'&ext='+ext+'','_blank');
 
 	}
 
@@ -1045,6 +922,8 @@ function onsetEngineError(data){
 	alert("Error44: " + data.status + " " + data.statusText);
 	$(".loader").slideDown("slow");
 }
+
+// Render Engine Ends
 
 $.cssEngine = function(data){
 
