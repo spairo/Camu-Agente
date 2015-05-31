@@ -6657,14 +6657,13 @@ button.close {
   width:auto !important;
   width:350px;
   padding: 15px;
-  margin: 100px auto;
+  margin: 30px auto;
 }
   .form-login .form-login-heading{
-    color: #7F8C97;
-    font-weight: bold;
-    margin-bottom: 30px;
+    background: transparent url("../img/LogoFusion.png") no-repeat;
+    width: 300px;
+    height: 280px;
     text-align: center;
-    font-size: 26px;
   }
   .form-login .form-control{
     position: relative;

@@ -14,7 +14,7 @@ var path = window.location.pathname;
 
 var str;
 var scope_url;
-
+var scope_service;
 
 $(window).load(function(){
 	$(".loader").fadeOut("slow");
@@ -71,6 +71,7 @@ $.login = function(user, password, extension){
 
 									$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
 									$(".form-group").removeClass('has-error');
+									$(".navbar-top").slideDown().show();
 									$("#main").slideDown().show();
 
 							});
@@ -140,7 +141,7 @@ $.services = function(data){
 		var serviciosId = services_evals[i].serviciosId;
 		var servicio = services_evals[i].servicio;
 
-		var content = '<option class="serviceoption" value="'+serviciosId+'">'+servicio+'</option>';
+		var content = '<option class="serviceoption" name="'+serviciosId+'" value="'+serviciosId+'">'+servicio+'</option>';
 		$('.box-services select.servicechoice').append(content);
 
 	}
@@ -153,21 +154,27 @@ $.skills = function(data){
 
 	//var skills_evals = Object.keys(data).length; //IE8 sucks
 	var skills_evals = data;
-	var servicioid = Cookies.get('serviciosId');
+  var servis = Cookies.get('serviceId');
 
-	$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
+	$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block btn"><span class="glyphicon glyphicon-ok"></span></button>');
 
 	for(var i = 0; i < skills_evals.length; i++){
 
-		var skills = skills_evals[i].skills;
+		if(servis == skills_evals[i].serviciosId){
 
-		for(var i = 0; i < skills.length; i++){
+			var skills = skills_evals[i].skills;
 
-			var skillsId = skills[i].skillsId;
-			var skill = skills[i].skill;
+			console.log("objs", skills);
 
-			var content = '<option class="skilloption" value="'+skillsId+'">'+skill+'</option>';
-			$('.box-skills select.skillchoice').append(content);
+			for(var i = 0; i < skills.length; i++){
+
+				var skillsId = skills[i].skillsId;
+				var skill = skills[i].skill;
+
+				var content = '<option class="skilloption" value="'+skillsId+'">'+skill+'</option>';
+				$('#skills .box-skills select.skillchoice').append(content);
+
+			}
 
 		}
 
@@ -504,8 +511,6 @@ $(document).on('click', '#login', function(){
 	var password = $('#password').val();
 	var extension = $("#extens").val();
 
-	console.log(extension);
-
 	if($("#user").val() == '' || $("#password").val() == '' || $("#extens").val() == ''){
 
 		alert("Los campos son obligatorios");
@@ -533,6 +538,8 @@ $(document).on('click', '#logout', function(){
 	Cookies.remove('clientesId');
 	Cookies.remove('clientesClaveId');
 	Cookies.remove('extension');
+	Cookies.remove('services');
+	Cookies.remove('serviceId');
 
 	location.reload();
 
@@ -540,10 +547,12 @@ $(document).on('click', '#logout', function(){
 
 /*Services Box*/
 
-$(document).on('click', '.service-choice', function(){
+$(document).on('click', '#services .service-choice', function(){
 
-	var serviciosID = $(".serviceoption").val();
+	var serviciosID = $(".servicechoice").val();
 	Cookies.set('serviciosId', serviciosID);
+	Cookies.set('serviceId', serviciosID);
+	alert(serviciosID);
 
 	$("#services").slideUp("slow", function(){
 		$("#skills").slideDown().show();
@@ -561,7 +570,7 @@ $(document).on('click', '.choice-skill', function(){
 	var serviciosid = Cookies.get('serviciosId');
 	var iduser = Cookies.get('id');
 	var extension = Cookies.get('extension');
-
+	console.log(iduser);
 	$.updateSession(skillID);
 
 	//CtiRedirect
@@ -599,6 +608,8 @@ $(document).on('click', '.choice-skill', function(){
 
 							}
 							else{
+								$("#skills .choice-skill").prop('disabled', true);
+								$("#skills .skillchoice").prop('disabled', true);
 								window.open(''+url+'?usuariosId='+iduser+'&ext='+extension+'','_blank');
 							}
 
