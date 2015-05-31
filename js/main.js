@@ -19,6 +19,17 @@ $(window).load(function(){
 	$(".loader").fadeOut("slow");
 });
 
+//window.onbeforeunload = function(){
+	//$.foo();
+	//return "Vas a salir de la aplicacion";
+	//return $.foo();
+//};
+
+$.foo = function(){
+	//alert("only once")
+	console.log("logout application");
+};
+
 //login
 
 $.login = function(user, password, extension){
@@ -203,6 +214,8 @@ $.searchGet = function(){
 		usuarioId: myid,
 		valorClave: CtiVclave
 	};
+
+	console.log(Data);
 
 	$.support.cors = true;
 	$.ajax({
@@ -564,7 +577,7 @@ $(document).on('click', '#logout', function(){
 		}
 
 	});
-	
+
 });
 
 /*Services Box*/
@@ -646,65 +659,8 @@ $(document).on('click', '.choice-skill', function(){
 
 	}
 
-	/*
-	for(var i = 0; i < str.length; i++){
-
-		if(skillID == str[i].skillsId){
-
-			var interfaces = str[i].interfaces;
-
-			if(interfaces == ""){
-
-				$("#skills").slideUp("slow", function(){
-					$("#search").slideDown().show();
-				});
-
-			}else{
-
-				for(var i = 0; i < interfaces.length; i++){
-
-					var interface = interfaces[i].url;
-					scope_url = interface;
-
-					$("#skills").slideUp("slow", function(){
-						$("#extension").slideDown().show();
-					});
-
-				}
-
-			}
-
-		}
-
-	}
-	*/
-
 });
 
-/*Extension Box*/
-/*
-$(document).on('click', '.enter-ext', function(){
-
-	$(".form-group").removeClass('has-error');
-
-	var iduser = Cookies.get('id');
-	var ext = $("#extension #ext-number").val();
-
-	console.log(ext);
-
-	if($("#ext-number").val() == ''){
-
-		alert("El campo es Obligatorio");
-		$(".form-group").addClass('has-error');
-
-	}else{
-
-		window.open(''+scope_url+'?usuariosId='+iduser+'&ext='+ext+'','_blank');
-
-	}
-
-});
-*/
 
 /*Search*/
 
@@ -809,6 +765,15 @@ $(document).on('click', '.box-add .search-back', function(){
 	Document Object Model General
  ++++++++++++++++++++++++++++++++*/
 
+/*
+$(window).load(function(){
+	if(path == "/" || path == "/index.html"){
+
+
+	}
+});
+*/
+
 $(document).ready(function(){
 
 	var name = Cookies.get('name');
@@ -818,18 +783,36 @@ $(document).ready(function(){
 	//var passw = "master";
 
 	if(path == "/" || path == "/index.html"){
-		/*
+
+		$.UrlDecode = function(){
+			var vars = {};
+			var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value){
+					vars[key] = value;			 
+			});
+			return vars;
+		};
+
 		if((name == null || name == undefined) && (passw == null || passw == undefined)){
+
 
 		}else{
 
-			$("#logdIn").slideUp("slow", function(){
-				$("#main").slideDown("slow", function(){
-					$("#search").slideDown();
-				});
-			});
+			if($('#logdIn').is(':visible')){
 
-		}*/
+				var CtiClientesId = $.UrlDecode()["clientesId"];
+				var CtiVclave = $.UrlDecode()["vclave"];
+
+				if(CtiVclave == undefined || CtiVclave == null || CtiClientesId == undefined || CtiClientesId == null){
+
+				}else{
+
+					$("#logdIn").slideUp("slow");
+					$.searchGet();
+				}
+
+			}
+
+		}
 
 		//Extension validate
 		$("#extens").keypress(function(e){
@@ -861,7 +844,7 @@ $(document).ready(function(){
 		}else{
 			$.onsetEngine(name, passw);
 
-			return typeof(n) != "boolean" && !isNaN(n);
+			//return typeof(n) != "boolean" && !isNaN(n);
 		}
 
 	}
@@ -885,6 +868,9 @@ $(document).on('click', '.build', function(){
 
 	// Let's build it out
 
+	window.open('engine.html', '_blank')
+
+	/*
 	$.ajax({
 		url: "index.html",
 		type: "POST",
@@ -893,6 +879,7 @@ $(document).on('click', '.build', function(){
 			window.open('engine.html', '_blank');
 		}
 	});
+	*/
 
 });
 
@@ -1016,16 +1003,19 @@ function onsetEngineSuccess(data){
 
 	var factory = data[0].configuracion;
 
+	//console.log("300", factory);
+
 	$(".loader").slideDown("slow", function(){
 
 		$.cssEngine(factory);
+		$.customerInfo();
 		$.baselayoutEngine(factory);
-		$.captureRenderEngine(factory);
-		$.typificationsEngine(factory);
-		$.productsEngine(factory);
-		$.typiHistoryEngine(factory);
-		$.loadCustomersDefault(factory);
-		$.loadCustomersQuotes(factory);
+		//$.captureRenderEngine(factory);
+		//$.typificationsEngine(factory);
+		//$.productsEngine(factory);
+		//$.typiHistoryEngine(factory);
+		//$.loadCustomersDefault(factory);
+		//$.loadCustomersQuotes(factory);
 
 		$(".loader").slideUp("slow", function(){
 
@@ -1049,16 +1039,17 @@ function onsetEngineError(data){
 
 $.cssEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var serviciosId = Cookies.get('serviciosId');
+	var serviciosidx = "1";
 
 	for(var i = 0; i < data.length; i++){
 
-		if(skillidx == data[i].skillsId){
-
+		if(serviciosidx == data[i].serviciosId){
+			/*
 			var cssDinamic = data[i].cssAgente;
+			console.log(cssDinamic);
 			$("head").append("<!-- Dinamic Css --><style>" + cssDinamic + "</style><!-- //Dinamic Css -->");
-
+			*/
 		}
 
 	}
@@ -1067,8 +1058,8 @@ $.cssEngine = function(data){
 
 $.baselayoutEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	//var skillidx = Cookies.get('SkillId');
+	var skillidx = "3";
 
 	for(var i = 0; i < data.length; i++){
 
@@ -1108,8 +1099,9 @@ $.baselayoutEngine = function(data){
 					}
 
 				}else{
-					//$('.base_layout').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Layout Base.</div>');
+					$('.base_layout').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Layout Base.</div>');
 				}
+				*/
 		}
 
 	}
@@ -1260,7 +1252,75 @@ $.productsEngine = function(data){
 
 };
 
+
 $(window).load(function(){
+
+	$.customerInfo = function(){
+
+		var url = ws+"rg_MuestraCliente";
+
+		var myid = Cookies.get('id');
+		var skillsId = Cookies.get('SkillId');
+		var serviciosId = Cookies.get('serviciosId');
+		var clientesId = Cookies.get('clientesId');
+		var CtiClientesId = $.UrlDecode()["clientesId"];
+
+		if(CtiClientesId == null || CtiClientesId == undefined){
+
+			var Data = {
+				serviciosId: serviciosId,
+				skillId: skillsId,
+				clientesId: clientesId,
+				usuarioId: myid
+			}
+
+		}else{
+
+			var Data = {
+				serviciosId: serviciosId,
+				skillId: skillsId,
+				clientesId: CtiClientesId,
+				usuarioId: myid
+			}
+		}
+
+		$.support.cors = true;
+		$.ajax({
+			type: "GET",
+			url: url,
+			crossDomain: true,
+			data: Data,
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function(data){
+
+				var names = data[0].nombre1 + ' ' + data[0].nombre2;
+				var pat = data[0].apellido1;
+				var mat = data[0].apellido2;
+				var Vclave = data[0].valorClave;
+				var lada = data[0].lada;
+				var ext = data[0].extension;
+
+
+				var content = '<h3 class="text-center"><span class="glyphicon glyphicon-user"></span> Datos Generales</h3><div class="form-group"><label for="valorclave">Nomnbre</label><input type="text" class="form-control input-sm" id="names" val="'+names+'" placeholder=""></div><div class="form-group"><label for="valorclave">Apellido Paterno</label><input type="text" class="form-control input-sm" id="pat" val="'+pat+'" ></div><div class="form-group"><label for="valorclave">Apellido Materno</label><input type="text" class="form-control input-sm" id="mat" val="'+mat+'" placeholder="Apellido Materno"></div><div class="form-group"><label for="valorclave">Valor Clave</label><input type="text" class="form-control input-sm" id="vclave" val="'+Vclave+'"></div><div class="row"><div class="col-md-6"><div class="form-group"><label for="Lada">Lada</label><input type="text" class="form-control input-sm" id="lada" val="'+lada+'"></div></div><div class="col-md-6"><div class="form-group"><label for="valorclave">Extension</label><input type="text" class="form-control input-sm" id="ext" val="'+ext+'"></div></div></div>';
+				$('#Builder_Engine .container-fluid .customerInfo').append(content);
+
+
+				$('.customerInfo #names').val(names).prop('disabled', true);
+				$('.customerInfo #pat').val(pat).prop('disabled', true);
+				$('.customerInfo #mat').val(mat).prop('disabled', true);
+				$('.customerInfo #vclave').val(Vclave).prop('disabled', true);
+				$('.customerInfo #lada').val(lada).prop('disabled', true);
+				$('.customerInfo #ext').val(ext).prop('disabled', true);
+
+
+			},error: function(data){
+				alert("ErrorWS: " + data.status + " " + data.statusText);
+			}
+
+		});
+
+	};
 
 	$.loadCustomersDefault = function(data){
 
@@ -1271,6 +1331,9 @@ $(window).load(function(){
 		var serviciosId = Cookies.get('serviciosId');
 		var clientesId = Cookies.get('clientesId');
 
+		var CtiClientesId = $.UrlDecode()["clientesId"];
+		console.log("++++++++++", CtiClientesId);
+
 		var Data = {
 			serviciosId: serviciosId,
 			skillId: skillsId,
@@ -1279,7 +1342,6 @@ $(window).load(function(){
 		}
 
 		$.support.cors = true;
-
 	  $.ajax({
 	    type: "GET",
 	    url: url,
@@ -1349,7 +1411,6 @@ $(window).load(function(){
 	};
 
 });
-
 
 $.typiHistoryEngine = function(data){
 
