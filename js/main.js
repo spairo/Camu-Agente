@@ -14,7 +14,6 @@ var path = window.location.pathname;
 
 var str;
 var scope_url;
-var scope_service;
 
 $(window).load(function(){
 	$(".loader").fadeOut("slow");
@@ -26,7 +25,7 @@ $.login = function(user, password, extension){
 
   var url = ws+"rg_seguridadLogin";
 
-  var Data = { User: user, Password: password };
+  var Data = { User: user, Password: password, extension: extension };
 
 	$.support.cors = true;
   $.ajax({
@@ -154,31 +153,32 @@ $.skills = function(data){
 
 	//var skills_evals = Object.keys(data).length; //IE8 sucks
 	var skills_evals = data;
-  var servis = Cookies.get('serviceId');
 
-	$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block btn"><span class="glyphicon glyphicon-ok"></span></button>');
+	$.serviceid = function(servis){
 
-	for(var i = 0; i < skills_evals.length; i++){
+		$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block btn"><span class="glyphicon glyphicon-ok"></span></button>');
 
-		if(servis == skills_evals[i].serviciosId){
+		for(var i = 0; i < skills_evals.length; i++){
 
-			var skills = skills_evals[i].skills;
+			if(servis == skills_evals[i].serviciosId){
 
-			console.log("objs", skills);
+				var skills = skills_evals[i].skills;
 
-			for(var i = 0; i < skills.length; i++){
+				for(var i = 0; i < skills.length; i++){
 
-				var skillsId = skills[i].skillsId;
-				var skill = skills[i].skill;
+					var skillsId = skills[i].skillsId;
+					var skill = skills[i].skill;
 
-				var content = '<option class="skilloption" value="'+skillsId+'">'+skill+'</option>';
-				$('#skills .box-skills select.skillchoice').append(content);
+					var content = '<option class="skilloption" value="'+skillsId+'">'+skill+'</option>';
+					$('#skills .box-skills select.skillchoice').append(content);
+
+				}
 
 			}
 
 		}
 
-	}
+	};
 
 };
 
@@ -528,21 +528,43 @@ $(document).on('click', '#login', function(){
 
 $(document).on('click', '#logout', function(){
 
-	Cookies.remove('id');
-	Cookies.remove('name');
-	Cookies.remove('profile');
-	Cookies.remove('UserLogin');
-	Cookies.remove('hermetic');
-	Cookies.remove('SkillId');
-	Cookies.remove('serviciosId');
-	Cookies.remove('clientesId');
-	Cookies.remove('clientesClaveId');
-	Cookies.remove('extension');
-	Cookies.remove('services');
-	Cookies.remove('serviceId');
+	var url = ws+"rg_RegistraLogout";
 
-	location.reload();
+	var myid = Cookies.get('id');
 
+	var Data = { usuariosId: myid };
+
+	$.support.cors = true;
+	$.ajax({
+		type: "GET",
+		url: url,
+		crossDomain: true,
+		data: Data,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(data){
+
+			Cookies.remove('id');
+			Cookies.remove('name');
+			Cookies.remove('profile');
+			Cookies.remove('UserLogin');
+			Cookies.remove('hermetic');
+			Cookies.remove('SkillId');
+			Cookies.remove('serviciosId');
+			Cookies.remove('clientesId');
+			Cookies.remove('clientesClaveId');
+			Cookies.remove('extension');
+			Cookies.remove('services');
+			Cookies.remove('serviceId');
+
+			location.reload();
+
+		},error: function(data){
+			//console.log("algo salio mal");
+		}
+
+	});
+	
 });
 
 /*Services Box*/
@@ -551,8 +573,8 @@ $(document).on('click', '#services .service-choice', function(){
 
 	var serviciosID = $(".servicechoice").val();
 	Cookies.set('serviciosId', serviciosID);
-	Cookies.set('serviceId', serviciosID);
-	alert(serviciosID);
+
+	$.serviceid(serviciosID);
 
 	$("#services").slideUp("slow", function(){
 		$("#skills").slideDown().show();
@@ -585,7 +607,6 @@ $(document).on('click', '.choice-skill', function(){
 
 				if(skillID == skills[i].skillsId){
 
-					console.log(skills[i].interfaces);
 					var interfaces = skills[i].interfaces;
 
 					if(interfaces == ""){
@@ -797,24 +818,18 @@ $(document).ready(function(){
 	//var passw = "master";
 
 	if(path == "/" || path == "/index.html"){
-
-		/*if((name == null || name == undefined) && (passw == null || passw == undefined)){
-
-			//window.location.href='/';
+		/*
+		if((name == null || name == undefined) && (passw == null || passw == undefined)){
 
 		}else{
-			//$("#logdIn").slideUp();
-			//$("#main").slideDown();
-			//$("#services").slideDown();
 
 			$("#logdIn").slideUp("slow", function(){
 				$("#main").slideDown("slow", function(){
-					$("#services").slideDown();
+					$("#search").slideDown();
 				});
 			});
 
-		}
-		*/
+		}*/
 
 		//Extension validate
 		$("#extens").keypress(function(e){
@@ -829,14 +844,11 @@ $(document).ready(function(){
 	if(path == "/engine.html"){
 
 		$.UrlDecode = function(){
-
 			var vars = {};
-		       
 			var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value){
 					vars[key] = value;			 
 			});
 			return vars;
-
 		};
 
 		if((name == null || name == undefined) && (passw == null || passw == undefined)){
@@ -848,6 +860,8 @@ $(document).ready(function(){
 
 		}else{
 			$.onsetEngine(name, passw);
+
+			return typeof(n) != "boolean" && !isNaN(n);
 		}
 
 	}
