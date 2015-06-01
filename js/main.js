@@ -650,8 +650,8 @@ $(document).on('click', '.choice-skill', function(){
 								var CtiClientesId = $.UrlDecode()["clientesId"];
 								var CtiVclave = $.UrlDecode()["vclave"];
 
-								window.location.href='engine.html?clientesId='+iduser+'&ext='+extension+'';
-
+								//window.location.href='engine.html?clientesId='+iduser+'&ext='+extension+'';
+								window.location.href='engine.html?clientesId=&ext='+extension+'';
 							//	window.open(''+url+'?usuariosId='+iduser+'&ext='+extension+'','_blank');
 							}
 
@@ -960,16 +960,20 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 		// Get typing selected
 
 		var treetagid = $('#Builder_Engine .trees .tags .tag').attr('id');
+		var treetagtext = $('#Builder_Engine .trees .tags .tag').val();
 		var treecomment = "comentario";
-		$.onsaveTyping(treetagid, treecomment);
+		//$.onsaveTyping(treetagid, treecomment);
 
+
+		console.log(treetagtext);
+		$.skillsTyping(treetagid);
 
 		// Get product selected
 
 		var producttagid = $("#Builder_Engine .product .tags .tag").attr('id');
-		alert(producttagid);
+		//alert(producttagid);
 
-		$.onsaveProducts(producttagid);
+		//$.onsaveProducts(producttagid);
 
 
 		//Get Inputs data Fields
@@ -994,7 +998,7 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 		});
 
-		$.onSaveData(labelarry, inputarry);
+		//$.onSaveData(labelarry, inputarry);
 
 		$.onTransfer();
 
@@ -1041,9 +1045,8 @@ function onsetEngineSuccess(data){
 
 		$(".loader").slideUp("slow", function(){
 
-			$('#Builder_Engine .logout').html('<a href="#" id="logout-builde"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
-
-			$('#Builder_Engine .schedule_appointments').html('<div class="form-group"><label for="">Seleccione Tipo de Cita</label><select class="form-control input-sm Ctc"><option value="1">Cita Llamada</option><option value="2">Cita Presencial</option></select><br /><button class="btn choice-meeting">Seleccionar</button></div>');
+			$('.navbar-top .logoutEngine').html('<a href="#" id="logout-builder"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
+			//$('#foo .logoutEngine').html('<h5>Foo</h5>');
 
 			$("#Builder_Engine .engine-config").html('<div class="col-md-4 col-md-offset-4 well-sm"><button class="btn btn-block btn-engine-done">Guardar Configuracion <span class="glyphicon glyphicon-cog"></span></button></div>');
 
@@ -1268,10 +1271,10 @@ $.captureRenderEngine = function(data){
 $.typificationsEngine = function(data){
 
 	var skillidx = "1";
-	//var serviciosidx = "1";
+	var serviciosidx = "1";
 
-	var skillidx = Cookies.get('SkillId');
-	var serviciosidx = Cookies.get('serviciosId');
+	//var skillidx = Cookies.get('SkillId');
+	//var serviciosidx = Cookies.get('serviciosId');
 
 	$('#Builder_Engine .tree').append('<h3 class="text-center"><span class="glyphicon glyphicon-tags"></span> Tipificaciones</h3>');
 
@@ -1293,15 +1296,14 @@ $.typificationsEngine = function(data){
 						});
 
 						$('#Builder_Engine .tree').on('changed.jstree', function(e, data){
+
 								var i, j, r = [], id = [];
-								for(i = 0, j = data.selected.length; i < j; i++) {
+								for(i = 0, j = data.selected.length; i < j; i++){
 									id.push(data.instance.get_node(data.selected[i]).id);
 									r.push(data.instance.get_node(data.selected[i]).text);
-									//console.log(data.instance.get_node(data.selected[i]).id);
-									//get_node(data.selected[i]).text);
 								}
 								$('.trees .tags').empty().append('<span class="tag" id="'+id.join(', ')+'">'+r.join(', ')+'</span>');
-								//$('.tags').html('Selected: ' + r.join(', '));
+
 						}).jstree();
 
 					}
@@ -1315,11 +1317,11 @@ $.typificationsEngine = function(data){
 
 $.productsEngine = function(data){
 
-	//var skillidx = "1";
-	//var serviciosidx = "1";
+	var skillidx = "1";
+	var serviciosidx = "1";
 
-	var skillidx = Cookies.get('SkillId');
-	var serviciosidx = Cookies.get('serviciosId');
+	//var skillidx = Cookies.get('SkillId');
+	//var serviciosidx = Cookies.get('serviciosId');
 
 
 	for(var i = 0; i < data.length; i++){
@@ -1508,6 +1510,43 @@ $.vdn = function(data){
 				}
 		}
 	}
+
+};
+
+$.skillsTyping = function(node){
+
+		var url = ws+"rg_ListSkillsTipologiasCampos";
+
+		var myid = Cookies.get('id');
+
+		var Data = {
+			skill: "",
+			tipologia: "",
+			usuarioId: myid,
+			skillsId: "",
+			skillTipologiasId: node
+		}
+
+		$.support.cors = true;
+
+		$.ajax({
+			type: "GET",
+			url: url,
+			crossDomain: true,
+			data: Data,
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function(data){
+				alert("foo");
+				console.log("--********--");
+
+			},error: function(data){
+
+				console.log("Error --********--");
+
+			}
+
+		});
 
 };
 

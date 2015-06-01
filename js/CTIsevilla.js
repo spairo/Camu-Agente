@@ -1,21 +1,20 @@
-//usuariosId = getUrlVars()["usuariosId"];
-usuariosId = Cookies.get("id");
-//extensionasesor = getUrlVars()["ext"];
-Telefonico = "";
+usuariosId = Cookies.get('id');
+extensionasesor = Cookies.get('extension');
+//Telefonico = getUrlVars()["vclave"];
 BanderaConecting = 0;
 BanderaStablished = 1;
 sDNIS = "";
 $.filldata = function (data1, data2) {
     data = {
         metodo: data1,
-        navegador: get_browser_info().name.toString(),
+        navegador: get_browser_info().name,
         version: get_browser_info().version.toString(),
         so: retornarSO().toString(),
         usuariosId: usuariosId,
         error: data2
     }
 };
-
+var websocket;
 dataactivity = { menu: "", usuariosId: usuariosId }
 url = "http://172.18.149.21/Servicios/REST.svc/rg_RegistraErrores?";
 urlactivity = "http://172.18.149.21/Servicios/REST.svc/rg_RegistraActividad?";
@@ -29,7 +28,9 @@ function ctiSocket(station) {
         };
         websocket.onerror = function (event) {
             //HISTORIAL.value = "<br>" + ("oh error! " + event.data);
+
         };
+        alert(websocket);
         websocket.onmessage = function (event) {
             //console.log(event.data);
             var jsonData = JSON.parse(event.data);
@@ -54,7 +55,7 @@ function ctiSocket(station) {
 
         data = {
             metodo: "CTI ctiSocket",
-            error: e.toString()
+            error: e
         }
 
         var datametodo = data.metodo;
@@ -70,7 +71,7 @@ window.onload = function () {
     } catch (e) {
         data = {
             metodo: "CTI onload",
-            error: e.toString()
+            error: e
         }
         var datametodo = data.metodo;
         var dataerror = data.error;
@@ -81,13 +82,10 @@ window.onload = function () {
 };
 function flogin() {
     try {
-      alert("flogin");
-
         dataactivity = { menu: "flogin", usuariosId: usuariosId }
-
         RESTError(dataactivity, urlactivity);
 
-        //document.getElementById("txtStation").value = extensionasesor;
+        document.getElementById("txtStation").value = extensionasesor;
         txtExtension = document.getElementById("txtStation").value;
         if (txtExtension == 'undefined') {
             alert("Necesita ingresar una extension correcta");
@@ -100,11 +98,13 @@ function flogin() {
             document.getElementById("btnLogin").disabled = true;
             document.getElementById("btnLogout").disabled = false;
             ctiSocket(txtExtension);
+            //if (Telefonico != "")
+            //setTimeout(fMakeCall(getUrlVars()["vclave"]), 5000);
         }
     } catch (e) {
         data = {
             metodo: "CTI flogin",
-            error: e.toString()
+            error: e
         }
         var datametodo = data.metodo;
         var dataerror = data.error;
@@ -118,13 +118,14 @@ function flogout() {
     try {
         dataactivity = { menu: "flogout", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
+
         document.getElementById("btnLogin").disabled = false;
         document.getElementById("btnLogout").disabled = true;
         websocket.close();
     } catch (e) {
         data = {
             metodo: "CTI flogout",
-            error: e.toString()
+            error: e
         }
         var datametodo = data.metodo;
         var dataerror = data.error;
@@ -138,16 +139,16 @@ function fconnecting(data) {
         var sCallid = data.callid;
         var sUcid = data.ucid;
         BanderaConecting = 0;
-		    BanderaStablished = 0;
+        BanderaStablished = 0;
         if (sDNIS.length > 5)
             sDNIS = sDNIS.substring(1, sDNIS.length)
-            document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
-        document.getElementById("iframedataset").src = "http://172.18.149.195/dataset.html?clientesId=&vclave=" + sDNIS;
+        document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
+        document.getElementById("frmCMGenerico").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sDNIS;
         //HISTORIAL.value = "<br>" + ("Extension " + txtExtension + " ...connecting...");
     } catch (e) {
         data = {
             metodo: "CTI fconnecting",
-            error: e.toString()
+            error: e
         }
         var datametodo = data.metodo;
         var dataerror = data.error;
@@ -158,28 +159,23 @@ function fconnecting(data) {
 function festablish(data) {
     try {
 
-        alert("festablish");
-
         var sANI = data.ani;
         var sCallid = data.callid;
         var sUcid = data.ucid;
 
-
         if (BanderaConecting == 0 && BanderaStablished == 0) {
-            BanderaConecting = 1;
+            BanderaConecting = 1; BanderaStablished == 1;
         }
         else {
             BanderaConecting = 1;
-			      BanderaStablished = 1;
-            alert("foo");
-            document.getElementById("iframedataset").src = "http://172.18.149.195/dataset.html?clientesId=&vclave=" + sANI;
             document.getElementById('lblComment').innerHTML = "El numero entrante es: " + sANI;
+            document.getElementById("frmCMGenerico").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sANI;
         }
         //HISTORIAL.value = "<br>" + ("established call at Extension " + txtExtension + ", ANI: " + sANI + " Callid: " + sCallid + " UCID: " + sUcid);
     } catch (e) {
         data = {
             metodo: "CTI festablish",
-            error: e.toString()
+            error: e
         }
         var datametodo = data.metodo;
         var dataerror = data.error;
@@ -190,14 +186,17 @@ function festablish(data) {
 }
 function fhangup(data) {
     try {
+        BanderaConecting = 0;
+        BanderaStablished = 1;
+
         dataactivity = { menu: "fhangup", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
-        BanderaConecting = 0;
+
         //HISTORIAL.value = "<br>" + ("end call at Extension " + txtExtension);
     } catch (e) {
         data = {
             metodo: "CTI fhangup",
-            error: e.toString()
+            error: e
         }
         var datametodo = data.metodo;
         var dataerror = data.error;
@@ -207,6 +206,9 @@ function fhangup(data) {
 }
 function ftransfered(data) {
     try {
+        BanderaConecting = 0;
+        BanderaStablished = 1;
+
         dataactivity = { menu: "ftransfered", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
         var sANI = data.ani;
@@ -216,7 +218,7 @@ function ftransfered(data) {
     } catch (e) {
         data = {
             metodo: "CTI ftransfered",
-            error: e.toString()
+            error: e
         }
         var datametodo = data.metodo;
         var dataerror = data.error;
@@ -227,23 +229,29 @@ function ftransfered(data) {
 }
 function fMakeCall(Number) {
     try {
-        alert("fMakeCall");
-        alert(websocket);
         dataactivity = { menu: "fMakeCall", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
+
         BanderaConecting = 1;
+        BanderaStablished = 1;
         sDNIS = Number;
         if (document.getElementById("txtStation").value == "") {
             alert("No puede transferir sin tener una extension firmada.");
         }
-        else if (sDNIS == undefined || sDNIS == "")
-            alert("No puede marcar a un numero vacio, validelo por favor");
-        else
-            websocket.send(["makecall", sDNIS]);
+        else if(sDNIS == undefined || sDNIS == ""){
+              alert("No puede marcar a un numero vacio, validelo por favor");
+        }
+        else{
+          alert("123");
+          alert(websocket);
+          websocket.send(["makecall", sDNIS]);
+          alert("456");
+        }
+
     } catch (e) {
         data = {
             metodo: "CTI fMakeCall",
-            error: e.toString()
+            error: e
         }
         var datametodo = data.metodo;
         var dataerror = data.error;
@@ -253,11 +261,18 @@ function fMakeCall(Number) {
 }
 function fDropCall() {
     try {
-        websocket.send("dropcall");
+        if (websocket != null) {
+            websocket.send("dropcall");
+            BanderaConecting = 0;
+            BanderaStablished = 1;
+        }
+        else {
+            alert("No tiene una llamada");
+        }
     } catch (e) {
         data = {
             metodo: "CTI fDropCall",
-            error: e.toString()
+            error: e
         }
         var datametodo = data.metodo;
         var dataerror = data.error;
@@ -265,21 +280,21 @@ function fDropCall() {
         RESTError(data, url);
     }
 }
-function fTransferCall(VDN){
+function fTransferCall(VDN) {
     try {
-
-      alert(VDN);
-
         dataactivity = { menu: "fTransferCall", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
-        if (BanderaConecting == 0){
+
+        if (BanderaConecting == 0) {
             alert("No puede transferir sin tener una llamada activa.");
         }
         else if (document.getElementById("txtStation").value == "") {
             alert("No puede transferir sin tener una extension firmada.");
         }
         else if (VDN != "") {
-                websocket.send(["transfercall", VDN]);
+            websocket.send(["transfercall", VDN]);
+            BanderaConecting = 0;
+            BanderaStablished = 1;
         }
         else {
             alert("No puede transferir a este numero inexistente");
@@ -287,7 +302,7 @@ function fTransferCall(VDN){
     } catch (e) {
         data = {
             metodo: "CTI fTransferCall",
-            error: e.toString()
+            error: e
         }
         var datametodo = data.metodo;
         var dataerror = data.error;
@@ -296,7 +311,7 @@ function fTransferCall(VDN){
     }
 }
 
-function RESTError(datarest, urlrest){
+function RESTError(datarest, urlrest) {
     $.ajax({
         type: "GET",
         url: urlrest,
@@ -349,7 +364,7 @@ function retornarSO() {
     return so
 }
 
-function getUrlVars(){
+function getUrlVars() {
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
         vars[key] = value;

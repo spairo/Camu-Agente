@@ -20,6 +20,18 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <!-- Javascript Core -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <!-- bower_components
+    <script type="text/javascript" src="bower_components/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    -->
+    <script src="js/src/cookie.js" type="text/javascript"></script>
+    <script src="js/src/jstree.min.js" type="text/javascript"></script>
+    <script src="js/main.js" type="text/javascript"></script>
+    <script src="js/CTIsevilla.js" type="text/javascript"></script>
 
   </head>
   <body onload="flogin()">
@@ -28,7 +40,7 @@
     <div class="navbar-top" style="display:block;">
       <div class="container">
         <div class="logo"></div>
-        <div class="pull-right logout"></div>
+        <div class="pull-right logoutEngine"></div>
       </div>
     </div>
 
@@ -90,56 +102,9 @@
       </div>
     </div>
     <!-- // CTI dashboard -->
-    <!--
-    <div id="BarraInterfaces">
-      <table style="width: 30%">
-        <tr>
-          <td>
-            <label id="lblComment"></label>
-          </td>
-          <td>
-            <label id="lblCallingNumber">Extension:</label>
-            <input type="text" id="txtStation" disabled />
-          </td>
-          <td>
-            <input type="button" id="btnLogin" class="btn" value="Login" onclick="flogin()" /></td>
-          <td>
-            <input type="button" id="btnLogout" class="btn" value="Logout" onclick="flogout()" /></td>
-          <td>
-            <input type="button" id="btnDropCall" class="btn" value="Colgar" onclick="fDropCall()" /></td>
-          <td>
-            <label id="lblNoMakeCall">No. a Marcar:</label>
-            <input type="text" id="txtNoMakeCall" /></td>
-          <td>
-            <input type="button" id="btnMakeCall" class="btn" value="Marcar" onclick="setTimeout(fMakeCall(document.getElementById('txtNoMakeCall').value), 1000)" />
-          </td>
-          <td>
-            <label id="lblNoTransfer">No. a Transferir:</label>
-            <input type="text" class="btn" id="txtNoTransfer" />
-          </td>
-          <td>
-            <input type="button" id="btnTransferCall" class="btn" value="Transferir" onclick="fTransferCall(document.getElementById('txtNoTransfer').value)" />
-          </td>
-        </tr>
-        <tr>
-          <td colspan=""></td>
-        </tr>
-    </table>
-    </div>-->
+
     <iframe id="iframedataset" src="about:blank" width="100%" height="100%"></iframe>
 
 
-    <!-- Javascript Core -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <!-- bower_components
-    <script type="text/javascript" src="bower_components/moment/min/moment.min.js"></script>
-    <script type="text/javascript" src="bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
-    -->
-    <script src="js/src/cookie.js" type="text/javascript"></script>
-    <script src="js/src/jstree.min.js" type="text/javascript"></script>
-    <script src="js/main.js" type="text/javascript"></script>
-    <script src="js/CTIsevilla.js" type="text/javascript"></script>
   </body>
 </html>
