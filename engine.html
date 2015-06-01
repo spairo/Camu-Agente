@@ -58,6 +58,39 @@
     </div>
     <!--  //Main -->
 
+    <!-- CTI dashboard -->
+    <div id="BarraInterfaces">
+      <div class="container">
+        <div class="form-inline well-lg">
+          <div class="form-group">
+            <label id="lblComment"></label>
+          </div>
+
+          <div class="form-group">
+            <label id="lblCallingNumber">Extension</label>
+            <input type="text" class="form-control input-sm" id="txtStation" disabled>
+          </div>
+
+          <button type="button" id="btnLogin" class="btn btn-default" onclick="flogin()">LogIn</button>
+          <button type="button" id="btnLogout" class="btn btn-default" onclick="flogout()">LogOut</button>
+          <button type="button" id="btnDropCall" class="btn btn-default" onclick="fDropCall()">Colgar</button>
+
+          <div class="form-group">
+            <label id="lblNoMakeCall">No.Marcar</label>
+            <input type="text" class="form-control input-sm" id="txtNoMakeCall" placeholder="Numero">
+          </div>
+          <button type="button" id="btnMakeCall" class="btn btn-default" onclick="setTimeout(fMakeCall(document.getElementById('txtNoMakeCall').value), 1000)">Marcar</button>
+
+          <div class="form-group">
+            <label id="lblNoTransfer">No.Transferir</label>
+            <input type="text" class="form-control input-sm" id="txtNoTransfer" placeholder="Transferir">
+          </div>
+          <button type="button" id="btnTransferCall" class="btn btn-default" onclick="fTransferCall(document.getElementById('txtNoTransfer').value)">Transfer</button>
+        </div>
+      </div>
+    </div>
+    <!-- // CTI dashboard -->
+    <!--
     <div id="BarraInterfaces">
       <table style="width: 30%">
         <tr>
@@ -69,30 +102,30 @@
             <input type="text" id="txtStation" disabled />
           </td>
           <td>
-            <input type="button" id="btnLogin" value="Login" onclick="flogin()" /></td>
+            <input type="button" id="btnLogin" class="btn" value="Login" onclick="flogin()" /></td>
           <td>
-            <input type="button" id="btnLogout" value="Logout" onclick="flogout()" /></td>
+            <input type="button" id="btnLogout" class="btn" value="Logout" onclick="flogout()" /></td>
           <td>
-            <input type="button" id="btnDropCall" value="Colgar" onclick="fDropCall()" /></td>
+            <input type="button" id="btnDropCall" class="btn" value="Colgar" onclick="fDropCall()" /></td>
           <td>
             <label id="lblNoMakeCall">No. a Marcar:</label>
             <input type="text" id="txtNoMakeCall" /></td>
           <td>
-            <input type="button" id="btnMakeCall" value="Marcar" onclick="setTimeout(fMakeCall(document.getElementById('txtNoMakeCall').value), 1000)" />
+            <input type="button" id="btnMakeCall" class="btn" value="Marcar" onclick="setTimeout(fMakeCall(document.getElementById('txtNoMakeCall').value), 1000)" />
           </td>
           <td>
             <label id="lblNoTransfer">No. a Transferir:</label>
-            <input type="text" id="txtNoTransfer" />
+            <input type="text" class="btn" id="txtNoTransfer" />
           </td>
           <td>
-            <input type="button" id="btnTransferCall" value="Transferir" onclick="fTransferCall(document.getElementById('txtNoTransfer').value)" />
+            <input type="button" id="btnTransferCall" class="btn" value="Transferir" onclick="fTransferCall(document.getElementById('txtNoTransfer').value)" />
           </td>
         </tr>
         <tr>
           <td colspan=""></td>
         </tr>
     </table>
-    </div>
+    </div>-->
     <iframe id="iframedataset" src="about:blank" width="100%" height="100%"></iframe>
 
 

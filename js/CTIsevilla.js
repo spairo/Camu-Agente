@@ -142,7 +142,7 @@ function fconnecting(data) {
         if (sDNIS.length > 5)
             sDNIS = sDNIS.substring(1, sDNIS.length)
             document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
-        document.getElementById("iframedataset").src = "http://172.18.118.128/dataset.html?clientesId=&vclave=" + sDNIS;
+        document.getElementById("iframedataset").src = "http://172.18.149.195/dataset.html?clientesId=&vclave=" + sDNIS;
         //HISTORIAL.value = "<br>" + ("Extension " + txtExtension + " ...connecting...");
     } catch (e) {
         data = {
@@ -172,7 +172,7 @@ function festablish(data) {
             BanderaConecting = 1;
 			      BanderaStablished = 1;
             alert("foo");
-            document.getElementById("iframedataset").src = "http://172.18.118.128/dataset.html?clientesId=&vclave=" + sANI;
+            document.getElementById("iframedataset").src = "http://172.18.149.195/dataset.html?clientesId=&vclave=" + sANI;
             document.getElementById('lblComment').innerHTML = "El numero entrante es: " + sANI;
         }
         //HISTORIAL.value = "<br>" + ("established call at Extension " + txtExtension + ", ANI: " + sANI + " Callid: " + sCallid + " UCID: " + sUcid);
@@ -227,6 +227,8 @@ function ftransfered(data) {
 }
 function fMakeCall(Number) {
     try {
+        alert("fMakeCall");
+        alert(websocket);
         dataactivity = { menu: "fMakeCall", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
         BanderaConecting = 1;
@@ -347,7 +349,7 @@ function retornarSO() {
     return so
 }
 
-function getUrlVars() {
+function getUrlVars(){
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
         vars[key] = value;

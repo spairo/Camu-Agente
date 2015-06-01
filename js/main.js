@@ -869,7 +869,6 @@ $(document).ready(function(){
 
 			//$.onsetEngine(name, passw);
 
-			//return typeof(n) != "boolean" && !isNaN(n);
 		}
 
 		var example = Cookies.get("extension");
@@ -895,24 +894,11 @@ $(document).ready(function(){
 	if(path == "/setting.html"){
 
 		if((name == null || name == undefined) && (passw == null || passw == undefined)){
-
+			window.location.href='/';
 		}else{
 			$.onsetEngine(name, passw);
 		}
-		/*
-		$('.products .jstree').on('changed.jstree', function(e, data){
-			alert("foo");
-			var i, j, r = [];
 
-			for(i = 0, j = data.selected.length; i < j; i++) {
-	      r.push(data.instance.get_node(data.selected[i]).text);
-
-	    }
-
-    	$('.tags').html('Selected: ' + r.join(', '));
-
-		}).jstree();
-		*/
 	}
 
 });
@@ -1011,36 +997,6 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 		$.onSaveData(labelarry, inputarry);
 
 		$.onTransfer();
-
-});
-
-///$(document).on('click', '.products .jstree .jstree-container-ul .jstree-node', function(){
-
-	//alert("sss");
-
-	/*
-	var product = $(this).attr('title');
-	var content = '<a href="#" title="'+skillsProductosId+'" class="tag">'+product+'</a>';
-	$('.products .tags').empty().append(content);
-	*/
-
-//});
-
-$(document).on('click', '.list-group .list-typing', function(){
-
-	var typingId = this.id;
-	var tipologia = $(this).text();
-
-	var content = '<a href="#" title="'+typingId+'" class="tag">'+tipologia+'</a>';
-	$('.tree .tags').empty().append(content);
-
-});
-
-$(document).on('click', '.schedule_appointments .choice-meeting', function(){
-
-		var select = $(".Ctc option:selected").val();
-
-		console.log(select);
 
 });
 
@@ -1659,7 +1615,6 @@ $.onsaveProducts = function(spid){
 $.onSaveData = function(labels, inputs){
 
 	alert("guardare datos");
-	console.log("guardare datos");
 
 	var url = ws+"rg_GuardaDatos";
 
@@ -1707,5 +1662,12 @@ $.onSaveData = function(labels, inputs){
 $.onTransfer = function(){
 
 	var vdnTransfirio = Cookies.get('vdnTransfiere');
-	fTransferCall(vdnTransfirio);
+
+	setTimeout(function(){
+
+		alert("test");
+		fTransferCall(vdnTransfirio);
+
+	}, 3000);
+
 };

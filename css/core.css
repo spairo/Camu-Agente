@@ -7502,6 +7502,19 @@ button.close {
       color: #fff;
     }
 
+/* CTI Dashboard */
+
+#BarraInterfaces{
+  background: #bdc3c7;
+}
+  #BarraInterfaces label{
+    color: #fff;
+  }
+
+#iframedataset{
+  border: 0;
+}
+
 
 /* dropdown custom */
 
