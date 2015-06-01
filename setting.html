@@ -58,43 +58,42 @@
     </div>
     <!--  //Main -->
 
-    <div id="BarraInterfaces">
-      <table style="width: 30%">
-        <tr>
-          <td>
-            <label id="lblComment"></label>
-          </td>
-          <td>
-            <label id="lblCallingNumber">Extension:</label>
-            <input type="text" id="txtStation" disabled />
-          </td>
-          <td>
-            <input type="button" id="btnLogin" value="Login" onclick="flogin()" /></td>
-          <td>
-            <input type="button" id="btnLogout" value="Logout" onclick="flogout()" /></td>
-          <td>
-            <input type="button" id="btnDropCall" value="Colgar" onclick="fDropCall()" /></td>
-          <td>
-            <label id="lblNoMakeCall">No. a Marcar:</label>
-            <input type="text" id="txtNoMakeCall" /></td>
-          <td>
-            <input type="button" id="btnMakeCall" value="Marcar" onclick="setTimeout(fMakeCall(document.getElementById('txtNoMakeCall').value), 1000)" />
-          </td>
-          <td>
-            <label id="lblNoTransfer">No. a Transferir:</label>
-            <input type="text" id="txtNoTransfer" />
-          </td>
-          <td>
-            <input type="button" id="btnTransferCall" value="Transferir" onclick="fTransferCall(document.getElementById('txtNoTransfer').value)" />
-          </td>
-        </tr>
-        <tr>
-          <td colspan=""></td>
-        </tr>
-    </table>
-    </div>
-    <iframe id="iframedataset" src="about:blank" width="100%" height="100%"></iframe>
+    <!-- fluid -->
+    <div id="Builder_Engine">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="customerInfo"></div>
+            <div class="schedule_appointment"></div>
+            <div class="customers_quotes"></div>
+          </div>
+          <div class="col-md-3">
+            <div class="base_layout"></div>
+          </div>
+          <div class="col-md-3">
+            <div class="advisory_capture"></div>
+          </div>
+          <div class="col-md-3">
+            <h3>Productos</h3>
+            <div class="products"></div>
+            <div class="product">
+              <div class="tags"></div>
+            </div>
 
+            <h3>Tipificaciones</h3>
+            <div class="tree"></div>
+            <div class="trees">
+              <div class="tags"></div>
+            </div
+            <div class="historical"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="engine-config"></div>
+        </div>
+      </div>
+    </div>
+    <!-- //fluid -->
 
     <!-- Javascript Core -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>

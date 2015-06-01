@@ -197,6 +197,8 @@ $.skills = function(data){
 
 $.searchGet = function(){
 
+	$("#search-result-get").slideDown();
+
 	var CtiClientesId = $.UrlDecode()["clientesId"];
 	var CtiVclave = $.UrlDecode()["vclave"];
 
@@ -644,7 +646,13 @@ $(document).on('click', '.choice-skill', function(){
 							else{
 								$("#skills .choice-skill").prop('disabled', true);
 								$("#skills .skillchoice").prop('disabled', true);
-								window.open(''+url+'?usuariosId='+iduser+'&ext='+extension+'','_blank');
+
+								var CtiClientesId = $.UrlDecode()["clientesId"];
+								var CtiVclave = $.UrlDecode()["vclave"];
+
+								window.location.href='engine.html?clientesId='+iduser+'&ext='+extension+'';
+
+							//	window.open(''+url+'?usuariosId='+iduser+'&ext='+extension+'','_blank');
 							}
 
 						}
@@ -762,17 +770,15 @@ $(document).on('click', '.box-add .search-back', function(){
 });
 
 /*+++++++++++++++++++++++++++++++
-	Document Object Model General
+		Window/Document Object Model
  ++++++++++++++++++++++++++++++++*/
 
-/*
+
 $(window).load(function(){
-	if(path == "/" || path == "/index.html"){
-
-
+	if(path == "/engine.html"){
+		flogin();
 	}
 });
-*/
 
 $(document).ready(function(){
 
@@ -805,7 +811,8 @@ $(document).ready(function(){
 				if(CtiVclave == undefined || CtiVclave == null || CtiClientesId == undefined || CtiClientesId == null){
 
 				}else{
-
+					$(".navbar-top").slideUp("slow");
+					$("#main").slideUp("slow");
 					$("#logdIn").slideUp("slow");
 					$.searchGet();
 				}
@@ -834,6 +841,7 @@ $(document).ready(function(){
 			return vars;
 		};
 
+
 		if((name == null || name == undefined) && (passw == null || passw == undefined)){
 
 			var CtiClientesId = $.UrlDecode()["clientesId"];
@@ -842,11 +850,69 @@ $(document).ready(function(){
 			window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
 
 		}else{
-			$.onsetEngine(name, passw);
+
+			if($('#logdIn').is(':visible')){
+
+				var CtiClientesId = $.UrlDecode()["clientesId"];
+				var CtiVclave = $.UrlDecode()["vclave"];
+
+				if(CtiVclave == undefined || CtiVclave == null || CtiClientesId == undefined || CtiClientesId == null){
+
+				}else{
+					$(".navbar-top").slideUp("slow");
+					$("#main").slideUp("slow");
+					$("#logdIn").slideUp("slow");
+					$.searchGet();
+				}
+
+			}
+
+			//$.onsetEngine(name, passw);
 
 			//return typeof(n) != "boolean" && !isNaN(n);
 		}
 
+		var example = Cookies.get("extension");
+		$('#BarraInterfaces #txtStation').val(example).prop('disabled', true);
+
+	}
+	if(path == "/dataset.html"){
+
+		var CtiClientesId = $.UrlDecode()["clientesId"];
+		var CtiVclave = $.UrlDecode()["vclave"];
+
+		alert(CtiClientesId + CtiVclave);
+
+
+		if((CtiClientesId != null || CtiClientesId != undefined) || (CtiVclave == null || CtiVclave == undefined)){
+
+			window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
+
+		}
+
+	}
+
+	if(path == "/setting.html"){
+
+		if((name == null || name == undefined) && (passw == null || passw == undefined)){
+
+		}else{
+			$.onsetEngine(name, passw);
+		}
+		/*
+		$('.products .jstree').on('changed.jstree', function(e, data){
+			alert("foo");
+			var i, j, r = [];
+
+			for(i = 0, j = data.selected.length; i < j; i++) {
+	      r.push(data.instance.get_node(data.selected[i]).text);
+
+	    }
+
+    	$('.tags').html('Selected: ' + r.join(', '));
+
+		}).jstree();
+		*/
 	}
 
 });
@@ -868,8 +934,8 @@ $(document).on('click', '.build', function(){
 
 	// Let's build it out
 
-	window.open('engine.html', '_blank')
-
+	//window.open('setting.html', '_blank');
+	window.location.href ='setting.html';
 	/*
 	$.ajax({
 		url: "index.html",
@@ -924,7 +990,7 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 		*/
 
 		//Get Inputs data Fields
-		/*
+
 		var inputarry = new Array();
 		var labelarry = new Array();
 
@@ -946,16 +1012,19 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 		});
 
 		$.onSaveData(labelarry, inputarry);
-		*/
+		$.onTransfer();
+
 });
 
-$(document).on('click', '.list-product .list-group-item', function(){
+$(document).on('click', '.products .jstree .jstree-container-ul .jstree-node', function(){
 
-	var skillsProductosId = this.id;
+	alert("sss");
+
+	/*
 	var product = $(this).attr('title');
-
 	var content = '<a href="#" title="'+skillsProductosId+'" class="tag">'+product+'</a>';
 	$('.products .tags').empty().append(content);
+	*/
 
 });
 
@@ -1010,16 +1079,16 @@ function onsetEngineSuccess(data){
 		$.cssEngine(factory);
 		$.customerInfo();
 		$.baselayoutEngine(factory);
-		//$.captureRenderEngine(factory);
-		//$.typificationsEngine(factory);
-		//$.productsEngine(factory);
-		//$.typiHistoryEngine(factory);
+		$.captureRenderEngine(factory);
+		$.typificationsEngine(factory);
+		$.productsEngine(factory);
+		$.typiHistoryEngine(factory);
 		//$.loadCustomersDefault(factory);
 		//$.loadCustomersQuotes(factory);
 
 		$(".loader").slideUp("slow", function(){
 
-			$('#Builder_Engine .logout').html('<a href="#" id="logout-builder"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
+			$('#Builder_Engine .logout').html('<a href="#" id="logout-builde"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
 
 			$('#Builder_Engine .schedule_appointments').html('<div class="form-group"><label for="">Seleccione Tipo de Cita</label><select class="form-control input-sm Ctc"><option value="1">Cita Llamada</option><option value="2">Cita Presencial</option></select><br /><button class="btn choice-meeting">Seleccionar</button></div>');
 
@@ -1039,69 +1108,92 @@ function onsetEngineError(data){
 
 $.cssEngine = function(data){
 
-	//var serviciosId = Cookies.get('serviciosId');
-	var serviciosidx = "1";
+	//var skillidx = "1";
+	//var serviciosidx = "1";
+
+	var skillidx = Cookies.get('SkillId');
+	var serviciosidx = Cookies.get('serviciosId');
 
 	for(var i = 0; i < data.length; i++){
 
 		if(serviciosidx == data[i].serviciosId){
-			/*
-			var cssDinamic = data[i].cssAgente;
-			console.log(cssDinamic);
-			$("head").append("<!-- Dinamic Css --><style>" + cssDinamic + "</style><!-- //Dinamic Css -->");
-			*/
-		}
 
+			var skills = data[i].skills;
+
+				for(var i = 0; i < skills.length; i++){
+
+					if(skillidx == skills[i].skillsId){
+
+						var cssDinamic = skills[i].cssAgente;
+
+						$("head").append("<!-- Dinamic Css --><style>" + cssDinamic + "</style><!-- //Dinamic Css -->");
+
+					}
+
+				}
+		}
 	}
 
 };
 
 $.baselayoutEngine = function(data){
 
-	//var skillidx = Cookies.get('SkillId');
-	var skillidx = "3";
+	//var skillidx = "1";
+	//var serviciosidx = "1";
+
+	var skillidx = Cookies.get('SkillId');
+	var serviciosidx = Cookies.get('serviciosId');
 
 	for(var i = 0; i < data.length; i++){
 
-		if(skillidx == data[i].skillsId){
+		if(serviciosidx == data[i].serviciosId){
 
-			var Fields = data[i].camposBase;
+			var skills = data[i].skills;
 
-				if(Fields != ""){
+				for(var i = 0; i < skills.length; i++){
 
-					$('.base_layout').append('<h3 class="text-center"><span class="glyphicon glyphicon-eye-open"></span> Campos Layout Base</h3><div class="fields"></div>');
+					if(skillidx == skills[i].skillsId){
 
-					for(var i = 0; i < Fields.length; i++){
+						var camposBase = skills[i].camposBase;
 
-						var nombreBase = Fields[i].nombreBase;
-						var title = Fields[i].titulo;
-						var name = Fields[i].nombre;
-						var typeD = Fields[i].tipoDato;
-						var form = Fields[i].tipoCampo;
-						var long = Fields[i].longitud;
-						var required = Fields[i].requerido;
-						var order = Fields[i].orden;
+						if(camposBase != ""){
 
-						//HTML elements
+							$('.base_layout').append('<h3 class="text-center"><span class="glyphicon glyphicon-eye-open"></span> Datos Layout Base</h3><div class="fields"></div>');
 
-						if(form == "input" || form == "Input"){
+							for(var i = 0; i < camposBase.length; i++){
 
-							var content = '<div class="form-group form-build"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-sm input-read" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
-							$('.base_layout .fields').append(content);
+								var nombreBase = camposBase[i].nombreBase;
+								var title = camposBase[i].titulo;
+								var name = camposBase[i].nombre;
+								var typeD = camposBase[i].tipoDato;
+								var form = camposBase[i].tipoCampo;
+								var long = camposBase[i].longitud;
+								var required = camposBase[i].requerido;
+								var order = camposBase[i].orden;
 
-							if(required == "1"){
-								$(".fields .input-dinamic").addClass('required');
+								//HTML elements
+
+								if(form == "input" || form == "Input"){
+
+									var content = '<div class="form-group form-build"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-sm input-read" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
+									$('.base_layout .fields').append(content);
+
+									if(required == "1"){
+										$(".fields .input-dinamic").addClass('required');
+									}
+									$(".base_layout .fields .input-read").prop('disabled', true);
+
+								}
+
 							}
-							$(".base_layout .fields .input-read").prop('disabled', true);
 
+						}else{
+							$('.base_layout').append('<h3 class="text-center"><span class="glyphicon glyphicon-eye-open"></span> Datos Layout Base</h3>');
 						}
-
 					}
 
-				}else{
-					$('.base_layout').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Layout Base.</div>');
 				}
-				*/
+
 		}
 
 	}
@@ -1110,98 +1202,111 @@ $.baselayoutEngine = function(data){
 
 $.captureRenderEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	var skillidx = "1";
+	var serviciosidx = "1";
 
-	$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Campos Captura Asesor</h3><div class="fields"></div>');
+	//var skillidx = Cookies.get('SkillId');
+	//var serviciosidx = Cookies.get('serviciosId');
 
 	for(var i = 0; i < data.length; i++){
 
-		if(skillidx == data[i].skillsId){
+		if(serviciosidx == data[i].serviciosId){
 
-			var fieldsIn = data[i].camposCaptura;
+			var skills = data[i].skills;
 
-				if(fieldsIn != ""){
+				for(var i = 0; i < skills.length; i++){
 
-					for(var i = 0; i < fieldsIn.length; i++){
+					if(skillidx == skills[i].skillsId){
 
-						var title = fieldsIn[i].titulo;
-						var name = fieldsIn[i].nombre;
-						var typeD = fieldsIn[i].tipoDato;
-						var form = fieldsIn[i].tipoCampo;
-						var long = fieldsIn[i].longitud;
-						var defaultvalue = fieldsIn[i].valorDefault;
-						var required = fieldsIn[i].requerido;
-						var typ = fieldsIn[i].tipo;
-						var order = fieldsIn[i].orden;
+						var fieldsIn = skills[i].camposCaptura;
 
-						//HTML elements
+							if(fieldsIn != ""){
 
-						if(form == "input" || form == "Input"){
+								$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Datos Captura</h3><div class="fields"></div>');
 
-							var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-sm input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
-							$('.advisory_capture .fields').append(content);
+								for(var i = 0; i < fieldsIn.length; i++){
 
-							if(required == "1"){
-								$(".fields .input-dinamic").addClass('required');
+									var title = fieldsIn[i].titulo;
+									var name = fieldsIn[i].nombre;
+									var typeD = fieldsIn[i].tipoDato;
+									var form = fieldsIn[i].tipoCampo;
+									var long = fieldsIn[i].longitud;
+									var defaultvalue = fieldsIn[i].valorDefault;
+									var required = fieldsIn[i].requerido;
+									var typ = fieldsIn[i].tipo;
+									var order = fieldsIn[i].orden;
+
+									//HTML elements
+
+									if(form == "input" || form == "Input"){
+
+										var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-sm input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
+										$('.advisory_capture .fields').append(content);
+
+										if(required == "1"){
+											$(".fields .input-dinamic").addClass('required');
+										}
+
+									}
+									if(form == "combo" || form == "Combo"){
+
+											var arrayselect = defaultvalue.split(',');
+
+											var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select id="fill-select" class="form-control input-sm"></select></div>';
+
+											$('.advisory_capture .fields').append(content);
+
+											var options = arrayselect;
+
+											var select = document.getElementById('fill-select');
+
+											for(option in options){
+												select.add(new Option(options[option]));
+											};
+
+									}
+									if(form == "checkbox" || form == "Checkbox"){
+
+											var arrycheckbox = defaultvalue.split(',');
+
+											for(arry in arrycheckbox){
+												var content = '<div class="checkbox"><label><input type="checkbox" value="">'+arrycheckbox[arry]+'</label></div>';
+												$('.advisory_capture .fields').append(content);
+											};
+
+									}
+									if(form == "radio" || form == "Radio"){
+
+										var arryrdio = defaultvalue.split(',');
+
+										for(arry in arryrdio){
+											var content = '<div class="radio"><label><input type="radio" value="">'+arryrdio[arry]+'</label></div>';
+											$('.advisory_capture .fields').append(content);
+										};
+										//if(required == "1"){
+											//$(".fields .input-dinamic").addClass('required');
+										//}
+									}
+									if(form == "date" || form == "Date"){
+											var content = '<div class="form-group"><label for="Colonia">Fecha</label><div class="input-group date" id="datetimepicker1"><input type="text" class="form-control input-sm" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div></div>';
+											$('.advisory_capture .fields').append(content);
+									}
+									if(form == "label" || form == "Label"){
+											var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label></div>';
+											$('.advisory_capture .fields').append(content);
+									}
+
+								}
+
+							}else{
+								$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Datos Captura</h3>');
 							}
-
-						}
-						if(form == "combo" || form == "Combo"){
-
-								var arrayselect = defaultvalue.split(',');
-
-								var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select id="fill-select" class="form-control input-sm"></select></div>';
-
-								$('.advisory_capture .fields').append(content);
-
-								var options = arrayselect;
-
-								var select = document.getElementById('fill-select');
-
-								for(option in options){
-									select.add(new Option(options[option]));
-								};
-
-						}
-						if(form == "checkbox" || form == "Checkbox"){
-
-								var arrycheckbox = defaultvalue.split(',');
-
-								for(arry in arrycheckbox){
-									var content = '<div class="checkbox"><label><input type="checkbox" value="">'+arrycheckbox[arry]+'</label></div>';
-									$('.advisory_capture .fields').append(content);
-								};
-
-						}
-						if(form == "radio" || form == "Radio"){
-
-							var arryrdio = defaultvalue.split(',');
-
-							for(arry in arryrdio){
-								var content = '<div class="radio"><label><input type="radio" value="">'+arryrdio[arry]+'</label></div>';
-								$('.advisory_capture .fields').append(content);
-							};
-							//if(required == "1"){
-								//$(".fields .input-dinamic").addClass('required');
-							//}
-						}
-						if(form == "date" || form == "Date"){
-								var content = '<div class="form-group"><label for="Colonia">Fecha</label><div class="input-group date" id="datetimepicker1"><input type="text" class="form-control input-sm" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div></div>';
-								$('.advisory_capture .fields').append(content);
-						}
-						if(form == "label" || form == "Label"){
-								var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label></div>';
-								$('.advisory_capture .fields').append(content);
-						}
 
 					}
 
-				}else{
-					//$('.advisory_capture').append('<div class="alert alert-danger" role="alert"><strong>Oh snap!</strong> No hay configurados Campos Captura Asesor.</div>');
 				}
 
-		}
+		 }
 
 	}
 
@@ -1209,21 +1314,45 @@ $.captureRenderEngine = function(data){
 
 $.typificationsEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	var skillidx = "1";
+	var serviciosidx = "1";
+
+	//var skillidx = Cookies.get('SkillId');
+	//var serviciosidx = Cookies.get('serviciosId');
 
 	$('#Builder_Engine .tree').append('<h3 class="text-center"><span class="glyphicon glyphicon-tags"></span> Tipificaciones</h3>');
 
 	for(var i = 0; i < data.length; i++){
 
-		if(skillidx == data[i].skillsId){
+		if(serviciosidx == data[i].serviciosId){
 
-			var data = data[i].tipologias;
+			var skills = data[i].skills;
 
-			$('#Builder_Engine .tree').jstree({ 'core':{
-				"data": data
+				for(var i = 0; i < skills.length; i++){
+
+					if(skillidx == skills[i].skillsId){
+
+						var data = skills[i].tipologias;
+
+						$('#Builder_Engine .tree').jstree({ 'core':{
+							"data": data
+							}
+						});
+
+						$('#Builder_Engine .tree').on('changed.jstree', function(e, data){
+								var i, j, r = [], id = [];
+								for(i = 0, j = data.selected.length; i < j; i++) {
+									id.push(data.instance.get_node(data.selected[i]).id);
+									r.push(data.instance.get_node(data.selected[i]).text);
+									//console.log(data.instance.get_node(data.selected[i]).id);
+									//get_node(data.selected[i]).text);
+								}
+								$('.trees .tags').empty().append('<span class="tag" id="'+id.join(', ')+'">'+r.join(', ')+'</span>');
+								//$('.tags').html('Selected: ' + r.join(', '));
+						}).jstree();
+
+					}
 				}
-			});
 
 		}
 
@@ -1233,22 +1362,50 @@ $.typificationsEngine = function(data){
 
 $.productsEngine = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	//var skillidx = "3";
+	var skillidx = "1";
+	var serviciosidx = "1";
+
+	//var skillidx = Cookies.get('SkillId');
+	//var serviciosidx = Cookies.get('serviciosId');
+
 
 	for(var i = 0; i < data.length; i++){
 
-		if(skillidx == data[i].skillsId){
+		if(serviciosidx == data[i].serviciosId){
 
-			var data = data[i].productos;
-			$('#Builder_Engine .products').append('<h3 class="text-center"><span class="glyphicon glyphicon-tag"></span> Productos</h3>');
-			$('#Builder_Engine .products').jstree({ 'core' : {
-				"data": data
-			}});
+			var skills = data[i].skills;
+
+				for(var i = 0; i < skills.length; i++){
+
+					if(skillidx == skills[i].skillsId){
+
+							var data = skills[i].productos;
+							$('#Builder_Engine .products').append('<h3 class="text-center"><span class="glyphicon glyphicon-tag"></span> Productos</h3>');
+							$('#Builder_Engine .products').jstree({ 'core' : {
+								"data": data
+							}});
+
+							$('#Builder_Engine .products').on('changed.jstree', function(e, data){
+							    var i, j, r = [], id = [];
+							    for(i = 0, j = data.selected.length; i < j; i++) {
+										id.push(data.instance.get_node(data.selected[i]).id);
+										r.push(data.instance.get_node(data.selected[i]).text);
+										//console.log(data.instance.get_node(data.selected[i]).id);
+										//get_node(data.selected[i]).text);
+							    }
+									$('.product .tags').empty().append('<span class="tag" id="'+id.join(', ')+'">'+r.join(', ')+'</span>');
+							    //$('.tags').html('Selected: ' + r.join(', '));
+  						}).jstree();
+
+
+					}
+
+				}
 
 		}
 
 	}
+
 
 };
 
@@ -1321,7 +1478,7 @@ $(window).load(function(){
 		});
 
 	};
-
+	/*
 	$.loadCustomersDefault = function(data){
 
 		var url = ws+"rg_MuestraCliente";
@@ -1378,6 +1535,7 @@ $(window).load(function(){
 		});
 
 	};
+	*/
 
 	$.loadCustomersQuotes = function(data){
 
@@ -1561,6 +1719,7 @@ $.onsaveProducts = function(spid){
 
 $.onSaveData = function(labels, inputs){
 
+	alert("guardare datos");
 	console.log("guardare datos");
 
 	var url = ws+"rg_GuardaDatos";
@@ -1603,4 +1762,13 @@ $.onSaveData = function(labels, inputs){
 
 	});
 
+};
+
+
+$.onTransfer = function(){
+	alert("transfer");
+
+	var ert = "49454";
+
+	fTransferCall(ert);
 };
