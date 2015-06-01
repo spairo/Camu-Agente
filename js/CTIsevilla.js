@@ -2,7 +2,7 @@
 usuariosId = Cookies.get("id");
 //extensionasesor = getUrlVars()["ext"];
 Telefonico = "";
-estadollamada = 0;
+BanderaConecting = 0;
 sDNIS = "";
 $.filldata = function (data1, data2) {
     data = {
@@ -18,7 +18,6 @@ $.filldata = function (data1, data2) {
 dataactivity = { menu: "", usuariosId: usuariosId }
 url = "http://172.18.149.21/Servicios/REST.svc/rg_RegistraErrores?";
 urlactivity = "http://172.18.149.21/Servicios/REST.svc/rg_RegistraActividad?";
-BanderaConecting = 0;
 function ctiSocket(station) {
     try {
 
@@ -81,11 +80,13 @@ window.onload = function () {
 };
 function flogin() {
     try {
+      alert("flogin");
+
         dataactivity = { menu: "flogin", usuariosId: usuariosId }
 
         RESTError(dataactivity, urlactivity);
 
-        document.getElementById("txtStation").value = extensionasesor;
+        //document.getElementById("txtStation").value = extensionasesor;
         txtExtension = document.getElementById("txtStation").value;
         if (txtExtension == 'undefined') {
             alert("Necesita ingresar una extension correcta");
@@ -98,8 +99,6 @@ function flogin() {
             document.getElementById("btnLogin").disabled = true;
             document.getElementById("btnLogout").disabled = false;
             ctiSocket(txtExtension);
-            if (Telefonico != "" || Telefonico != undefined)
-                setTimeout(fMakeCall(getUrlVars()["vclave"]), 5000);
         }
     } catch (e) {
         data = {
@@ -137,11 +136,11 @@ function fconnecting(data) {
         var sANI = data.ani;
         var sCallid = data.callid;
         var sUcid = data.ucid;
-        BanderaConecting = 1;
+        BanderaConecting = 0;
         if (sDNIS.length > 5)
             sDNIS = sDNIS.substring(1, sDNIS.length)
-        document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
-        document.getElementById("frmCMGenerico").src = "http://172.18.118.128/engine.html?clientesId=&vclave=" + sDNIS;
+            document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
+        document.getElementById("iframedataset").src = "http://172.18.118.128/dataset.html?clientesId=&vclave=" + sDNIS;
         //HISTORIAL.value = "<br>" + ("Extension " + txtExtension + " ...connecting...");
     } catch (e) {
         data = {
@@ -157,17 +156,22 @@ function fconnecting(data) {
 function festablish(data) {
     try {
 
+        alert("festablish");
+
         var sANI = data.ani;
         var sCallid = data.callid;
         var sUcid = data.ucid;
-        estadollamada = 1;
-        if (BanderaConecting == 1) {
+        BanderaConecting = 0;
+
+        if (BanderaConecting == 0) {
             BanderaConecting = 1;
+            alert("BanderaConecting = 1;");
         }
         else {
             BanderaConecting = 1;
+            alert("foo");
+            document.getElementById("iframedataset").src = "http://172.18.118.128/dataset.html?clientesId=&vclave=" + sANI;
             document.getElementById('lblComment').innerHTML = "El numero entrante es: " + sANI;
-            document.getElementById("frmCMGenerico").src = "http://172.18.118.128/engine.html?clientesId=&vclave=" + sANI;
         }
         //HISTORIAL.value = "<br>" + ("established call at Extension " + txtExtension + ", ANI: " + sANI + " Callid: " + sCallid + " UCID: " + sUcid);
     } catch (e) {
@@ -186,7 +190,7 @@ function fhangup(data) {
     try {
         dataactivity = { menu: "fhangup", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
-        estadollamada = 0;
+        BanderaConecting = 0;
         //HISTORIAL.value = "<br>" + ("end call at Extension " + txtExtension);
     } catch (e) {
         data = {
@@ -257,18 +261,21 @@ function fDropCall() {
         RESTError(data, url);
     }
 }
-function fTransferCall(VDN) {
+function fTransferCall(VDN){
     try {
+
+      alert(VDN);
+
         dataactivity = { menu: "fTransferCall", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
-        if (estadollamada == 0) {
+        if (BanderaConecting == 0){
             alert("No puede transferir sin tener una llamada activa.");
         }
         else if (document.getElementById("txtStation").value == "") {
             alert("No puede transferir sin tener una extension firmada.");
         }
         else if (VDN != "") {
-            websocket.send(["transfercall", VDN]);
+                websocket.send(["transfercall", VDN]);
         }
         else {
             alert("No puede transferir a este numero inexistente");
@@ -285,7 +292,7 @@ function fTransferCall(VDN) {
     }
 }
 
-function RESTError(datarest, urlrest) {
+function RESTError(datarest, urlrest){
     $.ajax({
         type: "GET",
         url: urlrest,

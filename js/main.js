@@ -973,21 +973,18 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 		// Get typing selected
 
-		/*
-		var treetagid = $('.tree .tag').attr('title');
-		var treecomment = $('.tree .comment').val();
-
+		var treetagid = $('#Builder_Engine .trees .tags .tag').attr('id');
+		var treecomment = "comentario";
 		$.onsaveTyping(treetagid, treecomment);
-		*/
+
 
 		// Get product selected
 
-		/*
-		var producttag = $('.products .tag').text();
-		var producttagid = $('.products .tag').attr('title');
+		var producttagid = $("#Builder_Engine .product .tags .tag").attr('id');
+		alert(producttagid);
 
 		$.onsaveProducts(producttagid);
-		*/
+
 
 		//Get Inputs data Fields
 
@@ -1011,14 +1008,14 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 		});
 
-		$.onSaveData(labelarry, inputarry);
+		//$.onSaveData(labelarry, inputarry);
 		$.onTransfer();
 
 });
 
-$(document).on('click', '.products .jstree .jstree-container-ul .jstree-node', function(){
+///$(document).on('click', '.products .jstree .jstree-container-ul .jstree-node', function(){
 
-	alert("sss");
+	//alert("sss");
 
 	/*
 	var product = $(this).attr('title');
@@ -1026,7 +1023,7 @@ $(document).on('click', '.products .jstree .jstree-container-ul .jstree-node', f
 	$('.products .tags').empty().append(content);
 	*/
 
-});
+//});
 
 $(document).on('click', '.list-group .list-typing', function(){
 
@@ -1315,10 +1312,10 @@ $.captureRenderEngine = function(data){
 $.typificationsEngine = function(data){
 
 	var skillidx = "1";
-	var serviciosidx = "1";
+	//var serviciosidx = "1";
 
-	//var skillidx = Cookies.get('SkillId');
-	//var serviciosidx = Cookies.get('serviciosId');
+	var skillidx = Cookies.get('SkillId');
+	var serviciosidx = Cookies.get('serviciosId');
 
 	$('#Builder_Engine .tree').append('<h3 class="text-center"><span class="glyphicon glyphicon-tags"></span> Tipificaciones</h3>');
 
@@ -1362,11 +1359,11 @@ $.typificationsEngine = function(data){
 
 $.productsEngine = function(data){
 
-	var skillidx = "1";
-	var serviciosidx = "1";
+	//var skillidx = "1";
+	//var serviciosidx = "1";
 
-	//var skillidx = Cookies.get('SkillId');
-	//var serviciosidx = Cookies.get('serviciosId');
+	var skillidx = Cookies.get('SkillId');
+	var serviciosidx = Cookies.get('serviciosId');
 
 
 	for(var i = 0; i < data.length; i++){
@@ -1476,95 +1473,6 @@ $(window).load(function(){
 			}
 
 		});
-
-	};
-	/*
-	$.loadCustomersDefault = function(data){
-
-		var url = ws+"rg_MuestraCliente";
-
-		var myid = Cookies.get('id');
-		var skillsId = Cookies.get('SkillId');
-		var serviciosId = Cookies.get('serviciosId');
-		var clientesId = Cookies.get('clientesId');
-
-		var CtiClientesId = $.UrlDecode()["clientesId"];
-		console.log("++++++++++", CtiClientesId);
-
-		var Data = {
-			serviciosId: serviciosId,
-			skillId: skillsId,
-			clientesId: clientesId,
-			usuarioId: myid
-		}
-
-		$.support.cors = true;
-	  $.ajax({
-	    type: "GET",
-	    url: url,
-	    crossDomain: true,
-	    data: Data,
-	    contentType: "application/json; charset=utf-8",
-	    dataType: "json",
-			success: function(data){
-
-				var names = data[0].nombre1 + ' ' + data[0].nombre2;
-				var pat = data[0].apellido1;
-				var mat = data[0].apellido2;
-				var Vclave = data[0].valorClave;
-				var lada = data[0].lada;
-				var ext = data[0].extension;
-
-				var content = '<h3 class="text-center"><span class="glyphicon glyphicon-book"></span> Clientes Citas</h3><div class="form-group"><label for="valorclave">Nomnbre</label><input type="text" class="form-control input-sm" id="names" val="'+names+'" placeholder=""></div><div class="form-group"><label for="valorclave">Apellido Paterno</label><input type="text" class="form-control input-sm" id="pat" val="'+pat+'" ></div><div class="form-group"><label for="valorclave">Apellido Materno</label><input type="text" class="form-control input-sm" id="mat" val="'+mat+'" placeholder="Apellido Materno"></div><div class="form-group"><label for="valorclave">Valor Clave</label><input type="text" class="form-control input-sm" id="vclave" val="'+Vclave+'"></div><div class="row"><div class="col-md-6"><div class="form-group"><label for="Lada">Lada</label><input type="text" class="form-control input-sm" id="lada" val="'+lada+'"></div></div><div class="col-md-6"><div class="form-group"><label for="valorclave">Extension</label><input type="text" class="form-control input-sm" id="ext" val="'+ext+'"></div></div></div>';
-
-				$('#Builder_Engine .customer_default').empty().append(content);
-
-
-				$('.customer_default #names').val(names).prop('disabled', true);
-				$('.customer_default #pat').val(pat).prop('disabled', true);
-				$('.customer_default #mat').val(mat).prop('disabled', true);
-				$('.customer_default #vclave').val(Vclave).prop('disabled', true);
-				$('.customer_default #lada').val(lada).prop('disabled', true);
-				$('.customer_default #ext').val(ext).prop('disabled', true);
-
-
-			},error: function(data){
-				alert("ErrorWS: " + data.status + " " + data.statusText);
-			}
-
-		});
-
-	};
-	*/
-
-	$.loadCustomersQuotes = function(data){
-
-		//rg_CargaClientesCitas
-		//var skillidx = Cookies.get('SkillId');
-
-		/*
-		Cookies.get('clientesId');
-		Cookies.get('clientesNames');
-		Cookies.get('clientesPat');
-		Cookies.get('clientesMat');
-		Cookies.get('clientesClave');
-		Cookies.get('clientesLada');
-		Cookies.get('clientesExt');
-		Cookies.get('clientesClaveId');
-		*/
-
-		/*
-		direccion:,
-		codigoPostal:,
-		colonia:,
-		usuarioVisita:,
-		fechaVisita:,
-		usuariosId:,
-		tipoCitaId:
-		*/
-
-		//$('.customers_quotes').empty().append('<div class=""><div class="form-group"><label for="Nombre">Direccion</label><input type="text" class="form-control input-sm" id="" placeholder=""></div><div class="form-group"><label for="Colonia">Colonia</label><input type="text" class="form-control input-sm" id="" placeholder=""></div><div class="row"><div class="col-md-6"><div class="form-group"><label for="Colonia">Codigo Postal</label><input type="text" class="form-control input-sm" id="" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label for="Colonia">Usuario Visita</label><input type="text" class="form-control input-sm" id="" placeholder=""></div></div><div class="col-md-6"><div class="form-group"><label for="Colonia">Tipo de Cita</label><select class="form-control input-sm"><option value="1">Cita Llamada</option><option value="2">Cita Presencial</option></select></div></div><div class="col-md-6"><div class="form-group"><label for="Colonia">Fecha</label><div class="input-group date" id="datetimepicker1"><input type="text" class="form-control input-sm" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div></div></div></div>');
-		//$('.customers_quotes').empty().append('<div class="input-group date" id="datetimepicker1"><input type="text" class="form-control" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>');
 
 	};
 
@@ -1686,6 +1594,7 @@ $.onsaveProducts = function(spid){
 	var clientesClavesId = Cookies.get('clientesClaveId');
 	var skillsProductosid = spid;
 
+
 	var Data = {
 		skillsId: skillsId,
 		serviciosId: serviciosId,
@@ -1713,6 +1622,7 @@ $.onsaveProducts = function(spid){
 		}
 
 	});
+
 
 };
 
