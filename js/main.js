@@ -1008,7 +1008,8 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 		});
 
-		//$.onSaveData(labelarry, inputarry);
+		$.onSaveData(labelarry, inputarry);
+
 		$.onTransfer();
 
 });
@@ -1080,8 +1081,7 @@ function onsetEngineSuccess(data){
 		$.typificationsEngine(factory);
 		$.productsEngine(factory);
 		$.typiHistoryEngine(factory);
-		//$.loadCustomersDefault(factory);
-		//$.loadCustomersQuotes(factory);
+		$.vdn(factory);
 
 		$(".loader").slideUp("slow", function(){
 
@@ -1530,6 +1530,31 @@ $.typiHistoryEngine = function(data){
 
 };
 
+
+$.vdn = function(data){
+
+	var skillidx = Cookies.get('SkillId');
+	var serviciosidx = Cookies.get('serviciosId');
+
+	for(var i = 0; i < data.length; i++){
+
+		if(serviciosidx == data[i].serviciosId){
+
+			var skills = data[i].skills;
+
+				for(var i = 0; i < skills.length; i++){
+
+					if(skillidx == skills[i].skillsId){
+
+							var vdntransfiere = skills[i].vdnTransfiere;
+							Cookies.set('vdnTransfiere', vdntransfiere);
+					}
+				}
+		}
+	}
+
+};
+
 /***********************
 				Saving
 ************************/
@@ -1552,6 +1577,8 @@ $.onsaveTyping = function(id, comment){
 	var clientesClavesId = Cookies.get('clientesClaveId');
 	var skillsTipologiasid = id;
 	var comentario = comment;
+	var vdnTransfirio = Cookies.get('vdnTransfiere');
+	var extension = Cookies.get('extension');
 
 	var Data = {
 		 skillsId: skillsId,
@@ -1560,7 +1587,9 @@ $.onsaveTyping = function(id, comment){
 		 clientesClavesId: clientesClavesId,
 		 skillsTipologiasId: skillsTipologiasid,
 		 comentario: comentario,
-		 usuariosId: myid
+		 usuariosId: myid,
+		 vdnTransfirio: vdnTransfirio,
+		 extension: extension
 	};
 
 	$.support.cors = true;
@@ -1676,9 +1705,7 @@ $.onSaveData = function(labels, inputs){
 
 
 $.onTransfer = function(){
-	alert("transfer");
 
-	var ert = "49454";
-
-	fTransferCall(ert);
+	var vdnTransfirio = Cookies.get('vdnTransfiere');
+	fTransferCall(vdnTransfirio);
 };

@@ -3,6 +3,7 @@ usuariosId = Cookies.get("id");
 //extensionasesor = getUrlVars()["ext"];
 Telefonico = "";
 BanderaConecting = 0;
+BanderaStablished = 1;
 sDNIS = "";
 $.filldata = function (data1, data2) {
     data = {
@@ -137,6 +138,7 @@ function fconnecting(data) {
         var sCallid = data.callid;
         var sUcid = data.ucid;
         BanderaConecting = 0;
+		    BanderaStablished = 0;
         if (sDNIS.length > 5)
             sDNIS = sDNIS.substring(1, sDNIS.length)
             document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
@@ -161,14 +163,14 @@ function festablish(data) {
         var sANI = data.ani;
         var sCallid = data.callid;
         var sUcid = data.ucid;
-        BanderaConecting = 0;
 
-        if (BanderaConecting == 0) {
+
+        if (BanderaConecting == 0 && BanderaStablished == 0) {
             BanderaConecting = 1;
-            alert("BanderaConecting = 1;");
         }
         else {
             BanderaConecting = 1;
+			      BanderaStablished = 1;
             alert("foo");
             document.getElementById("iframedataset").src = "http://172.18.118.128/dataset.html?clientesId=&vclave=" + sANI;
             document.getElementById('lblComment').innerHTML = "El numero entrante es: " + sANI;
