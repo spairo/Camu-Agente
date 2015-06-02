@@ -32,8 +32,7 @@ function ctiSocket(station) {
             //HISTORIAL.value = "<br>" + ("oh error! " + event.data);
 
         };
-        alert(parent.websocket);
-        console.log("websocket", websocket);
+
         websocket.onmessage = function (event) {
             //console.log(event.data);
             var jsonData = JSON.parse(event.data);
@@ -117,7 +116,7 @@ function flogin() {
     }
 
 }
-function flogout() {
+function flogout(){
     try {
         dataactivity = { menu: "flogout", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
@@ -175,7 +174,7 @@ function festablish(data) {
         }
         else {
             if($("#Builder_Engine .btn-engine-done").length > 0){
-            
+
             }else {
               BanderaConecting = 1;
 

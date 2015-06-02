@@ -878,9 +878,6 @@ $(document).ready(function(){
 		var CtiClientesId = $.UrlDecode()["clientesId"];
 		var CtiVclave = $.UrlDecode()["vclave"];
 
-		alert(CtiClientesId + CtiVclave);
-
-
 		if((CtiClientesId != null || CtiClientesId != undefined) || (CtiVclave == null || CtiVclave == undefined)){
 
 			window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
@@ -953,24 +950,15 @@ $(document).on('click', '#logout-builder', function(){
 
 $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
-		//$(".btn-engine-done").prop( "disabled", true );
+
+		$(".btn-engine-done").prop( "disabled", true );
 
 		// Get typing selected
-
 		var treetagid = $('#Builder_Engine .trees .tags .tag').attr('id');
 		var treecomment = "comentario";
-		$.onsaveTyping(treetagid, treecomment);
-
-
-		$.skillsTyping(treetagid);
 
 		// Get product selected
-
 		var producttagid = $("#Builder_Engine .product .tags .tag").attr('id');
-		//alert(producttagid);
-
-		$.onsaveProducts(producttagid);
-
 
 		//Get Inputs data Fields
 
@@ -978,25 +966,76 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 		var labelarry = new Array();
 
 		$("#box-phone").keypress(function(e){
-
 			if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
 					//display error message
 					//$(".numbers").html("Solo Numeros").show().fadeOut("slow");
 					return false;
 			}
-
 		});
 
 		$('.form-dinamic .input-dinamic').each(function(){
-
 			inputarry.push($(this).val());
 			labelarry.push($(this).attr("name"));
-
 		});
 
-		$.onSaveData(labelarry, inputarry);
 
-		$.onTransfer();
+		//validate
+		var test = false;
+
+		$('#Builder_Engine .fields .required').each(function(){
+
+			if ( this.value.trim() == '' ) {
+					//alert("Requerido");
+					this.focus();
+					test = false;
+					$(".btn-engine-done").prop( "disabled", false );
+					return test;
+
+			}
+			else{
+				test  = true;
+				return test;
+			}
+		});
+
+		if(test == false){
+
+			alert("Campo Requerido");
+			$(".btn-engine-done").prop( "disabled", false );
+			return false;
+
+		}
+		if(treetagid == null || treetagid == undefined){
+			alert("tipificacion Requerido");
+			$(".btn-engine-done").prop( "disabled", false );
+			return false;
+		}
+		else if(producttagid == null || producttagid == undefined){
+
+			alert("Producto Requerido");
+			$(".btn-engine-done").prop( "disabled", false );
+			return false;
+
+		}/*else if($.validate_inputs() == false){
+
+			alert("Campo Requerido");
+			$(".btn-engine-done").prop( "disabled", false );
+			return false;
+
+		}*/
+		else{
+
+			$.onsaveProducts(producttagid);
+			$.onsaveTyping(treetagid, treecomment);
+			$.skillsTyping(treetagid);
+			$.onSaveData(labelarry, inputarry);
+			$.onTransfer();
+
+			$(".loader").slideDown();
+			$("#iframedataset").attr('src', 'about:blank');
+
+		}
+
 
 });
 
@@ -1130,9 +1169,6 @@ $.baselayoutEngine = function(data){
 									var content = '<div class="form-group form-build"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-sm input-read" id="'+name+'" maxlength="'+long+'" placeholder=""></div>';
 									$('.base_layout .fields').append(content);
 
-									if(required == "1"){
-										$(".fields .input-dinamic").addClass('required');
-									}
 									$(".base_layout .fields .input-read").prop('disabled', true);
 
 								}
@@ -1533,7 +1569,7 @@ $.skillsTyping = function(node){
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
 			success: function(data){
-				alert("foo");
+
 				console.log("--********--");
 
 			},error: function(data){
@@ -1559,6 +1595,7 @@ $.onsaveCita = function(){
 
 $.onsaveTyping = function(id, comment){
 
+	alert("guardo Typing");
 	var url = ws+"rg_GuardaTipificacion";
 
 	var myid = Cookies.get('id');
@@ -1572,15 +1609,15 @@ $.onsaveTyping = function(id, comment){
 	var extension = Cookies.get('extension');
 
 	var Data = {
-		 skillsId: skillsId,
-		 serviciosId: serviciosId,
-		 clientesId: clientesId,
-		 clientesClavesId: clientesClavesId,
-		 skillsTipologiasId: skillsTipologiasid,
-		 comentario: comentario,
-		 usuariosId: myid,
-		 vdnTransfirio: vdnTransfirio,
-		 extension: extension
+		skillsId: skillsId,
+		serviciosId: serviciosId,
+		clientesId: clientesId,
+		clientesClavesId: clientesClavesId,
+		skillsTipologiasId: skillsTipologiasid,
+		comentario: comentario,
+		usuariosId: myid,
+		vdnTransfirio: vdnTransfirio,
+		extension: extension
 	};
 
 	$.support.cors = true;
@@ -1604,6 +1641,7 @@ $.onsaveTyping = function(id, comment){
 };
 
 $.onsaveProducts = function(spid){
+	alert("guardo producto");
 
 	var url = ws+"rg_GuardaProductos";
 
@@ -1648,9 +1686,7 @@ $.onsaveProducts = function(spid){
 
 
 $.onSaveData = function(labels, inputs){
-
-	alert("guardare datos");
-
+	alert("guardo datos");
 	var url = ws+"rg_GuardaDatos";
 
 	var myid = Cookies.get('id');
@@ -1680,9 +1716,7 @@ $.onSaveData = function(labels, inputs){
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: function(data){
-
-			console.log("guardaste datos", data);
-
+			$.onTransfer();
 		},error: function(data){
 
 			console.log("algo salio mal", data);
@@ -1698,10 +1732,14 @@ $.onTransfer = function(){
 
 	var vdnTransfirio = Cookies.get('vdnTransfiere');
 
-	setTimeout(function(){
+	if(vdnTransfirio == null || vdnTransfirio == undefined){
 
-		fTransferCall(vdnTransfirio);
+	}else{
 
-	}, 3000);
+		setTimeout(function(){
+			fTransferCall(vdnTransfirio);
+		}, 1000);
+
+	}
 
 };
