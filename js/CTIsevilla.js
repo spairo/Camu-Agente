@@ -1,8 +1,8 @@
 usuariosId = Cookies.get('id');
 extensionasesor = Cookies.get('extension');
 //Telefonico = getUrlVars()["vclave"];
-BanderaConecting = 0;
-BanderaStablished = 1;
+var BanderaConecting;
+var BanderaStablished;
 sDNIS = "";
 $.filldata = function (data1, data2) {
     data = {
@@ -14,7 +14,9 @@ $.filldata = function (data1, data2) {
         error: data2
     }
 };
-var websocket;
+//var websocket;
+window.websocket;
+
 dataactivity = { menu: "", usuariosId: usuariosId }
 url = "http://172.18.149.21/Servicios/REST.svc/rg_RegistraErrores?";
 urlactivity = "http://172.18.149.21/Servicios/REST.svc/rg_RegistraActividad?";
@@ -30,7 +32,8 @@ function ctiSocket(station) {
             //HISTORIAL.value = "<br>" + ("oh error! " + event.data);
 
         };
-        alert(websocket);
+        alert(parent.websocket);
+        console.log("websocket", websocket);
         websocket.onmessage = function (event) {
             //console.log(event.data);
             var jsonData = JSON.parse(event.data);
@@ -142,8 +145,12 @@ function fconnecting(data) {
         BanderaStablished = 0;
         if (sDNIS.length > 5)
             sDNIS = sDNIS.substring(1, sDNIS.length)
-        document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
-        document.getElementById("frmCMGenerico").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sDNIS;
+            if($("#Builder_Engine .btn-engine-done").length > 0){
+              alert("no existe button");
+            }else {
+              document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
+              document.getElementById("iframedataset").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sDNIS;
+            }
         //HISTORIAL.value = "<br>" + ("Extension " + txtExtension + " ...connecting...");
     } catch (e) {
         data = {
@@ -167,9 +174,15 @@ function festablish(data) {
             BanderaConecting = 1; BanderaStablished == 1;
         }
         else {
-            BanderaConecting = 1;
-            document.getElementById('lblComment').innerHTML = "El numero entrante es: " + sANI;
-            document.getElementById("frmCMGenerico").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sANI;
+            if($("#Builder_Engine .btn-engine-done").length > 0){
+            
+            }else {
+              BanderaConecting = 1;
+
+              document.getElementById('lblComment').innerHTML = "El numero entrante es: " + sANI;
+              document.getElementById("iframedataset").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sANI;
+
+            }
         }
         //HISTORIAL.value = "<br>" + ("established call at Extension " + txtExtension + ", ANI: " + sANI + " Callid: " + sCallid + " UCID: " + sUcid);
     } catch (e) {
@@ -242,10 +255,7 @@ function fMakeCall(Number) {
               alert("No puede marcar a un numero vacio, validelo por favor");
         }
         else{
-          alert("123");
-          alert(websocket);
           websocket.send(["makecall", sDNIS]);
-          alert("456");
         }
 
     } catch (e) {
@@ -288,11 +298,11 @@ function fTransferCall(VDN) {
         if (BanderaConecting == 0) {
             alert("No puede transferir sin tener una llamada activa.");
         }
-        else if (document.getElementById("txtStation").value == "") {
+        else if ($("#BarraInterfaces #txtStation").val() == "") {
             alert("No puede transferir sin tener una extension firmada.");
         }
         else if (VDN != "") {
-            websocket.send(["transfercall", VDN]);
+            parent.websocket.send(["transfercall", VDN]);
             BanderaConecting = 0;
             BanderaStablished = 1;
         }

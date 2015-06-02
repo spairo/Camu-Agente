@@ -217,8 +217,6 @@ $.searchGet = function(){
 		valorClave: CtiVclave
 	};
 
-	console.log(Data);
-
 	$.support.cors = true;
 	$.ajax({
 		type: "GET",
@@ -960,12 +958,10 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 		// Get typing selected
 
 		var treetagid = $('#Builder_Engine .trees .tags .tag').attr('id');
-		var treetagtext = $('#Builder_Engine .trees .tags .tag').val();
 		var treecomment = "comentario";
-		//$.onsaveTyping(treetagid, treecomment);
+		$.onsaveTyping(treetagid, treecomment);
 
 
-		console.log(treetagtext);
 		$.skillsTyping(treetagid);
 
 		// Get product selected
@@ -973,7 +969,7 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 		var producttagid = $("#Builder_Engine .product .tags .tag").attr('id');
 		//alert(producttagid);
 
-		//$.onsaveProducts(producttagid);
+		$.onsaveProducts(producttagid);
 
 
 		//Get Inputs data Fields
@@ -998,7 +994,7 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 		});
 
-		//$.onSaveData(labelarry, inputarry);
+		$.onSaveData(labelarry, inputarry);
 
 		$.onTransfer();
 
@@ -1704,7 +1700,6 @@ $.onTransfer = function(){
 
 	setTimeout(function(){
 
-		alert("test");
 		fTransferCall(vdnTransfirio);
 
 	}, 3000);
