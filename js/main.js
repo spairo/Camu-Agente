@@ -92,6 +92,7 @@ $.login = function(user, password, extension){
 									var name = Cookies.set('name', response[0].usuario);
 									var profile = Cookies.set('profile', response[0].perfil);
 									var acd = Cookies.set('acd', response[0].acd);
+
 									var dataM = response[0].menu;
 									var dataS = response[0].configuracion;
 									var dataAux = response[0].auxiliares;
@@ -634,10 +635,19 @@ $.Aux = function(user, passw){
 
 		        for (var i = 0; i < aux_data.length; i++)
 		        {
-		            var Auxiliar = aux_data[i].auxiliar;
-		            var AuxiliarId = aux_data[i].auxiliaresId;
-		            var urlImg = aux_data[i].imagen;
-		            content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
+							var Auxiliar = aux_data[i].auxiliar;
+							var AuxiliarId = aux_data[i].auxiliaresId;
+							var urlImg = aux_data[i].imagen;
+
+							var auxselected = Cookies.get("IdAux");
+							console.log("auxselected");
+							if(auxselected == AuxiliarId){
+								content1 += ' <td> <input class="Visible" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
+							}else{
+								content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
+							}
+
+
 		        }
 
 		        content1 += '</tr>' +
@@ -1046,6 +1056,49 @@ $(document).on('click', '.box-add .search-back', function(){
 
 	$("#add-client").slideUp("slow", function(){
 		$("#search").slideDown("slow");
+	});
+
+});
+
+$(document).on('click', '#logoutEngine', function(){
+
+	var url = ws+"rg_RegistraLogout";
+
+	var myid = Cookies.get('id');
+
+	var Data = { usuariosId: myid };
+
+	$.support.cors = true;
+	$.ajax({
+		type: "GET",
+		url: url,
+		crossDomain: true,
+		data: Data,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(data){
+
+			Cookies.remove('id');
+			Cookies.remove('name');
+			Cookies.remove('profile');
+			Cookies.remove('UserLogin');
+			Cookies.remove('hermetic');
+			Cookies.remove('SkillId');
+			Cookies.remove('serviciosId');
+			Cookies.remove('clientesId');
+			Cookies.remove('clientesClaveId');
+			Cookies.remove('extension');
+			Cookies.remove('services');
+			Cookies.remove('serviceId');
+			Cookies.remove('vdnTransfiere');
+			Cookies.remove('acd');
+
+			window.location.href='/';
+
+		},error: function(data){
+			//console.log("algo salio mal");
+		}
+
 	});
 
 });
