@@ -101,7 +101,7 @@ function flogin() {
             document.getElementById("btnLogout").disabled = false;
             ctiSocket(txtExtension);
 
-            if(typeof (acdtelefonico) != 'undefined' || acdtelefonico != null){
+            if (acdtelefonico != '0'){
                 fMakeCallTelefonico(acdtelefonico);
             }
             else {
