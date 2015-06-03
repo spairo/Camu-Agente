@@ -37,6 +37,7 @@ $.foo = function(){
 function F_Load_Engine()
 {
     document.getElementById('btnDisp').className = "Visible";
+		$("#table_test .Visible").prop('disabled', true);
     Cambiar_Clase_Aux_Inactivo();
 
     var user = Cookies.get('user');
@@ -548,16 +549,9 @@ $.Menu = function(data){
 
 $.Auxiliares = function(data){
 
-    alert('entra aux');
-		console.log(data);
-
-    //var skills_evals = Object.keys(data).length; //IE8 sucks
-    //var skills_evals = data;
     var aux_data = data;
 
-    console.log("Sam", aux_data);
-
-    if (aux_data.length > 1){
+    if(aux_data.length > 1){
 
         $("#div_aux").slideDown().show();
         var content1, content2;
@@ -565,50 +559,36 @@ $.Auxiliares = function(data){
         content1 = '<table id="table_test">' +
           '<tr>';
 
-
-        //content2 = '<table>' +
-        //  '<tr>';
+				console.log(aux_data);
 
         for (var i = 0; i < aux_data.length; i++)
         {
-
             var Auxiliar = aux_data[i].auxiliar;
             var AuxiliarId = aux_data[i].auxiliaresId;
-
             var urlImg = aux_data[i].imagen;
+            //content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
 
-            content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> '
-            //content2 += ' <td> <div > <input type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </div> </td> '
+						var auxselected = Cookies.get("IdAux");
 
-            //Clase
-            //Crear una clase que cambie la opacidad...
-            //
-
-            //var content = '<option class="skilloption" value="' + skillsId + '" alt="' + serviciosId + '" name="' + skill + '">' + skill + '</option>';
-
+						if(auxselected == AuxiliarId){
+							content1 += ' <td> <input class="Visible" type="image" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
+						}else{
+							content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
+						}
         }
 
         content1 += '</tr>' +
                 '</table>';
 
-        //content2 += '</tr>' +
-        //'</table>';
-
-        //$('.box-aux').append(content1);
         $('.box-aux').empty().append(content1);
-       // $('.box-aux').append(content2);
 
-    } else {
-
-        //$("#div_aux").hide();
-//        $("#search").slideDown().show();
+    }else{
     }
 
 };
 
 $.Aux = function(user, passw){
 
-	console.log(user + passw);
 		var url = ws+"rg_seguridadLogin";
 
 		var Data = { User: user, Password: passw };
@@ -632,7 +612,7 @@ $.Aux = function(user, passw){
 
 		        content1 = '<table id="table_test">' +
 		          '<tr>';
-
+						 console.log(aux_data);
 		        for (var i = 0; i < aux_data.length; i++)
 		        {
 							var Auxiliar = aux_data[i].auxiliar;
@@ -640,9 +620,12 @@ $.Aux = function(user, passw){
 							var urlImg = aux_data[i].imagen;
 
 							var auxselected = Cookies.get("IdAux");
-							console.log("auxselected");
+
 							if(auxselected == AuxiliarId){
+
 								content1 += ' <td> <input class="Visible" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
+
+
 							}else{
 								content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
 							}
@@ -658,6 +641,7 @@ $.Aux = function(user, passw){
 		    }else {
 
 		    }
+				document.getElementById(auxselected).disabled = true;
 
 			},error: function(data){
 				alert("Error44: " + data.status + " " + data.statusText);
@@ -665,6 +649,7 @@ $.Aux = function(user, passw){
 		});
 
 };
+
 
 function buttomClick(buttom_id)
 {
@@ -703,6 +688,8 @@ function buttomClick(buttom_id)
 
 function buttomClick_Disponible(buttom_id)
 {
+
+
     var url = ws + "rg_ActualizaSesion";
 
     var serviciosId = Cookies.get('serviciosId');
@@ -759,18 +746,13 @@ function Cambiar_Clase_Aux_Activo(Id_Buttom)
 {
     try {
         document.getElementById(Id_Buttom).className = "Visible";
+				document.getElementById(Id_Buttom).disabled = true;
     } catch (e) {
         console.log("Error", e.message.toString())
     }
 
 }
 
-//function myIP() {
-//    var vi = "uses java to get the users local ip number"
-//    var yip2 = java.net.InetAddress.getLocalHost();
-//    var yip = yip2.getHostAddress();
-//    return yip;
-//}//end myIP
 
 function SaveAuxError(response) {
     alert('Error al guardar Auxiliar!');
@@ -862,6 +844,7 @@ $(document).on('click', '#logout', function(){
 			Cookies.remove('serviceId');
 			Cookies.remove('vdnTransfiere');
 			Cookies.remove('acd');
+			Cookies.remove('IdAux');
 
 			location.reload();
 
@@ -1092,6 +1075,7 @@ $(document).on('click', '#logoutEngine', function(){
 			Cookies.remove('serviceId');
 			Cookies.remove('vdnTransfiere');
 			Cookies.remove('acd');
+			Cookies.remove('IdAux');
 
 			window.location.href='/';
 
@@ -1164,13 +1148,15 @@ $(document).ready(function(){
 			}
 		});
 
+		//Aux
+		$("#table_test .disabledAUX").attr("disabled", true);
+
 	}
 	if(path == "/engine.html"){
 
 		//Aux
 		$.Aux(name, passw);
-
-
+		$("#table_test .disabledAUX").attr("disabled", true);
 
 		$.UrlDecode = function(){
 			var vars = {};
