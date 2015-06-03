@@ -6609,7 +6609,8 @@ button.close {
 .navbar-top{
   width: 100%;
   height:60px;
-  background: #34495e;
+  background: #13B5AF;
+  border-bottom: 2px solid #0C7388;
 }
   .navbar-top .logo{
     background: url('../img/atento.png') no-repeat;
@@ -6678,7 +6679,7 @@ button.close {
     z-index: 2;
   }
   .form-login label{
-    color: #7F8C97;
+    color: #0C2639;
   }
   .form-login input[type="text"] {
     margin-bottom: 10px;
@@ -6694,10 +6695,10 @@ button.close {
     color: #fff;
     font-size: 18px;
     border: 0;
-    border-bottom: 2px solid #0C70A4;
+    border-bottom: 1px solid #0C7388;
     cursor: pointer;
-    -webkit-box-shadow: inset 0 -2px #0C70A4;
-    box-shadow: inset 0 -2px #0C70A4;
+    -webkit-box-shadow: inset 0 -2px #0C7388;
+    box-shadow: inset 0 -2px #0C7388;
   }
   .form-login .btn-login:active{
     top: 1px;
@@ -6726,7 +6727,7 @@ button.close {
     position: relative;
     top: -50px;
     left: 120px;
-    font-weight: bold;
+    font-weight: normal;
     font-size: 24px;
     text-align: left;
     color: #7F8C97;
@@ -6738,7 +6739,7 @@ button.close {
     left: 120px;
     text-transform: uppercase;
     text-align: left;
-    font-weight: bold;
+    font-weight: lighter;
     font-size: 14px;
     letter-spacing:1px;
     color: #7F8C97;
@@ -6763,17 +6764,17 @@ button.close {
     margin-top: 55px;
   }
   .subheader .btn-menu{
-    background: #95a5a6;
+    background: #13B5AF;
     margin: 0 auto;
     width:100%;
     padding: 10px 30px;
     color: #fff;
     font-size: 18px;
     border: 0;
-    border-bottom: 2px solid #7f8c8d;
+    border-bottom: 1px solid #0C7388;
     cursor: pointer;
-    -webkit-box-shadow: inset 0 -2px #7f8c8d;
-    box-shadow: inset 0 -2px #7f8c8d;
+    -webkit-box-shadow: inset 0 -2px #0C7388;
+    box-shadow: inset 0 -2px #0C7388;
   }
   .subheader .btn-menu:active{
     top: 1px;
@@ -6795,12 +6796,13 @@ button.close {
 }
   .box-services h1{
     text-align: center;
-    font-weight: bold;
+    font-weight: lighter;
     color: #7F8C97;
   }
   .box-services label{
     font-weight: bold;
-  }/*
+  }
+  /*
   .box-services select{
     color: #fff;
     border: none;
@@ -6810,32 +6812,33 @@ button.close {
     border-bottom: 2px solid #7f8c8d;
     -webkit-box-shadow: inset 0 -2px #7f8c8d;
     box-shadow: inset 0 -2px #7f8c8d;
-  }*/
+  }
+  */
   .box-services .service-choice{
-    background: #95a5a6;
+    background: #13B5AF;
     margin: 20px auto;
     width:100%;
     padding: 10px 0;
     color: #fff;
     font-size: 19px;
     border: 0;
-    border-bottom: 2px solid #7f8c8d;
+    border-bottom: 1px solid #0C7388;
     cursor: pointer;
-    -webkit-box-shadow: inset 0 -2px #7f8c8d;
-    box-shadow: inset 0 -2px #7f8c8d;
+    -webkit-box-shadow: inset 0 -2px #0C7388;
+    box-shadow: inset 0 -2px #0C7388;
   }
   .box-services .service-choice:hover{
-    background: #e74c3c;
+    background: #0C7388;
     margin: 20px auto;
     width:100%;
     padding: 10px 0;
     color: #fff;
     font-size: 19px;
     border: 0;
-    border-bottom: 2px solid #c0392b;
+    border-bottom: 1px solid #13B5AF;
     cursor: pointer;
-    -webkit-box-shadow: inset 0 -2px #c0392b;
-    box-shadow: inset 0 -2px #c0392b;
+    -webkit-box-shadow: inset 0 -2px #13B5AF;
+    box-shadow: inset 0 -2px #13B5AF;
   }
   .box-services .service-choice:active{
     top: 1px;
@@ -6857,12 +6860,13 @@ button.close {
 }
   .box-skills h1{
     text-align: center;
-    font-weight: bold;
+    font-weight: lighter;
     color: #7F8C97;
   }
   .box-skills label{
     font-weight: bold;
-  }/*
+  }
+  /*
   .box-skills select{
     color: #fff;
     border: none;
@@ -6872,32 +6876,33 @@ button.close {
     border-bottom: 2px solid #7f8c8d;
     -webkit-box-shadow: inset 0 -2px #7f8c8d;
     box-shadow: inset 0 -2px #7f8c8d;
-  }*/
+  }
+  */
   .box-skills .choice-skill{
-    background: #95a5a6;
+    background: #13B5AF;
     margin: 20px auto;
     width:100%;
     padding: 10px 0;
     color: #fff;
     font-size: 19px;
     border: 0;
-    border-bottom: 2px solid #7f8c8d;
+    border-bottom: 2px solid #0C7388;
     cursor: pointer;
-    -webkit-box-shadow: inset 0 -2px #7f8c8d;
-    box-shadow: inset 0 -2px #7f8c8d;
+    -webkit-box-shadow: inset 0 -2px #0C7388;
+    box-shadow: inset 0 -2px #0C7388;
   }
   .box-skills .choice-skill:hover{
-    background: #e74c3c;
+    background: #0C7388;
     margin: 20px auto;
     width:100%;
     padding: 10px 0;
     color: #fff;
     font-size: 19px;
     border: 0;
-    border-bottom: 2px solid #c0392b;
+    border-bottom: 2px solid #13B5AF;
     cursor: pointer;
-    -webkit-box-shadow: inset 0 -2px #c0392b;
-    box-shadow: inset 0 -2px #c0392b;
+    -webkit-box-shadow: inset 0 -2px #13B5AF;
+    box-shadow: inset 0 -2px #13B5AF;
   }
   .box-skills .choice-skill:active{
     top: 1px;
@@ -7516,7 +7521,22 @@ button.close {
 }
 
 
-/* dropdown custom */
+/* Aux */
+
+.Opaco{
+  opacity:0.4;filter:alpha(opacity=40); /*IE8*/
+}
+    .Opaco:hover{
+      opacity:1;filter:alpha(opacity=1); /*IE8*/
+    }
+
+
+
+.Visible{
+  opacity: 1;
+  filter: alpha(opacity=1); /*IE8*/
+  border:10px;
+}
 
 /*.marginBottom-0{margin-bottom:0;}*/
 

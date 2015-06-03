@@ -1,6 +1,6 @@
 usuariosId = Cookies.get('id');
 extensionasesor = Cookies.get('extension');
-//Telefonico = getUrlVars()["vclave"];
+acdtelefonico = Cookies.get("acd");
 var BanderaConecting;
 var BanderaStablished;
 sDNIS = "";
@@ -100,8 +100,14 @@ function flogin() {
             document.getElementById("btnLogin").disabled = true;
             document.getElementById("btnLogout").disabled = false;
             ctiSocket(txtExtension);
-            //if (Telefonico != "")
-            //setTimeout(fMakeCall(getUrlVars()["vclave"]), 5000);
+
+            if(typeof (acdtelefonico) != 'undefined' || acdtelefonico != null){
+                fMakeCallTelefonico(acdtelefonico);
+            }
+            else {
+                alert("No existe acd telefonico, para loguearse");
+                return false;
+            }
         }
     } catch (e) {
         data = {
@@ -116,11 +122,13 @@ function flogin() {
     }
 
 }
-function flogout(){
+function flogout() {
     try {
         dataactivity = { menu: "flogout", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
-
+        var acdTel = "*64";
+        alert(acdTel);
+        websocket.send(["makecall", acdTel]);
         document.getElementById("btnLogin").disabled = false;
         document.getElementById("btnLogout").disabled = true;
         websocket.close();
@@ -144,12 +152,12 @@ function fconnecting(data) {
         BanderaStablished = 0;
         if (sDNIS.length > 5)
             sDNIS = sDNIS.substring(1, sDNIS.length)
-            if($("#Builder_Engine .btn-engine-done").length > 0){
-              alert("no existe button");
-            }else {
-              document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
-              document.getElementById("iframedataset").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sDNIS;
-            }
+        if ($("#Builder_Engine .btn-engine-done").length > 0) {
+            alert("no existe button");
+        } else {
+            document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
+            document.getElementById("iframedataset").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sDNIS;
+        }
         //HISTORIAL.value = "<br>" + ("Extension " + txtExtension + " ...connecting...");
     } catch (e) {
         data = {
@@ -173,13 +181,13 @@ function festablish(data) {
             BanderaConecting = 1; BanderaStablished == 1;
         }
         else {
-            if($("#Builder_Engine .btn-engine-done").length > 0){
+            if ($("#Builder_Engine .btn-engine-done").length > 0) {
 
-            }else {
-              BanderaConecting = 1;
+            } else {
+                BanderaConecting = 1;
 
-              document.getElementById('lblComment').innerHTML = "El numero entrante es: " + sANI;
-              document.getElementById("iframedataset").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sANI;
+                document.getElementById('lblComment').innerHTML = "El numero entrante es: " + sANI;
+                document.getElementById("iframedataset").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sANI;
 
             }
         }
@@ -250,11 +258,11 @@ function fMakeCall(Number) {
         if (document.getElementById("txtStation").value == "") {
             alert("No puede transferir sin tener una extension firmada.");
         }
-        else if(sDNIS == undefined || sDNIS == ""){
-              alert("No puede marcar a un numero vacio, validelo por favor");
+        else if (sDNIS == undefined || sDNIS == "") {
+            alert("No puede marcar a un numero vacio, validelo por favor");
         }
-        else{
-          websocket.send(["makecall", sDNIS]);
+        else {
+            websocket.send(["makecall", sDNIS]);
         }
 
     } catch (e) {
@@ -268,6 +276,29 @@ function fMakeCall(Number) {
         RESTError(data, url);
     }
 }
+
+function fMakeCallTelefonico(acd){
+    try {
+        dataactivity = { menu: "fMakeCallTelefonico", usuariosId: usuariosId }
+        RESTError(dataactivity, urlactivity);
+        var acdTel = "*63" + acd + "*61";
+        alert(acdTel);
+        websocket.send(["makecall", acdTel]);
+
+    } catch (e) {
+        data = {
+            metodo: "CTI fMakeCall",
+            error: e
+        }
+        var datametodo = data.metodo;
+        var dataerror = data.error;
+        $.filldata(datametodo, dataerror);
+        RESTError(data, url);
+    }
+}
+
+
+
 function fDropCall() {
     try {
         if (websocket != null) {

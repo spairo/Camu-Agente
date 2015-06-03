@@ -14,6 +14,8 @@ var path = window.location.pathname;
 
 var str;
 var scope_url;
+var scope_aux;
+
 
 $(window).load(function(){
 	$(".loader").fadeOut("slow");
@@ -29,6 +31,27 @@ $.foo = function(){
 	//alert("only once")
 	console.log("logout application");
 };
+
+//login Aux
+
+function F_Load_Engine()
+{
+    document.getElementById('btnDisp').className = "Visible";
+    Cambiar_Clase_Aux_Inactivo();
+
+    var user = Cookies.get('user');
+    var password = Cookies.get('password');
+
+    if (user != "" & password != "")
+    {
+        //alert('F_Load_Engine');
+        //alert(full_data_aux);
+        //alert('F_Load_Engine - Entra LoginSuccess');
+
+        F_Simular_Login(user, password);
+
+    }
+}
 
 //login
 
@@ -61,23 +84,31 @@ $.login = function(user, password, extension){
 						$(".loader").fadeIn("slow", function(){
 							$(".loader").fadeOut("slow", function(){
 
+
+								var dataAux = response[0].auxiliares;
+
 									//cookies everywhere
 									var id = Cookies.set('id', response[0].usuariosId);
 									var name = Cookies.set('name', response[0].usuario);
 									var profile = Cookies.set('profile', response[0].perfil);
+									var acd = Cookies.set('acd', response[0].acd);
 									var dataM = response[0].menu;
 									var dataS = response[0].configuracion;
+									var dataAux = response[0].auxiliares;
 
 									Cookies.set('UserLogin', user);
 									Cookies.set('hermetic', password);
 									Cookies.set('extension', extension);
 
+
 									$.main(id, name, profile);
 									$.Menu(dataM);
 									$.skills(dataS);
 									$.services(dataS);
+									$.Auxiliares(dataAux);
 
 									str = dataS;
+									scope_aux = dataAux;
 
 									$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
 									$(".form-group").removeClass('has-error');
@@ -513,6 +544,256 @@ $.Menu = function(data){
 
 };
 
+
+$.Auxiliares = function(data){
+
+    alert('entra aux');
+		console.log(data);
+
+    //var skills_evals = Object.keys(data).length; //IE8 sucks
+    //var skills_evals = data;
+    var aux_data = data;
+
+    console.log("Sam", aux_data);
+
+    if (aux_data.length > 1){
+
+        $("#div_aux").slideDown().show();
+        var content1, content2;
+
+        content1 = '<table id="table_test">' +
+          '<tr>';
+
+
+        //content2 = '<table>' +
+        //  '<tr>';
+
+        for (var i = 0; i < aux_data.length; i++)
+        {
+
+            var Auxiliar = aux_data[i].auxiliar;
+            var AuxiliarId = aux_data[i].auxiliaresId;
+
+            var urlImg = aux_data[i].imagen;
+
+            content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> '
+            //content2 += ' <td> <div > <input type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </div> </td> '
+
+            //Clase
+            //Crear una clase que cambie la opacidad...
+            //
+
+            //var content = '<option class="skilloption" value="' + skillsId + '" alt="' + serviciosId + '" name="' + skill + '">' + skill + '</option>';
+
+        }
+
+        content1 += '</tr>' +
+                '</table>';
+
+        //content2 += '</tr>' +
+        //'</table>';
+
+        //$('.box-aux').append(content1);
+        $('.box-aux').empty().append(content1);
+       // $('.box-aux').append(content2);
+
+    } else {
+
+        //$("#div_aux").hide();
+//        $("#search").slideDown().show();
+    }
+
+};
+
+$.Aux = function(user, passw){
+
+	console.log(user + passw);
+		var url = ws+"rg_seguridadLogin";
+
+		var Data = { User: user, Password: passw };
+
+		$.support.cors = true;
+		$.ajax({
+			type: "GET",
+			url: url,
+			crossDomain: true,
+			data: Data,
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function(data){
+				console.log(data);
+				var aux_data = data[0].auxiliares;
+				console.log(aux_data);
+		    if(aux_data.length > 1){
+
+		        $("#div_aux").slideDown().show();
+		        var content1, content2;
+
+		        content1 = '<table id="table_test">' +
+		          '<tr>';
+
+		        for (var i = 0; i < aux_data.length; i++)
+		        {
+		            var Auxiliar = aux_data[i].auxiliar;
+		            var AuxiliarId = aux_data[i].auxiliaresId;
+		            var urlImg = aux_data[i].imagen;
+		            content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
+		        }
+
+		        content1 += '</tr>' +
+		                '</table>';
+
+		        $('.box-aux').empty().append(content1);
+
+		    }else {
+
+		    }
+
+			},error: function(data){
+				alert("Error44: " + data.status + " " + data.statusText);
+			}
+		});
+
+};
+
+function buttomClick(buttom_id)
+{
+
+    var IdAux = Cookies.set('IdAux', buttom_id);
+    var serviciosId = Cookies.get('serviciosId');
+    var skillsId = Cookies.get('SkillId');
+
+
+    //ip={IP}&auxiliaresId={AUXILIARESID}&usuariosId={USUARIOSID}
+    //alert('Entra Click / ID_Buttom: ' + buttom_id);
+
+    var url = ws + "rg_RegistraAuxiliares";
+
+    var auxiliaresId = buttom_id;
+    var usuariosId = Cookies.get('id');
+
+    //alert(usuariosId);
+
+    var Data = { auxiliaresId: auxiliaresId, usuariosId: usuariosId, serviciosId: serviciosId, skillsId: skillsId };
+
+    $.support.cors = true;
+    $.ajax({
+        type: "GET",
+        url: url,
+        crossDomain: true,
+        data: Data,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: SaveAuxSuccess(buttom_id),
+        error: SaveAuxError
+    });
+
+
+}
+
+function buttomClick_Disponible(buttom_id)
+{
+    var url = ws + "rg_ActualizaSesion";
+
+    var serviciosId = Cookies.get('serviciosId');
+    var skillsId = Cookies.get('SkillId');
+    var usuariosId = Cookies.get('id');
+
+    var oData = { serviciosId: serviciosId, skillsId: skillsId, usuariosId: usuariosId, disponible: 1 };
+
+    $.support.cors = true;
+    $.ajax({
+        type: "GET",
+        url: url,
+        crossDomain: true,
+        data: oData,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: SaveDispSuccess,
+        error: SaveDispError
+    });
+
+}
+
+function Cambiar_Clase_Aux_Inactivo()
+{
+
+    var data = [];
+    var table = document.getElementById('table_test');
+
+    if (table!=null) {
+        var rows = table.getElementsByTagName('tr');
+
+        for (var x = 0; x < rows.length; x++) {
+            var td = rows[x].getElementsByTagName('td');
+            for (var y = 0; y < td.length; y++) {
+                var input = td[y].getElementsByTagName('input');
+                for (var z = 0; z < input.length; z++) {
+                    //data.push(input[z].id);
+                    //alert(input[z].id);
+
+                    document.getElementById(input[z].id).className = "Opaco";
+
+                }
+            }
+        }
+    }
+
+
+
+
+
+}
+
+function Cambiar_Clase_Aux_Activo(Id_Buttom)
+{
+    try {
+        document.getElementById(Id_Buttom).className = "Visible";
+    } catch (e) {
+        console.log("Error", e.message.toString())
+    }
+
+}
+
+//function myIP() {
+//    var vi = "uses java to get the users local ip number"
+//    var yip2 = java.net.InetAddress.getLocalHost();
+//    var yip = yip2.getHostAddress();
+//    return yip;
+//}//end myIP
+
+function SaveAuxError(response) {
+    alert('Error al guardar Auxiliar!');
+}
+
+function SaveDispError(response) {
+    alert('Error al guardar Disponible!');
+}
+
+function SaveAuxSuccess(buttom_id)
+{
+
+    //Cambiar Clase
+    document.getElementById('btnDisp').className = "Opaco";
+
+    Cambiar_Clase_Aux_Inactivo();
+    Cambiar_Clase_Aux_Activo(buttom_id);
+
+    //alert('Auxiliar guardado con Exito!');
+}
+function SaveDispSuccess(response) {
+
+    //otro color...
+
+    document.getElementById('btnDisp').className = "Visible";
+
+    Cookies.set('IdAux','');
+    Cambiar_Clase_Aux_Inactivo();
+
+    //alert('Auxiliar guardado con Exito!');
+}
+
+
 /*Login*/
 
 $(document).on('click', '#login', function(){
@@ -569,6 +850,8 @@ $(document).on('click', '#logout', function(){
 			Cookies.remove('extension');
 			Cookies.remove('services');
 			Cookies.remove('serviceId');
+			Cookies.remove('vdnTransfiere');
+			Cookies.remove('acd');
 
 			location.reload();
 
@@ -830,6 +1113,11 @@ $(document).ready(function(){
 
 	}
 	if(path == "/engine.html"){
+
+		//Aux
+		$.Aux(name, passw);
+
+
 
 		$.UrlDecode = function(){
 			var vars = {};
