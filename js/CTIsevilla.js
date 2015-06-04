@@ -15,7 +15,7 @@ $.filldata = function (data1, data2) {
     }
 };
 //var websocket;
-window.websocket;
+var websocket;
 
 dataactivity = { menu: "", usuariosId: usuariosId }
 url = "http://172.18.149.21/Servicios/REST.svc/rg_RegistraErrores?";
@@ -105,6 +105,7 @@ function flogin(){
 
               if (acdtelefonico != '0'){
                 console.log("login 2");
+                alert(acdtelefonico);
                   fMakeCallTelefonico(acdtelefonico);
               }
               else {
@@ -296,7 +297,7 @@ function fMakeCallTelefonico(acd){
         console.log("fMakeCallTelefonico", acdTel);
         //setTimeout($.fdisponible(websocket), 5000);
         //setTimeout(fdisponible(websocket), 5000);
-        //$.fdisponible();
+        $.fdisponible();
 
 
     }catch(e){
@@ -313,14 +314,14 @@ function fMakeCallTelefonico(acd){
 
 
 $.fdisponible = function(){
-/*
+
     setTimeout(function(){
       alert("logeando");
       //var webs = web;
       var disponible = "*61";
       websocket.send(["makecall", disponible]);
     }, 7000);
-*/
+
 };
 
 
