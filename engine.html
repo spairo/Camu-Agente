@@ -33,7 +33,6 @@
     <script src="js/src/jstree.min.js" type="text/javascript"></script>
     <script src="js/main.js" type="text/javascript"></script>
     <script src="js/CTIsevilla.js" type="text/javascript"></script>
-
   </head>
   <body onload="flogin()">
     <div class="loader"></div>
@@ -42,24 +41,6 @@
       <div class="container">
         <div class="logo" style="position:relative; z-index:3"></div>
         <div class="pull-right" id="logoutEngine" style="position:relative ; z-index:2"><a href="#">Logout</a></div>
-        <div id="div_aux" style="display:block; overflow: auto; position:relative; z-index:1" >
-          <div class="col-md-4 col-md-offset-4">
-            <br />
-              <table>
-                  <tr style="text-align: center">
-                      <td rowspan="1" colspan="3"><h3>Auxiliares</h3></td>
-                  </tr>
-                  <tr>
-                      <td><div class="box-aux" id="div_aux_detalle"></div></td>
-                      <td>&nbsp&nbsp&nbsp&nbsp</td>
-                      <td> <input id="btnDisp" type="image" title="Disponible" width="50" height="50" class="Visible" onClick="buttomClick_Disponible(this.id)" src="Imagenes/Auxiliares/disp.png"/> </td>
-                  </tr>
-              </table>
-              <label class="message-cti"></label>
-              <br />
-              <br />
-          </div>
-        </div>
       </div>
     </div>
 
@@ -68,12 +49,24 @@
       <div class="subheader">
         <div class="container">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="avatar-full"></div>
               <div class="name">User</div>
               <div class="profile">profile</div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
+              <div id="div_aux" style="display:none;">
+                <h3>Auxiliares</h3>
+                  <table>
+                    <tr>
+                      <td><div class="box-aux" id="div_aux_detalle"></div></td>
+                      <td>&nbsp&nbsp&nbsp&nbsp</td>
+                      <td><input id="btnDisp" type="image" title="Disponible" width="50" height="50" class="Visible" onClick="buttomClick_Disponible(this.id)" src="Imagenes/Auxiliares/disp.png"/> </td>
+                    </tr>
+                  </table>
+              </div>
+            </div>
+            <div class="col-md-4">
 
               <div class="pull-right">
                 <div class="dropdown custom-menu">
@@ -93,6 +86,7 @@
     <div id="BarraInterfaces">
       <div class="container">
         <div class="form-inline well-lg">
+          <div id="text-center error-cti well-sm"></div>
           <div class="form-group">
             <label id="lblComment"></label>
           </div>
@@ -123,7 +117,6 @@
     <!-- // CTI dashboard -->
 
     <iframe id="iframedataset" src="about:blank" width="100%" height="100%"></iframe>
-
 
   </body>
 </html>

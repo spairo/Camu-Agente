@@ -10,7 +10,7 @@
     <title>Camu.Agente</title>
 
     <!-- Core Css -->
-    <link href="/css/core.css" rel="stylesheet" />
+    <link href="css/core.css" rel="stylesheet" />
     <link type="image/x-icon" href="img/Icono.ico" rel="shortcut icon" />
 
     <!--[if lt IE 9]>
@@ -27,23 +27,6 @@
       <div class="container">
         <div class="logo" style="position:relative; z-index:3"></div>
         <div class="pull-right logout" style="position:relative ; z-index:2"></div>
-        <div id="div_aux" style="display:none; overflow: auto; position:relative; z-index:1" >
-          <div class="col-md-4 col-md-offset-4">
-            <br />
-              <table>
-                  <tr style="text-align: center">
-                      <td rowspan="1" colspan="3"><h3>Auxiliares</h3></td>
-                  </tr>
-                  <tr>
-                      <td><div class="box-aux" id="div_aux_detalle"></div></td>
-                      <td>&nbsp&nbsp&nbsp&nbsp</td>
-                      <td><input id="btnDisp" type="image" title="Disponible" width="50" height="50" class="Visible" onClick="buttomClick_Disponible(this.id)" src="Imagenes/Auxiliares/disp.png"/> </td>
-                  </tr>
-              </table>
-              <br />
-              <br />
-          </div>
-        </div>
       </div>
     </div>
 
@@ -52,12 +35,26 @@
       <div class="subheader">
         <div class="container">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="avatar-full"></div>
               <div class="name">User</div>
               <div class="profile">profile</div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
+              <!--
+              <div id="div_aux" style="display:none;">
+                <h3>Auxiliares</h3>
+                  <table>
+                    <tr>
+                      <td><div class="box-aux" id="div_aux_detalle"></div></td>
+                      <td>&nbsp&nbsp&nbsp&nbsp</td>
+                      <td><input id="btnDisp" type="image" title="Disponible" width="50" height="50" class="Visible" onClick="buttomClick_Disponible(this.id)" src="Imagenes/Auxiliares/disp.png"/> </td>
+                    </tr>
+                  </table>
+              </div>
+              -->
+            </div>
+            <div class="col-md-4">
 
               <div class="pull-right">
                 <div class="dropdown custom-menu">
@@ -91,8 +88,8 @@
                   <input type="password" id="password" class="form-control" maxlength="20" placeholder="Password" value="master" required>
                 </div>
                 <div class="form-group">
-                  <label class="control-label" for="ext">Extensión <span class="numbers"></span></label>
-                  <input type="text" class="form-control input-lg" id="extens" maxlength="5" placeholder="Extension" value="85477">
+                  <label class="control-label" for="ext">Extensión<span class="numbers"></span></label>
+                  <input type="text" class="form-control input-lg" id="extens" maxlength="5" placeholder="Extension" value="85048">
                 </div>
                 <button id="login" data-loading-text="Loading..."class="btn btn-lg btn-login btn-block" autocomplete="off"><span class="glyphicon glyphicon-log-in"></span> Entrar</button>
             </div>
@@ -191,7 +188,7 @@
 
                 <div class="form-group">
                   <label class="control-label" for="name">Segundo Nombre</label>
-                  <input type="text" class="form-control input-lg" id="add-2name" minlength="3" maxlength="20" placeholder="Nombre">
+                  <input type="text" class="form-control input-lg" id="add-2name" minlength="3" maxlength="20" placeholder="Segundo Nombre">
                 </div>
 
                 <div class="form-group add-group">

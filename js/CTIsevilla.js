@@ -82,53 +82,60 @@ window.onload = function () {
         RESTError(data, url);
     }
 };
-function flogin() {
-    try {
-        dataactivity = { menu: "flogin", usuariosId: usuariosId }
-        RESTError(dataactivity, urlactivity);
 
-        document.getElementById("txtStation").value = extensionasesor;
-        txtExtension = document.getElementById("txtStation").value;
-        if (txtExtension == 'undefined') {
-            alert("Necesita ingresar una extension correcta");
-        }
-        else if (txtExtension.length < 4) {
-            document.getElementById("txtStation").focus();
-            alert("Necesita ingresar una extension correcta");
-        }
-        else {
-            document.getElementById("btnLogin").disabled = true;
-            document.getElementById("btnLogout").disabled = false;
-            ctiSocket(txtExtension);
+function flogin(){
+      try {
+        console.log("login");
+          dataactivity = { menu: "flogin", usuariosId: usuariosId }
+          RESTError(dataactivity, urlactivity);
 
-            if (acdtelefonico != '0'){
-                fMakeCallTelefonico(acdtelefonico);
-            }
-            else {
-                alert("No existe acd telefonico, para loguearse");
+          document.getElementById("txtStation").value = extensionasesor;
+          txtExtension = document.getElementById("txtStation").value;
+          if (txtExtension == 'undefined') {
+              alert("Necesita ingresar una extension correcta");
+          }
+          else if (txtExtension.length < 4) {
+              document.getElementById("txtStation").focus();
+              alert("Necesita ingresar una extension correcta");
+          }
+          else {
+              document.getElementById("btnLogin").disabled = true;
+              document.getElementById("btnLogout").disabled = false;
+              ctiSocket(txtExtension);
+
+              if (acdtelefonico != '0'){
+                console.log("login 2");
+                  fMakeCallTelefonico(acdtelefonico);
+              }
+              else {
+
+                $("#BarraInterfaces .error-cti").text("No existe acd telefonico, para loguearse");
                 return false;
-            }
-        }
-    } catch (e) {
-        data = {
-            metodo: "CTI flogin",
-            error: e
-        }
-        var datametodo = data.metodo;
-        var dataerror = data.error;
-        $.filldata(datametodo, dataerror);
+              }
+          }
+      } catch (e) {
+          data = {
+              metodo: "CTI flogin",
+              error: e
+          }
+          var datametodo = data.metodo;
+          var dataerror = data.error;
+          $.filldata(datametodo, dataerror);
 
-        RESTError(data, url);
-    }
+          RESTError(data, url);
+      }
 
 }
-function flogout() {
+
+function flogout(){
     try {
+
         dataactivity = { menu: "flogout", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
         var acdTel = "*64";
-        alert(acdTel);
-        websocket.send(["makecall", acdTel]);
+        parent.websocket.send(["makecall", acdTel]);
+
+
         document.getElementById("btnLogin").disabled = false;
         document.getElementById("btnLogout").disabled = true;
         websocket.close();
@@ -156,7 +163,7 @@ function fconnecting(data) {
             alert("no existe button");
         } else {
             document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
-            document.getElementById("iframedataset").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sDNIS;
+            document.getElementById("iframedataset").src = "http://172.18.118.16/dataset.html?clientesId=&vclave=" + sDNIS;
         }
         //HISTORIAL.value = "<br>" + ("Extension " + txtExtension + " ...connecting...");
     } catch (e) {
@@ -187,7 +194,7 @@ function festablish(data) {
                 BanderaConecting = 1;
 
                 document.getElementById('lblComment').innerHTML = "El numero entrante es: " + sANI;
-                document.getElementById("iframedataset").src = "http://172.18.118.33/dataset.html?clientesId=&vclave=" + sANI;
+                document.getElementById("iframedataset").src = "http://172.18.118.16/dataset.html?clientesId=&vclave=" + sANI;
 
             }
         }
@@ -279,13 +286,20 @@ function fMakeCall(Number) {
 
 function fMakeCallTelefonico(acd){
     try {
+        console.log("3");
         dataactivity = { menu: "fMakeCallTelefonico", usuariosId: usuariosId }
-        RESTError(dataactivity, urlactivity);
-        var acdTel = "*63" + acd + "*61";
-        alert(acdTel);
-        websocket.send(["makecall", acdTel]);
 
-    } catch (e) {
+        RESTError(dataactivity, urlactivity);
+        var acdTel = "*63" + acd;
+        console.log(acdTel);
+        parent.websocket.send(["makecall", acdTel]);
+        console.log("fMakeCallTelefonico", acdTel);
+        //setTimeout($.fdisponible(websocket), 5000);
+        //setTimeout(fdisponible(websocket), 5000);
+        //$.fdisponible();
+
+
+    }catch(e){
         data = {
             metodo: "CTI fMakeCall",
             error: e
@@ -296,6 +310,19 @@ function fMakeCallTelefonico(acd){
         RESTError(data, url);
     }
 }
+
+
+$.fdisponible = function(){
+/*
+    setTimeout(function(){
+      alert("logeando");
+      //var webs = web;
+      var disponible = "*61";
+      websocket.send(["makecall", disponible]);
+    }, 7000);
+*/
+};
+
 
 
 
@@ -322,6 +349,8 @@ function fDropCall() {
 }
 function fTransferCall(VDN) {
     try {
+        alert("fTransferCall", VDN);
+
         dataactivity = { menu: "fTransferCall", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
 
@@ -331,7 +360,7 @@ function fTransferCall(VDN) {
         else if ($("#BarraInterfaces #txtStation").val() == "") {
             alert("No puede transferir sin tener una extension firmada.");
         }
-        else if (VDN != "") {
+        else if (VDN != "") {/*parent*/
             parent.websocket.send(["transfercall", VDN]);
             BanderaConecting = 0;
             BanderaStablished = 1;
