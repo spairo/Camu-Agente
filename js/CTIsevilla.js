@@ -1,6 +1,12 @@
+/*
 usuariosId = Cookies.get('id');
 extensionasesor = Cookies.get('extension');
 acdtelefonico = Cookies.get("acd");
+*/
+usuariosId = localStorage.getItem('id');
+extensionasesor = localStorage.getItem('extension');
+acdtelefonico = localStorage.getItem("acd");
+
 var BanderaConecting;
 var BanderaStablished;
 sDNIS = "";
@@ -164,7 +170,7 @@ function fconnecting(data) {
             alert("no existe button");
         } else {
             document.getElementById('lblComment').innerHTML = "El numero marcado es: " + sDNIS;
-            document.getElementById("iframedataset").src = "http://172.18.118.16/dataset.html?clientesId=&vclave=" + sDNIS;
+            document.getElementById("iframedataset").src = "http://172.18.118.31/dataset.html?clientesId=&vclave=" + sDNIS;
         }
         //HISTORIAL.value = "<br>" + ("Extension " + txtExtension + " ...connecting...");
     } catch (e) {
@@ -195,7 +201,7 @@ function festablish(data) {
                 BanderaConecting = 1;
 
                 document.getElementById('lblComment').innerHTML = "El numero entrante es: " + sANI;
-                document.getElementById("iframedataset").src = "http://172.18.118.16/dataset.html?clientesId=&vclave=" + sANI;
+                document.getElementById("iframedataset").src = "http://172.18.118.31/dataset.html?clientesId=&vclave=" + sANI;
 
             }
         }
@@ -294,6 +300,7 @@ function fMakeCallTelefonico(acd){
         var acdTel = "*63" + acd;
         console.log(acdTel);
         parent.websocket.send(["makecall", acdTel]);
+        //fDropCall();
         console.log("fMakeCallTelefonico", acdTel);
         //setTimeout($.fdisponible(websocket), 5000);
         //setTimeout(fdisponible(websocket), 5000);

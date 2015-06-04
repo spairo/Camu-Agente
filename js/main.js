@@ -16,21 +16,11 @@ var str;
 var scope_url;
 var scope_aux;
 
-
 $(window).load(function(){
 	$(".loader").fadeOut("slow");
 });
 
-//window.onbeforeunload = function(){
-	//$.foo();
-	//return "Vas a salir de la aplicacion";
-	//return $.foo();
-//};
 
-$.foo = function(){
-	//alert("only once")
-	//console.log("logout application");
-};
 
 //login Aux
 
@@ -86,30 +76,40 @@ $.login = function(user, password, extension){
 							$(".loader").fadeOut("slow", function(){
 
 
-								var dataAux = response[0].auxiliares;
-
 									//cookies everywhere
+									/*
 									var id = Cookies.set('id', response[0].usuariosId);
 									var name = Cookies.set('name', response[0].usuario);
 									var profile = Cookies.set('profile', response[0].perfil);
 									var acd = Cookies.set('acd', response[0].acd);
-
+									*/
 									var dataM = response[0].menu;
-									var dataS = response[0].configuracion;
+									//var dataS = response[0].configuracion;
 									var dataAux = response[0].auxiliares;
 
-									Cookies.set('UserLogin', user);
-									Cookies.set('hermetic', password);
-									Cookies.set('extension', extension);
+									//Cookies.set('UserLogin', user);
+									//Cookies.set('hermetic', password);
+									//Cookies.set('extension', extension);
 
+									//LocalStorage
+									localStorage.setItem("settings", JSON.stringify(response[0].configuracion));
+									var settings = jQuery.parseJSON(localStorage.getItem("settings"));
+
+									var acd = localStorage.setItem('acd', response[0].acd);
+									var name = localStorage.setItem('name', response[0].usuario);
+									var profile = localStorage.setItem('profile', response[0].perfil);
+									var id = localStorage.setItem("id", response[0].usuariosId);
+
+									localStorage.setItem("extension", extension);
+									localStorage.setItem("UserLogin", user);
 
 									$.main(id, name, profile);
 									$.Menu(dataM);
-									$.skills(dataS);
-									$.services(dataS);
+									$.services(settings);
+									$.skills(settings);
 									//$.Auxiliares(dataAux);
 
-									str = dataS;
+									str = settings;
 									scope_aux = dataAux;
 
 									$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
@@ -149,9 +149,9 @@ $.login = function(user, password, extension){
 
 $.main = function(id,	name, profile){
 
-	var myid = Cookies.get('id');
-	var name = Cookies.get('name');
-	var profile = Cookies.get('profile');
+	var myid = localStorage.getItem('id');
+	var name = localStorage.getItem('name');
+	var profile = localStorage.getItem('profile');
 
 	$(".name").empty().text(name);
 	$(".profile").empty().text(profile);
@@ -171,21 +171,31 @@ $.UrlDecode = function(){
 
 //Services
 
-$.services = function(data){
+$.services = function(settings){
 
 	$("#services").slideDown().show();
 
-	var services_evals = data;
+	var services_evals = settings;
 
-	$('.box-services').append('<select class="form-control input-lg servicechoice"></select><button class="service-choice btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
+	$('.box-services').append('<select class="form-control input-lg servicechoice"></select><button class="btn service-choice btn-block"><span class="glyphicon glyphicon-ok"></span></button>');
 
-	for(var i = 0; i < services_evals.length; i++){
+	if(services_evals != null){
 
-		var serviciosId = services_evals[i].serviciosId;
-		var servicio = services_evals[i].servicio;
+		for(var i = 0; i < services_evals.length; i++){
 
-		var content = '<option class="serviceoption" name="'+serviciosId+'" value="'+serviciosId+'">'+servicio+'</option>';
-		$('.box-services select.servicechoice').append(content);
+			var serviciosId = services_evals[i].serviciosId;
+			var servicio = services_evals[i].servicio;
+
+			var content = '<option class="serviceoption" name="'+serviciosId+'" value="'+serviciosId+'">'+servicio+'</option>';
+			$('.box-services select.servicechoice').append(content);
+
+		}
+
+	}else{
+
+		alert("No tiene Servicios Configurados");
+		$("#services .box-services .servicechoice").prop('disabled', true);
+		$("#services .box-services .service-choice").prop('disabled', true);
 
 	}
 
@@ -193,30 +203,41 @@ $.services = function(data){
 
 //Skills
 
-$.skills = function(data){
+$.skills = function(settings){
 
 	//var skills_evals = Object.keys(data).length; //IE8 sucks
-	var skills_evals = data;
+	var skills_evals = settings;
 
-	$.serviceid = function(servis){
+	$.serviceid = function(){
 
-		$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="choice-skill btn-block btn"><span class="glyphicon glyphicon-ok"></span></button>');
+		$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="btn choice-skill btn-block btn"><span class="glyphicon glyphicon-ok"></span></button>');
 
 		for(var i = 0; i < skills_evals.length; i++){
 
-			if(servis == skills_evals[i].serviciosId){
+			if(localStorage.getItem("serviciosId") == skills_evals[i].serviciosId){
 
 				var skills = skills_evals[i].skills;
 
-				for(var i = 0; i < skills.length; i++){
+				if(skills != null){
 
-					var skillsId = skills[i].skillsId;
-					var skill = skills[i].skill;
+					for(var i = 0; i < skills.length; i++){
 
-					var content = '<option class="skilloption" value="'+skillsId+'">'+skill+'</option>';
-					$('#skills .box-skills select.skillchoice').append(content);
+						var skillsId = skills[i].skillsId;
+						var skill = skills[i].skill;
+
+						var content = '<option class="skilloption" value="'+skillsId+'">'+skill+'</option>';
+						$('#skills .box-skills select.skillchoice').append(content);
+					}
+
+				}else{
+
+					alert("No tiene Skills Configurados");
+					$("#skills .box-skills .skillchoice").prop('disabled', true);
+					$("#skills .box-skills .choice-skill").prop('disabled', true);
 
 				}
+
+			}else{
 
 			}
 
@@ -399,8 +420,11 @@ $.updateSession = function(skillID){
 
 	var url = ws+"rg_ActualizaSesion";
 
-	var myid = Cookies.get('id');
-  var serviciosID = Cookies.get('serviciosId')
+	//var myid = Cookies.get('id');
+  //var serviciosID = Cookies.get('serviciosId');
+
+	var myid = localStorage.getItem('id');
+	var serviciosID = localStorage.getItem('serviciosId')
 
 	var Data = {
 		serviciosId: serviciosID,
@@ -419,7 +443,7 @@ $.updateSession = function(skillID){
 		success: function(data){
 			//console.info("U P D A T E session: success", data);
 		},error: function(data){
-			alert("Error44: " + data.status + " " + data.statusText);
+			console.log("Fallo" + url);
 		}
 
 	});
@@ -548,75 +572,68 @@ $.Menu = function(data){
 
 $.Aux = function(user, passw){
 
-		var url = ws+"rg_seguridadLogin";
+		var skillidx = Cookies.get('SkillId');
+		var serviciosidx = Cookies.get('serviciosId');
 
-		var Data = { User: user, Password: passw };
+		var settings = jQuery.parseJSON(localStorage.getItem("settings"));
 
-		$.support.cors = true;
-		$.ajax({
-			type: "GET",
-			url: url,
-			crossDomain: true,
-			data: Data,
-			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: function(data){
+		for(var i = 0; i < settings.length; i++){
 
-				var aux_data = data[0].auxiliares;
+			if(serviciosidx == settings[i].serviciosId){
 
-		    if(aux_data.length > 1){
+				var skills = settings[i].skills;
 
-		        $("#div_aux").slideDown().show();
-		        var content1, content2;
+					for(var i = 0; i < skills.length; i++){
 
-		        content1 = '<table id="table_test">' +
-		          '<tr>';
+						if(skillidx == skills[i].skillsId){
 
-		        for (var i = 0; i < aux_data.length; i++)
-		        {
-							var Auxiliar = aux_data[i].auxiliar;
-							var AuxiliarId = aux_data[i].auxiliaresId;
-							var urlImg = aux_data[i].imagen;
+							//var auxiliares = skills[i].auxiliares;
 
-							var auxselected = Cookies.get("IdAux");
+							var aux_data = skills[i].auxiliares;
 
-							if(auxselected == AuxiliarId){
+			        $("#div_aux").slideDown().show();
+			        var content1, content2;
 
-								content1 += ' <td> <input class="Visible" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
+			        content1 = '<table id="table_test">' +
+			          '<tr>';
 
+			        for (var i = 0; i < aux_data.length; i++)
+			        {
+								var Auxiliar = aux_data[i].auxiliar;
+								var AuxiliarId = aux_data[i].auxiliaresId;
+								var urlImg = aux_data[i].imagen;
 
-							}else{
-								content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
-							}
+								var auxselected = Cookies.get("IdAux");
 
+								if(auxselected == AuxiliarId){
 
-		        }
+									content1 += ' <td> <input class="Visible" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
 
-		        content1 += '</tr>' +
-		                '</table>';
+								}else{
+									content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
+								}
 
-		        $('.box-aux').empty().append(content1);
+			        }
 
-		    }else {
+			        content1 += '</tr>' +
+			                '</table>';
 
-		    }
+			        $('.box-aux').empty().append(content1);
 
+						}
 
-			},error: function(data){
-				alert("Error44: " + data.status + " " + data.statusText);
+					}
 			}
-		});
+
+		}
 
 };
 
-
 function buttomClick(buttom_id)
 {
-
     var IdAux = Cookies.set('IdAux', buttom_id);
     var serviciosId = Cookies.get('serviciosId');
     var skillsId = Cookies.get('SkillId');
-
 
     //ip={IP}&auxiliaresId={AUXILIARESID}&usuariosId={USUARIOSID}
     //alert('Entra Click / ID_Buttom: ' + buttom_id);
@@ -641,7 +658,6 @@ function buttomClick(buttom_id)
         success: SaveAuxSuccess(buttom_id),
         error: SaveAuxError
     });
-
 
 }
 
@@ -678,6 +694,7 @@ function Cambiar_Clase_Aux_Inactivo()
     var table = document.getElementById('table_test');
 
     if (table!=null) {
+
         var rows = table.getElementsByTagName('tr');
 
         for (var x = 0; x < rows.length; x++) {
@@ -694,11 +711,6 @@ function Cambiar_Clase_Aux_Inactivo()
             }
         }
     }
-
-
-
-
-
 }
 
 function Cambiar_Clase_Aux_Activo(Id_Buttom)
@@ -714,7 +726,7 @@ function Cambiar_Clase_Aux_Activo(Id_Buttom)
 
 
 function SaveAuxError(response) {
-    alert('Error al guardar Auxiliar!');
+		alert('Error al guardar Auxiliar!');
 }
 
 function SaveDispError(response) {
@@ -788,7 +800,7 @@ $(document).on('click', '#logout', function(){
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: function(data){
-
+			/*
 			Cookies.remove('id');
 			Cookies.remove('name');
 			Cookies.remove('profile');
@@ -804,7 +816,23 @@ $(document).on('click', '#logout', function(){
 			Cookies.remove('vdnTransfiere');
 			Cookies.remove('acd');
 			Cookies.remove('IdAux');
+			*/
+			localStorage.removeItem('id');
+			localStorage.removeItem('name');
+			localStorage.removeItem('profile');
+			localStorage.removeItem('UserLogin');
+			localStorage.removeItem('SkillId');
+			localStorage.removeItem('serviciosId');
+			localStorage.removeItem('clientesId');
+			localStorage.removeItem('clientesClaveId');
+			localStorage.removeItem('extension');
+			localStorage.removeItem('services');
+			localStorage.removeItem('serviceId');
+			localStorage.removeItem('vdnTransfiere');
+			localStorage.removeItem('acd');
+			localStorage.removeItem('IdAux');
 
+			localStorage.clear();
 			location.reload();
 
 		},error: function(data){
@@ -821,8 +849,9 @@ $(document).on('click', '#services .service-choice', function(){
 
 	var serviciosID = $(".servicechoice").val();
 	Cookies.set('serviciosId', serviciosID);
+	localStorage.setItem("serviciosId", serviciosID);
 
-	$.serviceid(serviciosID);
+	$.serviceid();
 
 	$("#services").slideUp("slow", function(){
 		$("#skills").slideDown().show();
@@ -835,11 +864,18 @@ $(document).on('click', '#services .service-choice', function(){
 $(document).on('click', '.choice-skill', function(){
 
 	var skillID = $(".skillchoice").val();
-	Cookies.set('SkillId', skillID);
 
+	Cookies.set('SkillId', skillID);
+	localStorage.setItem("SkillId", skillID);
+	/*
 	var serviciosid = Cookies.get('serviciosId');
 	var iduser = Cookies.get('id');
 	var extension = Cookies.get('extension');
+	*/
+	var serviciosid = localStorage.getItem('serviciosId');
+	var iduser = localStorage.getItem('id');
+	var extension = localStorage.getItem('extension');
+
 
 	$.updateSession(skillID);
 
@@ -882,12 +918,8 @@ $(document).on('click', '.choice-skill', function(){
 
 								var CtiClientesId = $.UrlDecode()["clientesId"];
 								var CtiVclave = $.UrlDecode()["vclave"];
-
-								console.log("S O Y  U R L", url);
-								//window.location.href='engine.html?clientesId='+iduser+'&ext='+extension+'';
-								//window.location.href='engine.html?clientesId=&ext='+extension+'';
 								window.location.href=''+url+'?clientesId=&ext='+extension+'';
-							//	window.open(''+url+'?usuariosId='+iduser+'&ext='+extension+'','_blank');
+								//window.open(''+url+'?usuariosId='+iduser+'&ext='+extension+'','_blank');
 							}
 
 						}
@@ -903,7 +935,6 @@ $(document).on('click', '.choice-skill', function(){
 	}
 
 });
-
 
 /*Search*/
 
@@ -1008,7 +1039,8 @@ $(document).on('click', '#logoutEngine', function(){
 
 	var url = ws+"rg_RegistraLogout";
 
-	var myid = Cookies.get('id');
+	//var myid = Cookies.get('id');
+	var myid = localStorage.getItem('id');
 
 	var Data = { usuariosId: myid };
 
@@ -1022,29 +1054,28 @@ $(document).on('click', '#logoutEngine', function(){
 		dataType: "json",
 		success: function(data){
 
-			Cookies.remove('id');
-			Cookies.remove('name');
-			Cookies.remove('profile');
-			Cookies.remove('UserLogin');
-			Cookies.remove('hermetic');
-			Cookies.remove('SkillId');
-			Cookies.remove('serviciosId');
-			Cookies.remove('clientesId');
-			Cookies.remove('clientesClaveId');
-			Cookies.remove('extension');
-			Cookies.remove('services');
-			Cookies.remove('serviceId');
-			Cookies.remove('vdnTransfiere');
-			Cookies.remove('acd');
-			Cookies.remove('IdAux');
+			localStorage.removeItem('id');
+			localStorage.removeItem('name');
+			localStorage.removeItem('profile');
+			localStorage.removeItem('UserLogin');
+			localStorage.removeItem('SkillId');
+			localStorage.removeItem('serviciosId');
+			localStorage.removeItem('clientesId');
+			localStorage.removeItem('clientesClaveId');
+			localStorage.removeItem('extension');
+			localStorage.removeItem('services');
+			localStorage.removeItem('serviceId');
+			localStorage.removeItem('vdnTransfiere');
+			localStorage.removeItem('acd');
+			localStorage.removeItem('IdAux');
+
+			localStorage.clear();
 
 			flogout();
 
 			window.location.href='/';
 
-		},error: function(data){
-			//console.log("algo salio mal");
-		}
+		},error: function(data){}
 
 	});
 
@@ -1054,19 +1085,14 @@ $(document).on('click', '#logoutEngine', function(){
 		Window/Document Object Model
  ++++++++++++++++++++++++++++++++*/
 
-
 $(window).load(function(){
-	if(path == "/engine.html"){
-		//flogin()
-		//$.fdisponible();
-		//console.log("launch", websocket);
-	}
+	if(path == "/engine.html"){}
 });
 
 $(document).ready(function(){
 
-	var name = Cookies.get('name');
-	var passw = Cookies.get('hermetic');
+	//var name = Cookies.get('name');
+	//var passw = Cookies.get('hermetic');
 
 	//var name = "master";
 	//var passw = "master";
@@ -1094,9 +1120,12 @@ $(document).ready(function(){
 				if(CtiVclave == undefined || CtiVclave == null || CtiClientesId == undefined || CtiClientesId == null){
 
 				}else{
-					$(".navbar-top").slideUp("slow");
-					$("#main").slideUp("slow");
-					$("#logdIn").slideUp("slow");
+					//$(".navbar-top").slideUp("slow");
+					//$("#main").slideUp("slow");
+					//$("#logdIn").slideUp("slow");
+					$(".navbar-top").hide();
+					$("#main").hide();
+					$("#logdIn").hide();
 					$.searchGet();
 				}
 
@@ -1120,7 +1149,7 @@ $(document).ready(function(){
 	if(path == "/engine.html"){
 
 		//Aux
-		$.Aux(name, passw);
+		$.Aux();
 		$("#table_test .disabledAUX").attr("disabled", true);
 
 		$.UrlDecode = function(){
@@ -1160,8 +1189,8 @@ $(document).ready(function(){
 			//$.onsetEngine(name, passw);
 
 		}
-
-		var example = Cookies.get("extension");
+		var example = localStorage.getItem("extension");
+		//var example = Cookies.get("extension");
 		$('#BarraInterfaces #txtStation').val(example).prop('disabled', true);
 
 	}
@@ -1181,7 +1210,8 @@ $(document).ready(function(){
 		if((name == null || name == undefined) && (passw == null || passw == undefined)){
 			window.location.href='/';
 		}else{
-			$.onsetEngine(name, passw);
+			//$.onsetEngine(name, passw);
+			$.onsetEngine();
 		}
 
 	}
@@ -1200,12 +1230,14 @@ $(document).on('click', '.build', function(){
 	var $text = $row.find(".nr").text();
 	var $textcid = $row.find(".cd").text();
 
-	Cookies.set('clientesId', $text);
-	Cookies.set('clientesClaveId', $textcid);
+	//Cookies.set('clientesId', $text);
+	//Cookies.set('clientesClaveId', $textcid);
+
+	localStorage.setItem("clientesId", $text);
+	localStorage.setItem("clientesClaveId", $textcid);
 
 	// Let's build it out
 
-	//window.open('setting.html', '_blank');
 	window.location.href ='setting.html';
 	/*
 	$.ajax({
@@ -1278,9 +1310,6 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 			inputarry2.push($(this).val());
 			labelarry2.push($(this).attr("name"));
 		});
-
-
-
 
 		//validate
 
@@ -1364,8 +1393,8 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 // Render Engine
 
-$.onsetEngine = function(user, passw){
-
+$.onsetEngine = function(){
+	/*
   var url = ws+"rg_seguridadLogin";
 
   var Data = { User: user, Password: passw };
@@ -1381,14 +1410,10 @@ $.onsetEngine = function(user, passw){
     success: onsetEngineSuccess,
     error: onsetEngineError
   });
+	*/
 
-};
-
-function onsetEngineSuccess(data){
-
-	var factory = data[0].configuracion;
-
-	//console.log("300", factory);
+	//var factory = data[0].configuracion;
+	var factory = jQuery.parseJSON(localStorage.getItem("settings"));
 
 	$(".loader").slideDown("slow", function(){
 
@@ -1404,7 +1429,6 @@ function onsetEngineSuccess(data){
 		$(".loader").slideUp("slow", function(){
 
 			$('.navbar-top .logoutEngine').html('<a href="#" id="logout-builder"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
-			//$('#foo .logoutEngine').html('<h5>Foo</h5>');
 
 			$("#Builder_Engine .engine-config").html('<div class="col-md-4 col-md-offset-4 well-sm"><button class="btn btn-block btn-engine-done">Guardar Configuracion <span class="glyphicon glyphicon-cog"></span></button></div>');
 
@@ -1412,11 +1436,9 @@ function onsetEngineSuccess(data){
 
 	});
 
-}
-function onsetEngineError(data){
-	alert("Error44: " + data.status + " " + data.statusText);
-	$(".loader").slideDown("slow");
-}
+};
+
+function onsetEngineSuccess(data){}
 
 // Render Engine Ends
 
@@ -1425,8 +1447,11 @@ $.cssEngine = function(data){
 	//var skillidx = "1";
 	//var serviciosidx = "1";
 
-	var skillidx = Cookies.get('SkillId');
-	var serviciosidx = Cookies.get('serviciosId');
+	//var skillidx = Cookies.get('SkillId');
+	//var serviciosidx = Cookies.get('serviciosId');
+
+	var skillidx = localStorage.getItem('SkillId');
+	var serviciosidx = localStorage.getItem('serviciosId');
 
 	for(var i = 0; i < data.length; i++){
 
@@ -1446,6 +1471,7 @@ $.cssEngine = function(data){
 
 				}
 		}
+
 	}
 
 };
@@ -1455,8 +1481,11 @@ $.baselayoutEngine = function(data){
 	//var skillidx = "1";
 	//var serviciosidx = "1";
 
-	var skillidx = Cookies.get('SkillId');
-	var serviciosidx = Cookies.get('serviciosId');
+	//var skillidx = Cookies.get('SkillId');
+	//var serviciosidx = Cookies.get('serviciosId');
+
+	var skillidx = localStorage.getItem('SkillId');
+	var serviciosidx = localStorage.getItem('serviciosId');
 
 	for(var i = 0; i < data.length; i++){
 
@@ -1516,8 +1545,11 @@ $.captureRenderEngine = function(data){
 	//var skillidx = "1";
 	//var serviciosidx = "1";
 
-	var skillidx = Cookies.get('SkillId');
-	var serviciosidx = Cookies.get('serviciosId');
+	//var skillidx = Cookies.get('SkillId');
+	//var serviciosidx = Cookies.get('serviciosId');
+
+	var skillidx = localStorage.getItem('SkillId');
+	var serviciosidx = localStorage.getItem('serviciosId');
 
 	for(var i = 0; i < data.length; i++){
 
@@ -1628,8 +1660,11 @@ $.typificationsEngine = function(data){
 	//var skillidx = "1";
 	//var serviciosidx = "1";
 
-	var skillidx = Cookies.get('SkillId');
-	var serviciosidx = Cookies.get('serviciosId');
+	//var skillidx = Cookies.get('SkillId');
+	//var serviciosidx = Cookies.get('serviciosId');
+
+	var skillidx = localStorage.getItem('SkillId');
+	var serviciosidx = localStorage.getItem('serviciosId');
 
 	$('#Builder_Engine .tree').append('<h4 class="text-center"><span class="glyphicon glyphicon-tags"></span> Tipificaciones</h4>');
 
@@ -1680,8 +1715,11 @@ $.productsEngine = function(data){
 	//var skillidx = "1";
 	//var serviciosidx = "1";
 
-	var skillidx = Cookies.get('SkillId');
-	var serviciosidx = Cookies.get('serviciosId');
+	//var skillidx = Cookies.get('SkillId');
+	//var serviciosidx = Cookies.get('serviciosId');
+
+	var skillidx = localStorage.getItem('SkillId');
+	var serviciosidx = localStorage.getItem('serviciosId');
 
 	for(var i = 0; i < data.length; i++){
 
@@ -1729,12 +1767,20 @@ $(window).load(function(){
 	$.customerInfo = function(){
 
 		var url = ws+"rg_MuestraCliente";
-
+		/*
 		var myid = Cookies.get('id');
 		var skillsId = Cookies.get('SkillId');
 		var serviciosId = Cookies.get('serviciosId');
 		var clientesId = Cookies.get('clientesId');
+		*/
+		var myid = localStorage.getItem('id');
+		var skillidx = localStorage.getItem('SkillId');
+		var serviciosidx = localStorage.getItem('serviciosId');
+		var clientesId = localStorage.getItem('clientesId');
+
 		var CtiClientesId = $.UrlDecode()["clientesId"];
+
+
 
 		if(CtiClientesId == null || CtiClientesId == undefined){
 
@@ -1798,14 +1844,21 @@ $(window).load(function(){
 $.typiHistoryEngine = function(data){
 
 	var url = ws+"rg_ListClienteHistorico";
-
+	/*
 	var myid = Cookies.get('id');
 	var skillsId = Cookies.get('SkillId');
 	var serviciosId = Cookies.get('serviciosId');
 	var clientesId = Cookies.get('clientesId');
 	var clientesClavesId = Cookies.get('clientesClaveId');
+	*/
 
-	var oData = {
+	var myid = localStorage.getItem('id');
+	var skillsId = localStorage.getItem('SkillId');
+	var serviciosId = localStorage.getItem('serviciosId');
+	var clientesId = localStorage.getItem('clientesId');
+	var clientesClavesId = localStorage.getItem('clientesClaveId');
+
+	var Data = {
 		clientesId: clientesId,
 		serviciosid: serviciosId,
 		usuariosId: myid,
@@ -1818,7 +1871,7 @@ $.typiHistoryEngine = function(data){
     type: "GET",
     url: url,
     crossDomain: true,
-    data: oData,
+    data: Data,
     contentType: "application/json; charset=utf-8",
     dataType: "json",
 		success: function(data){
@@ -1865,6 +1918,7 @@ $.vdn = function(data){
 
 							var vdntransfiere = skills[i].vdnTransfiere;
 							Cookies.set('vdnTransfiere', vdntransfiere);
+							localStorage.setItem('vdnTransfiere', vdntransfiere)
 					}
 				}
 		}
@@ -1878,7 +1932,8 @@ $.skillsTyping = function(node){
 
 		var url = ws+"rg_ListSkillsTipologiasCampos";
 
-		var myid = Cookies.get('id');
+		//var myid = Cookies.get('id');
+		var myid = localStorage.getItem('id');
 
 		var Data = {
 			skill: "",
@@ -1929,6 +1984,8 @@ $.skillsTyping = function(node){
 
 							if(required == "1"){
 								$(".treefield .input-dinamic2").addClass('required');
+							}else{
+								$(".treefield .input-dinamic2").removeClass('required');
 							}
 
 						}
@@ -2010,7 +2067,7 @@ $.onsaveCita = function(){
 $.onsaveTyping = function(id, comment){
 
 	var url = ws+"rg_GuardaTipificacion";
-
+	/*
 	var myid = Cookies.get('id');
 	var skillsId = Cookies.get('SkillId');
 	var serviciosId = Cookies.get('serviciosId');
@@ -2020,6 +2077,18 @@ $.onsaveTyping = function(id, comment){
 	var comentario = comment;
 	var vdnTransfirio = Cookies.get('vdnTransfiere');
 	var extension = Cookies.get('extension');
+	*/
+
+
+	var myid = localStorage.getItem('id');
+	var skillsId = localStorage.getItem('SkillId');
+	var serviciosId = localStorage.getItem('serviciosId');
+	var clientesId = localStorage.getItem('clientesId');
+	var clientesClavesId = localStorage.getItem('clientesClaveId');
+	var skillsTipologiasid = id;
+	var comentario = comment;
+	var vdnTransfirio = localStorage.getItem('vdnTransfiere');
+	var extension = localStorage.getItem('extension');
 
 	var Data = {
 		skillsId: skillsId,
@@ -2042,13 +2111,8 @@ $.onsaveTyping = function(id, comment){
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: function(data){
-
 			$.typiHistoryEngine();
-
-		},error: function(data){
-			//console.log("algo salio mal");
-		}
-
+		},error: function(data){}
 	});
 
 };
@@ -2056,14 +2120,21 @@ $.onsaveTyping = function(id, comment){
 $.onsaveProducts = function(spid){
 
 	var url = ws+"rg_GuardaProductos";
-
+	/*
 	var myid = Cookies.get('id');
 	var skillsId = Cookies.get('SkillId');
 	var serviciosId = Cookies.get('serviciosId');
 	var clientesId = Cookies.get('clientesId');
 	var clientesClavesId = Cookies.get('clientesClaveId');
 	var skillsProductosid = spid;
+	*/
 
+	var myid = localStorage.getItem('id');
+	var skillsId = localStorage.getItem('SkillId');
+	var serviciosId = localStorage.getItem('serviciosId');
+	var clientesId = localStorage.getItem('clientesId');
+	var clientesClavesId = localStorage.getItem('clientesClaveId');
+	var skillsProductosid = spid;
 
 	var Data = {
 		skillsId: skillsId,
@@ -2084,12 +2155,7 @@ $.onsaveProducts = function(spid){
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: function(data){
-
-
-
-		},error: function(data){
-			//console.log("algo salio mal");
-		}
+		},error: function(data){}
 
 	});
 
@@ -2100,12 +2166,21 @@ $.onsaveProducts = function(spid){
 $.onSaveData = function(labels, inputs){
 
 	var url = ws+"rg_GuardaDatos";
-
+	/*
 	var myid = Cookies.get('id');
 	var skillsId = Cookies.get('SkillId');
 	var serviciosId = Cookies.get('serviciosId');
 	var clientesId = Cookies.get('clientesId');
 	var clientesClavesId = Cookies.get('clientesClaveId');
+	var label = labels.toString();
+	var input = inputs.toString();
+	*/
+
+	var myid = localStorage.getItem('id');
+	var skillsId = localStorage.getItem('SkillId');
+	var serviciosId = localStorage.getItem('serviciosId');
+	var clientesId = localStorage.getItem('clientesId');
+	var clientesClavesId = localStorage.getItem('clientesClaveId');
 	var label = labels.toString();
 	var input = inputs.toString();
 
@@ -2141,11 +2216,21 @@ $.onSaveSkillTyping = function(labels, inputs, nodetree){
 
 	var url = ws+"rg_GuardaDatos";
 
+	/*
 	var myid = Cookies.get('id');
 	var skillsId = Cookies.get('SkillId');
 	var serviciosId = Cookies.get('serviciosId');
 	var clientesId = Cookies.get('clientesId');
 	var clientesClavesId = Cookies.get('clientesClaveId');
+	var label = labels.toString();
+	var input = inputs.toString();
+	*/
+
+	var myid = localStorage.getItem('id');
+	var skillsId = localStorage.getItem('SkillId');
+	var serviciosId = localStorage.getItem('serviciosId');
+	var clientesId = localStorage.getItem('clientesId');
+	var clientesClavesId = localStorage.getItem('clientesClaveId');
 	var label = labels.toString();
 	var input = inputs.toString();
 
@@ -2159,8 +2244,6 @@ $.onSaveSkillTyping = function(labels, inputs, nodetree){
 		skillsTipologiasId: nodetree
 	};
 
-	console.log(Data);
-
 	$.support.cors = true;
 	$.ajax({
 		type: "GET",
@@ -2170,25 +2253,23 @@ $.onSaveSkillTyping = function(labels, inputs, nodetree){
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: function(data){
-			console.log("guardado skillstipologias");
+
 		},error: function(data){
 			//console.log("algo salio mal", data);
 		}
 
 	});
 
-
 };
 
 $.onTransfer = function(){
-	alert("mia");
 
-	var vdnTransfirio = Cookies.get('vdnTransfiere');
+	//var vdnTransfirio = Cookies.get('vdnTransfiere');
+	var vdnTransfirio = localStorage.getItem('vdnTransfiere');
 
 	if(vdnTransfirio == null || vdnTransfirio == undefined){
 
 	}else{
-		alert("else", vdnTransfirio);
 		fTransferCall(vdnTransfirio);
 	}
 
