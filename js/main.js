@@ -351,9 +351,15 @@ $.searchGet = function(){
 $.search = function(name, pat, mat, phone){
 
 	var url = ws+"rg_ListClientes";
+	/*
 	var myid = Cookies.get('id');
 	var skillID = Cookies.get('SkillId');
 	var serviciosID = Cookies.get('serviciosId');
+	*/
+
+	var myid = localStorage.getItem('id');
+	var skillID = localStorage.getItem('SkillId');
+	var serviciosID = localStorage.getItem('serviciosId');
 
   var Data = {
 		nombre1: name,
@@ -1779,7 +1785,6 @@ $(window).load(function(){
 		var clientesId = localStorage.getItem('clientesId');
 
 		var CtiClientesId = $.UrlDecode()["clientesId"];
-
 
 
 		if(CtiClientesId == null || CtiClientesId == undefined){
