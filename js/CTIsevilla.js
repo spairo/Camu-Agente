@@ -56,7 +56,7 @@ function ctiSocket(station) {
             }
         };
         websocket.onclose = function (event) {
-            console.log("disconnected Extension: " + station);
+            //console.log("disconnected Extension: " + station);
         };
 
     } catch (e) {
@@ -91,7 +91,7 @@ window.onload = function () {
 
 function flogin(){
       try {
-        console.log("login");
+          alert("lllll");
           dataactivity = { menu: "flogin", usuariosId: usuariosId }
           RESTError(dataactivity, urlactivity);
 
@@ -105,12 +105,12 @@ function flogin(){
               alert("Necesita ingresar una extension correcta");
           }
           else {
-              document.getElementById("btnLogin").disabled = true;
-              document.getElementById("btnLogout").disabled = false;
+              //document.getElementById("btnLogin").disabled = true;
+              //document.getElementById("btnLogout").disabled = false;
               ctiSocket(txtExtension);
 
               if (acdtelefonico != '0'){
-                console.log("login 2");
+
                 alert(acdtelefonico);
                   fMakeCallTelefonico(acdtelefonico);
               }
@@ -143,10 +143,10 @@ function flogout(){
         parent.websocket.send(["makecall", acdTel]);
 
 
-        document.getElementById("btnLogin").disabled = false;
-        document.getElementById("btnLogout").disabled = true;
+        //document.getElementById("btnLogin").disabled = false;
+        //document.getElementById("btnLogout").disabled = true;
         websocket.close();
-    } catch (e) {
+    }catch(e){
         data = {
             metodo: "CTI flogout",
             error: e
@@ -293,15 +293,15 @@ function fMakeCall(Number) {
 
 function fMakeCallTelefonico(acd){
     try {
-        console.log("3");
+
         dataactivity = { menu: "fMakeCallTelefonico", usuariosId: usuariosId }
 
         RESTError(dataactivity, urlactivity);
         var acdTel = "*63" + acd;
-        console.log(acdTel);
+
         parent.websocket.send(["makecall", acdTel]);
         //fDropCall();
-        console.log("fMakeCallTelefonico", acdTel);
+
         //setTimeout($.fdisponible(websocket), 5000);
         //setTimeout(fdisponible(websocket), 5000);
         $.fdisponible();

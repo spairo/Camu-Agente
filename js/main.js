@@ -20,7 +20,10 @@ $(window).load(function(){
 	$(".loader").fadeOut("slow");
 });
 
-
+function closeWindow(){
+	window.open('','_self','');
+	window.close();
+}
 
 //login Aux
 
@@ -76,20 +79,9 @@ $.login = function(user, password, extension){
 							$(".loader").fadeOut("slow", function(){
 
 
-									//cookies everywhere
-									/*
-									var id = Cookies.set('id', response[0].usuariosId);
-									var name = Cookies.set('name', response[0].usuario);
-									var profile = Cookies.set('profile', response[0].perfil);
-									var acd = Cookies.set('acd', response[0].acd);
-									*/
 									var dataM = response[0].menu;
 									//var dataS = response[0].configuracion;
 									var dataAux = response[0].auxiliares;
-
-									//Cookies.set('UserLogin', user);
-									//Cookies.set('hermetic', password);
-									//Cookies.set('extension', extension);
 
 									//LocalStorage
 									localStorage.setItem("settings", JSON.stringify(response[0].configuracion));
@@ -112,7 +104,7 @@ $.login = function(user, password, extension){
 									str = settings;
 									scope_aux = dataAux;
 
-									$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>');
+									$('.logout').html('<a href="#" id="logout"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
 									$(".form-group").removeClass('has-error');
 									$(".navbar-top").slideDown().show();
 									$("#main").slideDown().show();
@@ -208,17 +200,24 @@ $.skills = function(settings){
 	//var skills_evals = Object.keys(data).length; //IE8 sucks
 	var skills_evals = settings;
 
-	$.serviceid = function(){
+	$.serviceid = function(ID){
+
 
 		$('.box-skills').append('<select class="form-control input-lg skillchoice"></select><button class="btn choice-skill btn-block btn"><span class="glyphicon glyphicon-ok"></span></button>');
 
-		for(var i = 0; i < skills_evals.length; i++){
+		for(var i = 0; i < skills_evals.length; i ++){
 
-			if(localStorage.getItem("serviciosId") == skills_evals[i].serviciosId){
+			if(skills_evals[i].serviciosId == ID){
 
 				var skills = skills_evals[i].skills;
 
-				if(skills != null){
+				if(skills == null){
+
+					alert("No tiene skills Configurados");
+					$("#skills .box-skills .skillchoice").prop('disabled', true);
+					$("#skills .box-skills .choice-skill").prop('disabled', true);
+
+				}else{
 
 					for(var i = 0; i < skills.length; i++){
 
@@ -227,23 +226,79 @@ $.skills = function(settings){
 
 						var content = '<option class="skilloption" value="'+skillsId+'">'+skill+'</option>';
 						$('#skills .box-skills select.skillchoice').append(content);
+
 					}
 
-				}else{
-
-					alert("No tiene Skills Configurados");
-					$("#skills .box-skills .skillchoice").prop('disabled', true);
-					$("#skills .box-skills .choice-skill").prop('disabled', true);
-
 				}
-
-			}else{
-
 			}
 
 		}
 
 	};
+
+};
+
+//Router
+
+$.router = function(router){
+
+	var serviciosid = localStorage.getItem('serviciosId');
+	var SkillId = localStorage.getItem('SkillId');
+	var extension = localStorage.getItem('extension');
+
+
+	for(var i = 0; i < router.length; i++){
+
+		if(serviciosid == router[i].serviciosId){
+
+			var skillobjts = router[i].skills;
+
+			for(var i = 0; i < skillobjts.length; i++){
+
+				if(SkillId == skillobjts[i].skillsId){
+
+					var interfaces = skillobjts[i].interfaces;
+
+					if(interfaces == ""){
+
+						$("#skills").slideUp("slow", function(){
+							$("#search").slideDown().show();
+						});
+
+					}else{
+
+						for(var i = 0; i < interfaces.length; i++){
+
+							var url = interfaces[i].url;
+
+							if(url == ""){
+
+								$("#skills").slideUp("slow", function(){
+									$("#search").slideDown().show();
+								});
+
+							}else{
+
+								$("#skills .choice-skill").prop('disabled', true);
+								$("#skills .skillchoice").prop('disabled', true);
+
+								var CtiClientesId = $.UrlDecode()["clientesId"];
+								var CtiVclave = $.UrlDecode()["vclave"];
+								window.location.href=''+url+'?clientesId=&ext='+extension+'';
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
 
 };
 
@@ -256,10 +311,15 @@ $.searchGet = function(){
 	var CtiClientesId = $.UrlDecode()["clientesId"];
 	var CtiVclave = $.UrlDecode()["vclave"];
 
+	/*
 	var myid = Cookies.get('id');
 	var skillid = Cookies.get('SkillId');
 	var servicioid = Cookies.get('serviciosId');
+	*/
 
+	var myid = localStorage.getItem('id');
+	var skillid = localStorage.getItem('SkillId');
+	var servicioid = localStorage.getItem('serviciosId');
 
 	var url = ws+"rg_MuestraCliente";
 
@@ -854,10 +914,11 @@ $(document).on('click', '#logout', function(){
 $(document).on('click', '#services .service-choice', function(){
 
 	var serviciosID = $(".servicechoice").val();
+
 	Cookies.set('serviciosId', serviciosID);
 	localStorage.setItem("serviciosId", serviciosID);
 
-	$.serviceid();
+	$.serviceid(serviciosID);
 
 	$("#services").slideUp("slow", function(){
 		$("#skills").slideDown().show();
@@ -871,74 +932,15 @@ $(document).on('click', '.choice-skill', function(){
 
 	var skillID = $(".skillchoice").val();
 
-	Cookies.set('SkillId', skillID);
 	localStorage.setItem("SkillId", skillID);
-	/*
-	var serviciosid = Cookies.get('serviciosId');
-	var iduser = Cookies.get('id');
-	var extension = Cookies.get('extension');
-	*/
-	var serviciosid = localStorage.getItem('serviciosId');
-	var iduser = localStorage.getItem('id');
-	var extension = localStorage.getItem('extension');
 
+	var iduser = localStorage.getItem('id');
 
 	$.updateSession(skillID);
 
-	//CtiRedirect
-
-	for(var i = 0; i < str.length; i++){
-
-		if(serviciosid == str[i].serviciosId){
-
-			var skills = str[i].skills;
-
-			for(var i = 0; i < skills.length; i++){
-
-				if(skillID == skills[i].skillsId){
-
-					var interfaces = skills[i].interfaces;
-
-					if(interfaces == ""){
-
-						$("#skills").slideUp("slow", function(){
-							$("#search").slideDown().show();
-						});
-
-					}else{
-
-						for(var i = 0; i < interfaces.length; i++){
-
-							var url = interfaces[i].url;
-
-							if(url == ""){
-
-								$("#skills").slideUp("slow", function(){
-									$("#search").slideDown().show();
-								});
-
-							}
-							else{
-								$("#skills .choice-skill").prop('disabled', true);
-								$("#skills .skillchoice").prop('disabled', true);
-
-								var CtiClientesId = $.UrlDecode()["clientesId"];
-								var CtiVclave = $.UrlDecode()["vclave"];
-								window.location.href=''+url+'?clientesId=&ext='+extension+'';
-								//window.open(''+url+'?usuariosId='+iduser+'&ext='+extension+'','_blank');
-							}
-
-						}
-
-					}
-
-				}
-
-			}
-
-		}
-
-	}
+	//CtiRedirect In Out
+	var sttings = jQuery.parseJSON(localStorage.getItem("settings"));
+	$.router(sttings);
 
 });
 
@@ -1087,6 +1089,50 @@ $(document).on('click', '#logoutEngine', function(){
 
 });
 
+$(document).on('click', '#logoutSettings', function(){
+
+	var url = ws+"rg_RegistraLogout";
+
+	//var myid = Cookies.get('id');
+	var myid = localStorage.getItem('id');
+
+	var Data = { usuariosId: myid };
+
+	$.support.cors = true;
+	$.ajax({
+		type: "GET",
+		url: url,
+		crossDomain: true,
+		data: Data,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(data){
+
+			localStorage.removeItem('id');
+			localStorage.removeItem('name');
+			localStorage.removeItem('profile');
+			localStorage.removeItem('UserLogin');
+			localStorage.removeItem('SkillId');
+			localStorage.removeItem('serviciosId');
+			localStorage.removeItem('clientesId');
+			localStorage.removeItem('clientesClaveId');
+			localStorage.removeItem('extension');
+			localStorage.removeItem('services');
+			localStorage.removeItem('serviceId');
+			localStorage.removeItem('vdnTransfiere');
+			localStorage.removeItem('acd');
+			localStorage.removeItem('IdAux');
+
+			localStorage.clear();
+
+			window.location.href='/';
+
+		},error: function(data){}
+
+	});
+
+});
+
 /*+++++++++++++++++++++++++++++++
 		Window/Document Object Model
  ++++++++++++++++++++++++++++++++*/
@@ -1220,6 +1266,13 @@ $(document).ready(function(){
 			$.onsetEngine();
 		}
 
+		if ($("#BarraInterfaces").length > 0){
+			alert("si existe");
+		}
+		else{
+			$(".navbar-top").show();
+		}
+
 	}
 
 });
@@ -1227,7 +1280,6 @@ $(document).ready(function(){
 /*+++++++++++++++++++++++++++++++
 		Template Builder Engine
  ++++++++++++++++++++++++++++++++*/
-
 
 $(document).on('click', '.build', function(){
 
@@ -1323,7 +1375,7 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 		$('#Builder_Engine .fields .required').each(function(){
 
-			if ( this.value.trim() == '' ) {
+			if(this.value.trim() == '' ){
 					//alert("Requerido");
 					this.focus();
 					fields = false;
@@ -1382,49 +1434,29 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 		}
 		else{
-			$.onTransfer();
 			$.onsaveProducts(producttagid);
 			$.onsaveTyping(treetagid, treecomment);
 			$.onSaveData(labelarry, inputarry);
 			$.onSaveSkillTyping(labelarry2, inputarry2, treetagid);
-			//$.onTransfer();
+			$.onTransfer();
 
-			$(".loader").slideDown();
+			$(".loader").slideDown("4500");
 			$("#iframedataset").attr('src', 'about:blank');
 
 		}
-
 
 });
 
 // Render Engine
 
 $.onsetEngine = function(){
-	/*
-  var url = ws+"rg_seguridadLogin";
 
-  var Data = { User: user, Password: passw };
-
-	$.support.cors = true;
-  $.ajax({
-    type: "GET",
-    url: url,
-    crossDomain: true,
-    data: Data,
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-    success: onsetEngineSuccess,
-    error: onsetEngineError
-  });
-	*/
-
-	//var factory = data[0].configuracion;
 	var factory = jQuery.parseJSON(localStorage.getItem("settings"));
 
 	$(".loader").slideDown("slow", function(){
 
 		$.cssEngine(factory);
-		$.customerInfo();
+		$.customerInfo(factory);
 		$.baselayoutEngine(factory);
 		$.captureRenderEngine(factory);
 		$.typificationsEngine(factory);
@@ -1444,17 +1476,10 @@ $.onsetEngine = function(){
 
 };
 
-function onsetEngineSuccess(data){}
-
-// Render Engine Ends
-
 $.cssEngine = function(data){
 
 	//var skillidx = "1";
 	//var serviciosidx = "1";
-
-	//var skillidx = Cookies.get('SkillId');
-	//var serviciosidx = Cookies.get('serviciosId');
 
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
@@ -1470,7 +1495,6 @@ $.cssEngine = function(data){
 					if(skillidx == skills[i].skillsId){
 
 						var cssDinamic = skills[i].cssAgente;
-
 						$("head").append("<!-- Dinamic Css --><style>" + cssDinamic + "</style><!-- //Dinamic Css -->");
 
 					}
@@ -1486,9 +1510,6 @@ $.baselayoutEngine = function(data){
 
 	//var skillidx = "1";
 	//var serviciosidx = "1";
-
-	//var skillidx = Cookies.get('SkillId');
-	//var serviciosidx = Cookies.get('serviciosId');
 
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
@@ -1507,7 +1528,7 @@ $.baselayoutEngine = function(data){
 
 						if(camposBase != ""){
 
-							$('.base_layout').append('<h3 class="text-center"><span class="glyphicon glyphicon-eye-open"></span> Datos Layout Base</h3><div class="fields"></div>');
+							$('.base_layout').append('<h4 class="text-center"><span class="glyphicon glyphicon-eye-open"></span> Datos Layout Base</h4><div class="fields"></div>');
 
 							for(var i = 0; i < camposBase.length; i++){
 
@@ -1534,7 +1555,7 @@ $.baselayoutEngine = function(data){
 							}
 
 						}else{
-							$('.base_layout').append('<h3 class="text-center"><span class="glyphicon glyphicon-eye-open"></span> Datos Layout Base</h3>');
+							$('.base_layout').append('<h4 class="text-center"><span class="glyphicon glyphicon-eye-open"></span> Datos Layout Base</h4>');
 						}
 					}
 
@@ -1550,9 +1571,6 @@ $.captureRenderEngine = function(data){
 
 	//var skillidx = "1";
 	//var serviciosidx = "1";
-
-	//var skillidx = Cookies.get('SkillId');
-	//var serviciosidx = Cookies.get('serviciosId');
 
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
@@ -1571,7 +1589,7 @@ $.captureRenderEngine = function(data){
 
 							if(fieldsIn != ""){
 
-								$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Datos Captura</h3><div class="fields"></div>');
+								$('.advisory_capture').append('<h4 class="text-center"><span class="glyphicon glyphicon-edit"></span> Datos Captura</h4><div class="fields"></div>');
 
 								for(var i = 0; i < fieldsIn.length; i++){
 
@@ -1648,7 +1666,7 @@ $.captureRenderEngine = function(data){
 								}
 
 							}else{
-								$('.advisory_capture').append('<h3 class="text-center"><span class="glyphicon glyphicon-edit"></span> Datos Captura</h3>');
+								$('.advisory_capture').append('<h4 class="text-center"><span class="glyphicon glyphicon-edit"></span> Datos Captura</h4>');
 							}
 
 					}
@@ -1748,11 +1766,8 @@ $.productsEngine = function(data){
 							    for(i = 0, j = data.selected.length; i < j; i++) {
 										id.push(data.instance.get_node(data.selected[i]).id);
 										r.push(data.instance.get_node(data.selected[i]).text);
-										//console.log(data.instance.get_node(data.selected[i]).id);
-										//get_node(data.selected[i]).text);
 							    }
 									$('.product .tags').empty().append('<span class="tag" id="'+id.join(', ')+'">'+r.join(', ')+'</span>');
-							    //$('.tags').html('Selected: ' + r.join(', '));
   						}).jstree();
 
 
@@ -1767,84 +1782,73 @@ $.productsEngine = function(data){
 
 };
 
+$.customerInfo = function(){
 
-$(window).load(function(){
+	var url = ws+"rg_MuestraCliente";
 
-	$.customerInfo = function(){
+	var myid = localStorage.getItem('id');
+	var skillsId = localStorage.getItem('SkillId');
+	var serviciosId = localStorage.getItem('serviciosId');
+	var clientesId = localStorage.getItem('clientesId');
 
-		var url = ws+"rg_MuestraCliente";
-		/*
-		var myid = Cookies.get('id');
-		var skillsId = Cookies.get('SkillId');
-		var serviciosId = Cookies.get('serviciosId');
-		var clientesId = Cookies.get('clientesId');
-		*/
-		var myid = localStorage.getItem('id');
-		var skillidx = localStorage.getItem('SkillId');
-		var serviciosidx = localStorage.getItem('serviciosId');
-		var clientesId = localStorage.getItem('clientesId');
+	var CtiClientesId = $.UrlDecode()["clientesId"];
 
-		var CtiClientesId = $.UrlDecode()["clientesId"];
+	if(CtiClientesId == null || CtiClientesId == undefined){
 
-
-		if(CtiClientesId == null || CtiClientesId == undefined){
-
-			var Data = {
-				serviciosId: serviciosId,
-				skillId: skillsId,
-				clientesId: clientesId,
-				usuarioId: myid
-			}
-
-		}else{
-
-			var Data = {
-				serviciosId: serviciosId,
-				skillId: skillsId,
-				clientesId: CtiClientesId,
-				usuarioId: myid
-			}
+		var Data = {
+			serviciosId: serviciosId,
+			skillId: skillsId,
+			clientesId: clientesId,
+			usuarioId: myid,
+			valorClave: ""
 		}
 
-		$.support.cors = true;
-		$.ajax({
-			type: "GET",
-			url: url,
-			crossDomain: true,
-			data: Data,
-			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: function(data){
+	}else{
 
-				var names = data[0].nombre1 + ' ' + data[0].nombre2;
-				var pat = data[0].apellido1;
-				var mat = data[0].apellido2;
-				var Vclave = data[0].valorClave;
-				var lada = data[0].lada;
-				var ext = data[0].extension;
+		var Data = {
+			serviciosId: serviciosId,
+			skillId: skillsId,
+			clientesId: CtiClientesId,
+			usuarioId: myid,
+			valorClave: ""
+		}
 
+	}
 
-				var content = '<h3 class="text-center"><span class="glyphicon glyphicon-user"></span> Datos Generales</h3><div class="form-group"><label for="valorclave">Nomnbre</label><input type="text" class="form-control input-sm" id="names" val="'+names+'" placeholder=""></div><div class="form-group"><label for="valorclave">Apellido Paterno</label><input type="text" class="form-control input-sm" id="pat" val="'+pat+'" ></div><div class="form-group"><label for="valorclave">Apellido Materno</label><input type="text" class="form-control input-sm" id="mat" val="'+mat+'" placeholder="Apellido Materno"></div><div class="form-group"><label for="valorclave">Valor Clave</label><input type="text" class="form-control input-sm" id="vclave" val="'+Vclave+'"></div><div class="row"><div class="col-md-6"><div class="form-group"><label for="Lada">Lada</label><input type="text" class="form-control input-sm" id="lada" val="'+lada+'"></div></div><div class="col-md-6"><div class="form-group"><label for="valorclave">Extension</label><input type="text" class="form-control input-sm" id="ext" val="'+ext+'"></div></div></div>';
-				$('#Builder_Engine .container-fluid .customerInfo').append(content);
+	$.support.cors = true;
+	$.ajax({
+		type: "GET",
+		url: url,
+		crossDomain: true,
+		data: Data,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(data){
 
+			var names = data[0].nombre1 + ' ' + data[0].nombre2;
+			var pat = data[0].apellido1;
+			var mat = data[0].apellido2;
+			var Vclave = data[0].valorClave;
+			var lada = data[0].lada;
+			var ext = data[0].extension;
 
-				$('.customerInfo #names').val(names).prop('disabled', true);
-				$('.customerInfo #pat').val(pat).prop('disabled', true);
-				$('.customerInfo #mat').val(mat).prop('disabled', true);
-				$('.customerInfo #vclave').val(Vclave).prop('disabled', true);
-				$('.customerInfo #lada').val(lada).prop('disabled', true);
-				$('.customerInfo #ext').val(ext).prop('disabled', true);
+			var content = '<h4 class="text-center"><span class="glyphicon glyphicon-user"></span> Datos Generales</h4><div class="form-group"><label for="valorclave">Nombre</label><input type="text" class="form-control input-sm" id="names" val="'+names+'" placeholder=""></div><div class="form-group"><label for="valorclave">Apellido Paterno</label><input type="text" class="form-control input-sm" id="pat" val="'+pat+'" ></div><div class="form-group"><label for="valorclave">Apellido Materno</label><input type="text" class="form-control input-sm" id="mat" val="'+mat+'" placeholder="Apellido Materno"></div><div class="form-group"><label for="valorclave">Valor Clave</label><input type="text" class="form-control input-sm" id="vclave" val="'+Vclave+'"></div><div class="row"><div class="col-md-6"><div class="form-group"><label for="Lada">Lada</label><input type="text" class="form-control input-sm" id="lada" val="'+lada+'"></div></div><div class="col-md-6"><div class="form-group"><label for="valorclave">Extension</label><input type="text" class="form-control input-sm" id="ext" val="'+ext+'"></div></div></div>';
+			$('#Builder_Engine .container-fluid .customerInfo').append(content);
 
+			$('.customerInfo #names').val(names).prop('disabled', true);
+			$('.customerInfo #pat').val(pat).prop('disabled', true);
+			$('.customerInfo #mat').val(mat).prop('disabled', true);
+			$('.customerInfo #vclave').val(Vclave).prop('disabled', true);
+			$('.customerInfo #lada').val(lada).prop('disabled', true);
+			$('.customerInfo #ext').val(ext).prop('disabled', true);
 
-			},error: function(data){
-				alert("ErrorWS: " + data.status + " " + data.statusText);
-			}
+		},error: function(data){
+			alert("ErrorWS: " + data.status + " " + data.statusText);
+		}
 
-		});
+	});
 
-	};
-
-});
+};
 
 $.typiHistoryEngine = function(data){
 
@@ -1904,7 +1908,6 @@ $.typiHistoryEngine = function(data){
   });
 
 };
-
 
 $.vdn = function(data){
 
@@ -2058,9 +2061,9 @@ $.skillsTyping = function(node){
 
 };
 
-/***********************
-				Saving
-************************/
+/*===========================
+				    Saving
+ ============================*/
 
 $.onsaveCita = function(){
 

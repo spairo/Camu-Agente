@@ -6679,7 +6679,9 @@ button.close {
     z-index: 2;
   }
   .form-login label{
-    color: #0C2639;
+    font-weight: lighter;
+    font-size: 18px;
+    color: #AFAEAE;
   }
   .form-login input[type="text"] {
     margin-bottom: 10px;
@@ -6693,9 +6695,10 @@ button.close {
     width:100%;
     padding: 10px 30px;
     color: #fff;
+    font-weight: lighter;
     font-size: 18px;
     border: 0;
-    border-bottom: 1px solid #0C7388;
+    border-bottom: 2px solid #0C7388;
     cursor: pointer;
     -webkit-box-shadow: inset 0 -2px #0C7388;
     box-shadow: inset 0 -2px #0C7388;
@@ -6978,24 +6981,26 @@ button.close {
 }
   .box-search h1{
     text-align: center;
-    font-weight: bold;
+    font-weight: lighter;
     color: #7F8C97;
   }
   .box-search label{
+    font-weight: lighter;
+    font-size: 18px;
     color: #7F8C97;
   }
   .box-search .search-case{
-    background: #1abc9c;
+    background: #13B5AF;
     margin: 0 auto;
     width:100%;
     padding: 10px 0;
     color: #fff;
     font-size: 22px;
     border: 0;
-    border-bottom: 2px solid #16a085;
+    border-bottom: 2px solid #0C7388;
     cursor: pointer;
-    -webkit-box-shadow: inset 0 -2px #16a085;
-    box-shadow: inset 0 -2px #16a085;
+    -webkit-box-shadow: inset 0 -2px #0C7388;
+    box-shadow: inset 0 -2px #0C7388;
   }
   .box-search .search-case:hover{
     background: #0C7388;
@@ -7200,30 +7205,31 @@ button.close {
   margin-top: 40px;
 }
   #search-result .btn-search{
-    background: #95a5a6;
+    background: #13B5AF;
     margin: 0 auto;
     width:100%;
     padding: 15px 15px;
     color: #fff;
     font-size: 18px;
+    font-weight: lighter;
     border: 0;
-    border-bottom: 2px solid #7f8c8d;
+    border-bottom: 2px solid #0C7388;
     cursor: pointer;
-    -webkit-box-shadow: inset 0 -2px #7f8c8d;
-    box-shadow: inset 0 -2px #7f8c8d;
+    -webkit-box-shadow: inset 0 -2px #0C7388;
+    box-shadow: inset 0 -2px #0C7388;
   }
   #search-result .btn-search:hover{
-    background: #e74c3c;
+    background: #0C7388;
     margin: 0 auto;
     width:100%;
     padding: 15px 15px;
     color: #fff;
     font-size: 18px;
     border: 0;
-    border-bottom: 2px solid #c0392b;
+    border-bottom: 2px solid #13B5AF;
     cursor: pointer;
-    -webkit-box-shadow: inset 0 -2px #c0392b;
-    box-shadow: inset 0 -2px #c0392b;
+    -webkit-box-shadow: inset 0 -2px #13B5AF;
+    box-shadow: inset 0 -2px #13B5AF;
   }
   #search-result .btn-search:active{
     top: 1px;
@@ -7504,8 +7510,14 @@ button.close {
 #BarraInterfaces{
   background: #bdc3c7;
 }
+  #BarraInterfaces label{
+    color: #fff;
+  }
   #BarraInterfaces #error-cti{
     font-weight: bold;
+  }
+  #BarraInterfaces .btn{
+    color: #7F8C97;
   }
 
 #iframedataset{
