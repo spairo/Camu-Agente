@@ -1,0 +1,69 @@
+<html>
+<head>
+    <script type="text/javascript" src="js/src/jquery.min.js"></script>
+    <script type="text/javascript" src="js/src/jquery.xdomainrequest.min.js"></script>
+    <style>
+      .loader{
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background: url('../img/page-loader.gif') 50% 50% no-repeat rgb(249,249,249);
+      }
+    </style>
+    <script type="text/javascript" language="javascript">
+        window.ws = "http://172.18.149.21/Servicios/REST.svc/";
+        ext = localStorage.getItem("extension");
+        usuariosId = localStorage.getItem("id");
+        servicioid = localStorage.getItem("serviciosId");
+        skillId = localStorage.getItem("SkillId");
+        var urlRest = ws + "rg_ServicioPrueba";
+        dataRest = {}
+        /*dataRest = {
+        serviciosId: servicioid,
+        skillId: skillId,
+        usuarioId: usuariosId,
+        valorClave: ''
+        }*/
+
+        function REST() {
+            $.ajax({
+                type: "GET",
+                url: urlRest,
+                crossDomain: true,
+                data: dataRest,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data){
+                    if (data[0].vclave != undefined && data[0].usuariosId != undefined) {
+                        window.location.href = "HTMLPageProgresivo.html?clientesId=" + data[0].usuariosId + "&vclave=" + data[0].vclave;
+                    }
+                    else {
+                        alert("Algo salio mal");
+                    }
+                },error: function(data){
+                    alert("Error No Puedo Continuar");
+                }
+            });
+        }
+
+        function getUrlVars() {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = value;
+            });
+            return vars;
+        }
+
+        $(window).load(function(){
+        	$(".loader").fadeIn("slow");
+        });
+
+    </script>
+</head>
+  <body onload="setTimeout('REST()', 5000)">
+    <div class="loader"></div>
+  </body>
+</html>

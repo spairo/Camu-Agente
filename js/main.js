@@ -306,16 +306,13 @@ $.router = function(router){
 
 $.searchGet = function(){
 
+	$(".navbar-top").slideDown();
+	$("#main").hide();
+
 	$("#search-result-get").slideDown();
 
 	var CtiClientesId = $.UrlDecode()["clientesId"];
 	var CtiVclave = $.UrlDecode()["vclave"];
-
-	/*
-	var myid = Cookies.get('id');
-	var skillid = Cookies.get('SkillId');
-	var servicioid = Cookies.get('serviciosId');
-	*/
 
 	var myid = localStorage.getItem('id');
 	var skillid = localStorage.getItem('SkillId');
@@ -638,8 +635,8 @@ $.Menu = function(data){
 
 $.Aux = function(user, passw){
 
-		var skillidx = Cookies.get('SkillId');
-		var serviciosidx = Cookies.get('serviciosId');
+		var skillidx = localStorage.getItem('SkillId');
+		var serviciosidx = localStorage.getItem('serviciosId');
 
 		var settings = jQuery.parseJSON(localStorage.getItem("settings"));
 
@@ -695,11 +692,11 @@ $.Aux = function(user, passw){
 
 };
 
-function buttomClick(buttom_id)
-{
-    var IdAux = Cookies.set('IdAux', buttom_id);
-    var serviciosId = Cookies.get('serviciosId');
-    var skillsId = Cookies.get('SkillId');
+function buttomClick(buttom_id){
+
+    var IdAux = localStorage.setItem('IdAux', buttom_id);
+    var serviciosId = localStorage.getItem('serviciosId');
+    var skillsId = localStorage.getItem('SkillId');
 
     //ip={IP}&auxiliaresId={AUXILIARESID}&usuariosId={USUARIOSID}
     //alert('Entra Click / ID_Buttom: ' + buttom_id);
@@ -707,7 +704,7 @@ function buttomClick(buttom_id)
     var url = ws + "rg_RegistraAuxiliares";
 
     var auxiliaresId = buttom_id;
-    var usuariosId = Cookies.get('id');
+    var usuariosId = localStorage.getItem('id');
 
     //alert(usuariosId);
 
@@ -727,15 +724,13 @@ function buttomClick(buttom_id)
 
 }
 
-function buttomClick_Disponible(buttom_id)
-{
-
+function buttomClick_Disponible(buttom_id){
 
     var url = ws + "rg_ActualizaSesion";
 
-    var serviciosId = Cookies.get('serviciosId');
-    var skillsId = Cookies.get('SkillId');
-    var usuariosId = Cookies.get('id');
+    var serviciosId = localStorage.getItem('serviciosId');
+    var skillsId = localStorage.getItem('SkillId');
+    var usuariosId = localStorage.getItem('id');
 
     var oData = { serviciosId: serviciosId, skillsId: skillsId, usuariosId: usuariosId, disponible: 1 };
 
@@ -753,8 +748,7 @@ function buttomClick_Disponible(buttom_id)
 
 }
 
-function Cambiar_Clase_Aux_Inactivo()
-{
+function Cambiar_Clase_Aux_Inactivo(){
 
     var data = [];
     var table = document.getElementById('table_test');
@@ -779,8 +773,7 @@ function Cambiar_Clase_Aux_Inactivo()
     }
 }
 
-function Cambiar_Clase_Aux_Activo(Id_Buttom)
-{
+function Cambiar_Clase_Aux_Activo(Id_Buttom){
     try {
         document.getElementById(Id_Buttom).className = "Visible";
 				document.getElementById(Id_Buttom).disabled = true;
@@ -791,16 +784,15 @@ function Cambiar_Clase_Aux_Activo(Id_Buttom)
 }
 
 
-function SaveAuxError(response) {
+function SaveAuxError(response){
 		alert('Error al guardar Auxiliar!');
 }
 
-function SaveDispError(response) {
+function SaveDispError(response){
     alert('Error al guardar Disponible!');
 }
 
-function SaveAuxSuccess(buttom_id)
-{
+function SaveAuxSuccess(buttom_id){
 
     //Cambiar Clase
     document.getElementById('btnDisp').className = "Opaco";
@@ -816,7 +808,7 @@ function SaveDispSuccess(response){
 
     document.getElementById('btnDisp').className = "Visible";
 
-    Cookies.set('IdAux','');
+    localStorage.setItem('IdAux','');
     Cambiar_Clase_Aux_Inactivo();
 
     //alert('Auxiliar guardado con Exito!');
@@ -1272,6 +1264,10 @@ $(document).ready(function(){
 		else{
 			$(".navbar-top").show();
 		}
+
+	}
+
+	if(path == "/HTMLPageProgresivo.html"){
 
 	}
 
