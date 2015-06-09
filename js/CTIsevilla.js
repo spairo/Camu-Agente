@@ -31,11 +31,11 @@ function ctiSocket(station) {
 
         var wsURL = "ws://172.18.18.201:8080/webctisocket-sevilla/webmonitor/station/" + station;
         websocket = new WebSocket(wsURL);
-        websocket.onopen = function () {
+        websocket.onopen = function(){
             //HISTORIAL.value = "<br>" + ("Connected to CtiEngine WebSocket with Extension: " + station);
         };
         websocket.onerror = function (event) {
-            //HISTORIAL.value = "<br>" + ("oh error! " + event.data);
+        alert("oh error! " + event.data);
 
         };
 
@@ -111,8 +111,11 @@ function flogin(){
 
               if (acdtelefonico != '0'){
 
-                alert(acdtelefonico);
+                //alert(acdtelefonico);
+
                   fMakeCallTelefonico(acdtelefonico);
+
+                  //fMakeCallTelefonico(acdtelefonico);
               }
               else {
 
@@ -293,11 +296,11 @@ function fMakeCall(Number) {
 function fMakeCallTelefonico(acd){
     try {
 
-        dataactivity = { menu: "fMakeCallTelefonico", usuariosId: usuariosId }
+        //dataactivity = { menu: "fMakeCallTelefonico", usuariosId: usuariosId }
 
-        RESTError(dataactivity, urlactivity);
+        //RESTError(dataactivity, urlactivity);
         var acdTel = "*63" + acd;
-
+        alert("MakecallT");
         //parent.websocket.send(["makecall", acdTel]);
         websocket.send(["makecall", acdTel]);
         //fDropCall();
@@ -309,7 +312,7 @@ function fMakeCallTelefonico(acd){
 
     }catch(e){
         data = {
-            metodo: "CTI fMakeCall",
+            metodo: "CTI fMakeCall Telefonico",
             error: e
         }
         var datametodo = data.metodo;
