@@ -1,3 +1,5 @@
+alert("http://172.18.118.33/");
+
 usuariosId = localStorage.getItem('id');
 extensionasesor = localStorage.getItem('extension');
 acdtelefonico = localStorage.getItem("acd");
@@ -128,12 +130,13 @@ function flogin() {
 function alertFunc() {
     var urlprueba = "index.html";
     //var tipoclave = telefono;
-    window.location.href=''+urlprueba+'?clientesId='+clienteId+'&vclave=';
+    window.location.href=''+urlprueba+'?clientesId='+clienteId+'&vclave='+telefono;
 }
 
 $.fdisponible = function(){
     setTimeout(function(){
-      websocket.send(["makecall", telefono]);
+      var marcado = "9" + telefono;
+      websocket.send(["makecall", marcado]);
     }, 2000);
 }
 

@@ -19,16 +19,23 @@
         usuariosId = localStorage.getItem("id");
         servicioid = localStorage.getItem("serviciosId");
         skillId = localStorage.getItem("SkillId");
-        var urlRest = ws + "rg_ServicioPrueba";
-        dataRest = {}
-        /*dataRest = {
-        serviciosId: servicioid,
-        skillId: skillId,
-        usuarioId: usuariosId,
-        valorClave: ''
-        }*/
+        var urlRest = ws + "rg_SolicitaCliente";
 
-        function REST() {
+        dataRest = {
+          serviciosId: servicioid,
+          skillsId: skillId,
+          usuariosId: usuariosId
+        }
+
+        function ValidatePage(){
+
+          if(servicioid == null || servicioid == undefined || skillId == null || skillId == undefined || usuariosId == null || usuariosId == undefined){
+
+            alert("Datos Invalidos para operacion, validar con su Administrador");
+
+          }else{
+
+
             $.ajax({
                 type: "GET",
                 url: urlRest,
@@ -37,17 +44,21 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function(data){
-                    if (data[0].vclave != undefined && data[0].usuariosId != undefined) {
-                        window.location.href = "HTMLPageProgresivo.html?clientesId=" + data[0].usuariosId + "&vclave=" + data[0].vclave;
+
+                    if (data[0].telefono != undefined && data[0].clienteId != undefined) {
+                        window.location.href = "HTMLPageProgresivo.html?clientesId=" + data[0].clienteId + "&vclave=" + data[0].telefono;
                     }
                     else {
-                        alert("Algo salio mal");
+                      //alert("No hay resultados para el Marcado");
                     }
                 },error: function(data){
                     alert("Error No Puedo Continuar");
                 }
             });
+
+          }
         }
+
 
         function getUrlVars() {
             var vars = {};
@@ -63,7 +74,7 @@
 
     </script>
 </head>
-  <body onload="setTimeout('REST()', 5000)">
+  <body onload="setInterval('ValidatePage()', 5000)">
     <div class="loader"></div>
   </body>
 </html>

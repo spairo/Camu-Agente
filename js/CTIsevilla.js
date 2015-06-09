@@ -91,7 +91,7 @@ window.onload = function () {
 
 function flogin(){
       try {
-          
+
           dataactivity = { menu: "flogin", usuariosId: usuariosId }
           RESTError(dataactivity, urlactivity);
 
@@ -136,11 +136,10 @@ function flogin(){
 
 function flogout(){
     try {
-
         dataactivity = { menu: "flogout", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
         var acdTel = "*64";
-        parent.websocket.send(["makecall", acdTel]);
+        websocket.send(["makecall", acdTel]);
 
 
         //document.getElementById("btnLogin").disabled = false;
@@ -299,7 +298,8 @@ function fMakeCallTelefonico(acd){
         RESTError(dataactivity, urlactivity);
         var acdTel = "*63" + acd;
 
-        parent.websocket.send(["makecall", acdTel]);
+        //parent.websocket.send(["makecall", acdTel]);
+        websocket.send(["makecall", acdTel]);
         //fDropCall();
 
         //setTimeout($.fdisponible(websocket), 5000);
@@ -355,9 +355,8 @@ function fDropCall() {
         RESTError(data, url);
     }
 }
-function fTransferCall(VDN) {
+function fTransferCall(VDN){
     try {
-        alert("fTransferCall", VDN);
 
         dataactivity = { menu: "fTransferCall", usuariosId: usuariosId }
         RESTError(dataactivity, urlactivity);
@@ -368,8 +367,11 @@ function fTransferCall(VDN) {
         else if ($("#BarraInterfaces #txtStation").val() == "") {
             alert("No puede transferir sin tener una extension firmada.");
         }
-        else if (VDN != "") {/*parent*/
-            parent.websocket.send(["transfercall", VDN]);
+        else if ("VDN" != "") {/*parent*/
+
+            //console.log("VDN", VDN);
+
+            websocket.send(["transfercall", VDN]);
             BanderaConecting = 0;
             BanderaStablished = 1;
         }
@@ -400,7 +402,7 @@ function RESTError(datarest, urlrest) {
             //alert("ok");
             //console.info("U P D A T E session: success", data);
         }, error: function (datarest) {
-            alert("error");
+            //alert("error");
             //console.log("U P D A T E session: unsuccess");
         }
 

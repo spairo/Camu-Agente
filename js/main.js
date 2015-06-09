@@ -33,8 +33,8 @@ function F_Load_Engine()
 		$("#table_test .Visible").prop('disabled', true);
     Cambiar_Clase_Aux_Inactivo();
 
-    var user = Cookies.get('user');
-    var password = Cookies.get('password');
+    var user = localStorage.getItem('user');
+    var password = localStorage.getItem('password');
 
     if (user != "" & password != "")
     {
@@ -284,7 +284,7 @@ $.router = function(router){
 
 								var CtiClientesId = $.UrlDecode()["clientesId"];
 								var CtiVclave = $.UrlDecode()["vclave"];
-								window.location.href=''+url+'?clientesId=&ext='+extension+'';
+								window.location.href=''+url+'?clientesId=&vclave='+extension+'';
 
 							}
 
@@ -306,7 +306,13 @@ $.router = function(router){
 
 $.searchGet = function(){
 
-	$(".navbar-top").slideDown();
+	if ($("#BarraInterfaces").length > 0){
+		$(".navbar-top").hide();
+	}
+	else{
+		$(".navbar-top").show();
+	}
+
 	$("#main").hide();
 
 	$("#search-result-get").slideDown();
@@ -408,11 +414,6 @@ $.searchGet = function(){
 $.search = function(name, pat, mat, phone){
 
 	var url = ws+"rg_ListClientes";
-	/*
-	var myid = Cookies.get('id');
-	var skillID = Cookies.get('SkillId');
-	var serviciosID = Cookies.get('serviciosId');
-	*/
 
 	var myid = localStorage.getItem('id');
 	var skillID = localStorage.getItem('SkillId');
@@ -483,9 +484,6 @@ $.updateSession = function(skillID){
 
 	var url = ws+"rg_ActualizaSesion";
 
-	//var myid = Cookies.get('id');
-  //var serviciosID = Cookies.get('serviciosId');
-
 	var myid = localStorage.getItem('id');
 	var serviciosID = localStorage.getItem('serviciosId')
 
@@ -506,7 +504,7 @@ $.updateSession = function(skillID){
 		success: function(data){
 			//console.info("U P D A T E session: success", data);
 		},error: function(data){
-			console.log("Fallo" + url);
+			//console.log("Fallo" + url);
 		}
 
 	});
@@ -517,9 +515,9 @@ $.addclient = function(name, name2, pat, mat, phone){
 
 	var url = ws+"rg_GuardaCliente";
 
-	var myid = Cookies.get('id');
-	var skillID = Cookies.get('SkillId');
-	var serviciosID = Cookies.get('serviciosId');
+	var myid = localStorage.getItem('id');
+	var skillID = localStorage.getItem('SkillId');
+	var serviciosID = localStorage.getItem('serviciosId');
 
 	var Data = {
 		skillsId: skillID,
@@ -666,7 +664,7 @@ $.Aux = function(user, passw){
 								var AuxiliarId = aux_data[i].auxiliaresId;
 								var urlImg = aux_data[i].imagen;
 
-								var auxselected = Cookies.get("IdAux");
+								var auxselected = localStorage.getItem("IdAux");
 
 								if(auxselected == AuxiliarId){
 
@@ -845,7 +843,7 @@ $(document).on('click', '#logout', function(){
 
 	var url = ws+"rg_RegistraLogout";
 
-	var myid = Cookies.get('id');
+	var myid = localStorage.getItem('id');
 
 	var Data = { usuariosId: myid };
 
@@ -858,23 +856,7 @@ $(document).on('click', '#logout', function(){
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: function(data){
-			/*
-			Cookies.remove('id');
-			Cookies.remove('name');
-			Cookies.remove('profile');
-			Cookies.remove('UserLogin');
-			Cookies.remove('hermetic');
-			Cookies.remove('SkillId');
-			Cookies.remove('serviciosId');
-			Cookies.remove('clientesId');
-			Cookies.remove('clientesClaveId');
-			Cookies.remove('extension');
-			Cookies.remove('services');
-			Cookies.remove('serviceId');
-			Cookies.remove('vdnTransfiere');
-			Cookies.remove('acd');
-			Cookies.remove('IdAux');
-			*/
+
 			localStorage.removeItem('id');
 			localStorage.removeItem('name');
 			localStorage.removeItem('profile');
@@ -1039,7 +1021,6 @@ $(document).on('click', '#logoutEngine', function(){
 
 	var url = ws+"rg_RegistraLogout";
 
-	//var myid = Cookies.get('id');
 	var myid = localStorage.getItem('id');
 
 	var Data = { usuariosId: myid };
@@ -1085,7 +1066,6 @@ $(document).on('click', '#logoutSettings', function(){
 
 	var url = ws+"rg_RegistraLogout";
 
-	//var myid = Cookies.get('id');
 	var myid = localStorage.getItem('id');
 
 	var Data = { usuariosId: myid };
@@ -1134,9 +1114,6 @@ $(window).load(function(){
 });
 
 $(document).ready(function(){
-
-	//var name = Cookies.get('name');
-	//var passw = Cookies.get('hermetic');
 
 	//var name = "master";
 	//var passw = "master";
@@ -1218,8 +1195,9 @@ $(document).ready(function(){
 
 				var CtiClientesId = $.UrlDecode()["clientesId"];
 				var CtiVclave = $.UrlDecode()["vclave"];
+				var Ctiext = $.UrlDecode()["ext"];
 
-				if(CtiVclave == undefined || CtiVclave == null || CtiClientesId == undefined || CtiClientesId == null){
+				if(CtiVclave == undefined || CtiVclave == null || CtiClientesId == undefined || CtiClientesId == null || Ctiext == undefined || Ctiext == null){
 
 				}else{
 					$(".navbar-top").slideUp("slow");
@@ -1234,7 +1212,7 @@ $(document).ready(function(){
 
 		}
 		var example = localStorage.getItem("extension");
-		//var example = Cookies.get("extension");
+
 		$('#BarraInterfaces #txtStation').val(example).prop('disabled', true);
 
 	}
@@ -1245,6 +1223,15 @@ $(document).ready(function(){
 
 		if((CtiClientesId != null || CtiClientesId != undefined) || (CtiVclave == null || CtiVclave == undefined)){
 			window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
+		}else{
+
+
+		}
+		if ($("#BarraInterfaces").length > 0){
+			$("#navbar-top-settings").hide();
+		}
+		else{
+			$("#navbar-top-settings").hide();
 		}
 
 	}
@@ -1258,11 +1245,12 @@ $(document).ready(function(){
 			$.onsetEngine();
 		}
 
-		if ($("#BarraInterfaces").length > 0){
-			alert("si existe");
+		if($("#BarraInterfaces").length > 0){
+			$("#navbar-top-settings").hide();
 		}
 		else{
-			$(".navbar-top").show();
+
+			$("#navbar-top-settings").show();
 		}
 
 	}
@@ -1367,41 +1355,51 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 		//validate
 
-		var fields = false;
+		if($('#Builder_Engine .advisory_capture').html().trim()){
 
-		$('#Builder_Engine .fields .required').each(function(){
+			var fields = false;
 
-			if(this.value.trim() == '' ){
-					//alert("Requerido");
-					this.focus();
-					fields = false;
-					$(".btn-engine-done").prop( "disabled", false );
+			$('#Builder_Engine .fields .required').each(function(){
+
+				if(this.value.trim() == '' ){
+						//alert("Requerido");
+						this.focus();
+						fields = false;
+						$(".btn-engine-done").prop( "disabled", false );
+						return fields;
+
+				}
+				else{
+					fields  = true;
 					return fields;
+				}
 
-			}
-			else{
-				fields  = true;
-				return fields;
-			}
-		});
+			});
 
-		var treefield = false;
+		}
 
-		$('#Builder_Engine .treefield .required').each(function(){
+		if($('#Builder_Engine .treefield').html().trim()) {
 
-			if(this.value.trim() == '' ){
-					//alert("Requerido");
-					this.focus();
-					treefield = false;
-					$(".btn-engine-done").prop( "disabled", false );
+			var treefield = false;
+
+			$('#Builder_Engine .treefield .required').each(function(){
+
+				if(this.value.trim() == ''){
+						//alert("Requerido");
+						this.focus();
+						treefield = false;
+						$(".btn-engine-done").prop( "disabled", false );
+						return treefield;
+				}
+				else{
+					treefield  = true;
 					return treefield;
-			}
-			else{
-				treefield  = true;
-				return treefield;
-			}
+				}
 
-		});
+			});
+
+  	}
+
 
 		if(fields == false){
 
@@ -1417,24 +1415,26 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 			return false;
 
 		}
-		if(treetagid == null || treetagid == undefined){
+		else if(treetagid == null || treetagid == undefined){
 			alert("tipificacion Requerido");
 			$(".btn-engine-done").prop( "disabled", false );
 			return false;
 		}
-		else if(producttagid == null || producttagid == undefined){
-
-			alert("Producto Requerido");
-			$(".btn-engine-done").prop( "disabled", false );
-			return false;
+		else if($('.jstree-container-ul .jstree-children').length > 0){
+		//else if(producttagid == null || producttagid == undefined){
+			if(producttagid == null || producttagid == undefined){
+				alert("Producto Requerido");
+				$(".btn-engine-done").prop( "disabled", false );
+				return false;
+			}
 
 		}
 		else{
+			$.onTransfer();
 			$.onsaveProducts(producttagid);
 			$.onsaveTyping(treetagid, treecomment);
 			$.onSaveData(labelarry, inputarry);
 			$.onSaveSkillTyping(labelarry2, inputarry2, treetagid);
-			$.onTransfer();
 
 			$(".loader").slideDown("4500");
 			$("#iframedataset").attr('src', 'about:blank');
@@ -1662,7 +1662,7 @@ $.captureRenderEngine = function(data){
 								}
 
 							}else{
-								$('.advisory_capture').append('<h4 class="text-center"><span class="glyphicon glyphicon-edit"></span> Datos Captura</h4>');
+								//$('.advisory_capture').append('<h4 class="text-center"><span class="glyphicon glyphicon-edit"></span> Datos Captura</h4>');
 							}
 
 					}
@@ -1679,9 +1679,6 @@ $.typificationsEngine = function(data){
 
 	//var skillidx = "1";
 	//var serviciosidx = "1";
-
-	//var skillidx = Cookies.get('SkillId');
-	//var serviciosidx = Cookies.get('serviciosId');
 
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
@@ -1714,7 +1711,7 @@ $.typificationsEngine = function(data){
 								}
 
 								var nodetree = id.join(', ');
-								console.log(nodetree);
+								//console.log(nodetree);
 								$.skillsTyping(nodetree);
 
 								$('.trees .tags').empty().append('<span class="tag" id="'+id.join(', ')+'">'+r.join(', ')+'</span>');
@@ -1735,8 +1732,6 @@ $.productsEngine = function(data){
 	//var skillidx = "1";
 	//var serviciosidx = "1";
 
-	//var skillidx = Cookies.get('SkillId');
-	//var serviciosidx = Cookies.get('serviciosId');
 
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
@@ -1849,13 +1844,6 @@ $.customerInfo = function(){
 $.typiHistoryEngine = function(data){
 
 	var url = ws+"rg_ListClienteHistorico";
-	/*
-	var myid = Cookies.get('id');
-	var skillsId = Cookies.get('SkillId');
-	var serviciosId = Cookies.get('serviciosId');
-	var clientesId = Cookies.get('clientesId');
-	var clientesClavesId = Cookies.get('clientesClaveId');
-	*/
 
 	var myid = localStorage.getItem('id');
 	var skillsId = localStorage.getItem('SkillId');
@@ -1907,8 +1895,8 @@ $.typiHistoryEngine = function(data){
 
 $.vdn = function(data){
 
-	var skillidx = Cookies.get('SkillId');
-	var serviciosidx = Cookies.get('serviciosId');
+	var skillidx = localStorage.getItem('SkillId');
+	var serviciosidx = localStorage.getItem('serviciosId');
 
 	for(var i = 0; i < data.length; i++){
 
@@ -1921,7 +1909,6 @@ $.vdn = function(data){
 					if(skillidx == skills[i].skillsId){
 
 							var vdntransfiere = skills[i].vdnTransfiere;
-							Cookies.set('vdnTransfiere', vdntransfiere);
 							localStorage.setItem('vdnTransfiere', vdntransfiere)
 					}
 				}
@@ -1936,7 +1923,6 @@ $.skillsTyping = function(node){
 
 		var url = ws+"rg_ListSkillsTipologiasCampos";
 
-		//var myid = Cookies.get('id');
 		var myid = localStorage.getItem('id');
 
 		var Data = {
@@ -2071,18 +2057,6 @@ $.onsaveCita = function(){
 $.onsaveTyping = function(id, comment){
 
 	var url = ws+"rg_GuardaTipificacion";
-	/*
-	var myid = Cookies.get('id');
-	var skillsId = Cookies.get('SkillId');
-	var serviciosId = Cookies.get('serviciosId');
-	var clientesId = Cookies.get('clientesId');
-	var clientesClavesId = Cookies.get('clientesClaveId');
-	var skillsTipologiasid = id;
-	var comentario = comment;
-	var vdnTransfirio = Cookies.get('vdnTransfiere');
-	var extension = Cookies.get('extension');
-	*/
-
 
 	var myid = localStorage.getItem('id');
 	var skillsId = localStorage.getItem('SkillId');
@@ -2124,14 +2098,6 @@ $.onsaveTyping = function(id, comment){
 $.onsaveProducts = function(spid){
 
 	var url = ws+"rg_GuardaProductos";
-	/*
-	var myid = Cookies.get('id');
-	var skillsId = Cookies.get('SkillId');
-	var serviciosId = Cookies.get('serviciosId');
-	var clientesId = Cookies.get('clientesId');
-	var clientesClavesId = Cookies.get('clientesClaveId');
-	var skillsProductosid = spid;
-	*/
 
 	var myid = localStorage.getItem('id');
 	var skillsId = localStorage.getItem('SkillId');
@@ -2170,15 +2136,6 @@ $.onsaveProducts = function(spid){
 $.onSaveData = function(labels, inputs){
 
 	var url = ws+"rg_GuardaDatos";
-	/*
-	var myid = Cookies.get('id');
-	var skillsId = Cookies.get('SkillId');
-	var serviciosId = Cookies.get('serviciosId');
-	var clientesId = Cookies.get('clientesId');
-	var clientesClavesId = Cookies.get('clientesClaveId');
-	var label = labels.toString();
-	var input = inputs.toString();
-	*/
 
 	var myid = localStorage.getItem('id');
 	var skillsId = localStorage.getItem('SkillId');
@@ -2220,16 +2177,6 @@ $.onSaveSkillTyping = function(labels, inputs, nodetree){
 
 	var url = ws+"rg_GuardaDatos";
 
-	/*
-	var myid = Cookies.get('id');
-	var skillsId = Cookies.get('SkillId');
-	var serviciosId = Cookies.get('serviciosId');
-	var clientesId = Cookies.get('clientesId');
-	var clientesClavesId = Cookies.get('clientesClaveId');
-	var label = labels.toString();
-	var input = inputs.toString();
-	*/
-
 	var myid = localStorage.getItem('id');
 	var skillsId = localStorage.getItem('SkillId');
 	var serviciosId = localStorage.getItem('serviciosId');
@@ -2268,13 +2215,13 @@ $.onSaveSkillTyping = function(labels, inputs, nodetree){
 
 $.onTransfer = function(){
 
-	//var vdnTransfirio = Cookies.get('vdnTransfiere');
+
 	var vdnTransfirio = localStorage.getItem('vdnTransfiere');
 
 	if(vdnTransfirio == null || vdnTransfirio == undefined){
 
 	}else{
-		fTransferCall(vdnTransfirio);
+		parent.fTransferCall(vdnTransfirio);
 	}
 
 };
