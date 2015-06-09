@@ -1,9 +1,8 @@
-/*+++++++++++++++++++++++++++++++
+/*++++++++++++++++++++++++++++++++
 		Fusion Project Agente
-			  Atento Mexico
-	 Developed By Ninja Developers
- ++++++++++++++++++++++++++++++++*/
-
+		Atento Mexico
+		(c)2015
+ +++++++++++++++++++++++++++++++*/
 
 window.ws = "http://172.18.149.21/Servicios/REST.svc/";
 window.ctiurl = "http://172.18.149.21/WEB_Fusion/IGNACIO/HTMLPage.htm";
@@ -179,7 +178,7 @@ $.services = function(settings){
 			var servicio = services_evals[i].servicio;
 
 			var content = '<option class="serviceoption" name="'+serviciosId+'" value="'+serviciosId+'">'+servicio+'</option>';
-			$('.box-services select.servicechoice').append(content);
+			$('.box-services select.servicechoice').empty().append(content);
 
 		}
 
@@ -225,7 +224,7 @@ $.skills = function(settings){
 						var skill = skills[i].skill;
 
 						var content = '<option class="skilloption" value="'+skillsId+'">'+skill+'</option>';
-						$('#skills .box-skills select.skillchoice').append(content);
+						$('#skills .box-skills select.skillchoice').empty().append(content);
 
 					}
 
@@ -306,14 +305,14 @@ $.router = function(router){
 
 $.searchGet = function(){
 
-	if ($("#BarraInterfaces").length > 0){
-		$(".navbar-top").hide();
+	if($("#BarraInterfaces").length > 0){
+		//$(".navbar-top").hide();
 	}
 	else{
-		$(".navbar-top").hide();
+		//$(".navbar-top").hide();
 	}
 
-	$("#main").hide();
+	//$("#main").hide();
 
 	$("#search-result-get").slideDown();
 
@@ -354,7 +353,7 @@ $.searchGet = function(){
 
 					//console.log("despliega la busqueda completa tengo mas de 1");
 
-					$('#search-result-get .result').empty().fadeIn("slow").append('<h1>Clientes</h1><table class="search_evals table table-striped"><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Valor Clave</th><th>Lada Telefono</th><th>Ext</th><th>ClaveId</th><th></th></tr></thead><tbody></tbody></table>');
+					$('#search-result-get .result').empty().fadeIn("slow").append('<h1>Clientes URL</h1><table class="search_evals table table-striped"><thead><tr><th>#</th><th>Nombre</th><th>Apellido Pat</th><th>Apellido Mat</th><th>Valor Clave</th><th>Lada Telefono</th><th>Ext</th><th>ClaveId</th><th></th></tr></thead><tbody></tbody></table>');
 
 
 					for(var i = 0; i < data.length; i++){
@@ -781,7 +780,6 @@ function Cambiar_Clase_Aux_Activo(Id_Buttom){
 
 }
 
-
 function SaveAuxError(response){
 		alert('Error al guardar Auxiliar!');
 }
@@ -811,7 +809,6 @@ function SaveDispSuccess(response){
 
     //alert('Auxiliar guardado con Exito!');
 }
-
 
 /*Login*/
 
@@ -889,7 +886,6 @@ $(document).on('click', '#services .service-choice', function(){
 
 	var serviciosID = $(".servicechoice").val();
 
-	Cookies.set('serviciosId', serviciosID);
 	localStorage.setItem("serviciosId", serviciosID);
 
 	$.serviceid(serviciosID);
@@ -1109,14 +1105,9 @@ $(document).on('click', '#logoutSettings', function(){
 		Window/Document Object Model
  ++++++++++++++++++++++++++++++++*/
 
-$(window).load(function(){
-	if(path == "/engine.html"){}
-});
+$(window).load(function(){});
 
 $(document).ready(function(){
-
-	//var name = "master";
-	//var passw = "master";
 
 	if(path == "/" || path == "/index.html"){
 
@@ -1141,13 +1132,12 @@ $(document).ready(function(){
 				if(CtiVclave == undefined || CtiVclave == null || CtiClientesId == undefined || CtiClientesId == null){
 
 				}else{
-					//$(".navbar-top").slideUp("slow");
-					//$("#main").slideUp("slow");
-					//$("#logdIn").slideUp("slow");
+
 					$(".navbar-top").hide();
 					$("#main").hide();
 					$("#logdIn").hide();
 					$.searchGet();
+
 				}
 
 			}
@@ -1156,11 +1146,11 @@ $(document).ready(function(){
 
 		//Extension validate
 		$("#extens").keypress(function(e){
-			if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
+				if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
 					//display error message
 					$(".numbers").html("Solo Numeros").show().fadeOut("slow");
 					return false;
-			}
+				}
 		});
 
 		//Aux
@@ -1225,14 +1215,16 @@ $(document).ready(function(){
 			window.location.href='index.html?clientesId='+CtiClientesId+'&vclave='+CtiVclave+'';
 		}else{
 
-
 		}
+
+		/*
 		if ($("#BarraInterfaces").length > 0){
 			$("#navbar-top-settings").hide();
 		}
 		else{
 			$("#navbar-top-settings").hide();
 		}
+		*/
 
 	}
 
@@ -1241,21 +1233,8 @@ $(document).ready(function(){
 		if((name == null || name == undefined) && (passw == null || passw == undefined)){
 			window.location.href='/';
 		}else{
-			//$.onsetEngine(name, passw);
 			$.onsetEngine();
 		}
-
-		if($("#BarraInterfaces").length > 0){
-			$("#navbar-top-settings").hide();
-		}
-		else{
-
-			$("#navbar-top-settings").hide();
-		}
-
-	}
-
-	if(path == "/HTMLPageProgresivo.html"){
 
 	}
 
@@ -1280,7 +1259,7 @@ $(document).on('click', '.build', function(){
 
 	// Let's build it out
 
-	window.location.href ='setting.html';
+	window.location.href ='setting.html?status=ok';
 	/*
 	$.ajax({
 		url: "index.html",
@@ -1459,14 +1438,10 @@ $.onsetEngine = function(){
 		$.productsEngine(factory);
 		$.typiHistoryEngine(factory);
 		$.vdn(factory);
-
 		$(".loader").slideUp("slow", function(){
-
 			$('.navbar-top .logoutEngine').html('<a href="#" id="logout-builder"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
-
 			$("#Builder_Engine .engine-config").html('<div class="col-md-4 col-md-offset-4 well-sm"><button class="btn btn-block btn-engine-done">Guardar Configuracion <span class="glyphicon glyphicon-cog"></span></button></div>');
-
-		});
+	  });
 
 	});
 
@@ -1732,7 +1707,6 @@ $.productsEngine = function(data){
 	//var skillidx = "1";
 	//var serviciosidx = "1";
 
-
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
 
@@ -1773,7 +1747,7 @@ $.productsEngine = function(data){
 
 };
 
-$.customerInfo = function(){
+$.customerInfo = function(data){
 
 	var url = ws+"rg_MuestraCliente";
 
@@ -1815,7 +1789,7 @@ $.customerInfo = function(){
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: function(data){
-
+			alert("DDDD");
 			var names = data[0].nombre1 + ' ' + data[0].nombre2;
 			var pat = data[0].apellido1;
 			var mat = data[0].apellido2;
@@ -2131,7 +2105,6 @@ $.onsaveProducts = function(spid){
 
 
 };
-
 
 $.onSaveData = function(labels, inputs){
 
