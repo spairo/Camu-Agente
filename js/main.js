@@ -310,7 +310,7 @@ $.searchGet = function(){
 		$(".navbar-top").hide();
 	}
 	else{
-		$(".navbar-top").show();
+		$(".navbar-top").hide();
 	}
 
 	$("#main").hide();
@@ -1250,7 +1250,7 @@ $(document).ready(function(){
 		}
 		else{
 
-			$("#navbar-top-settings").show();
+			$("#navbar-top-settings").hide();
 		}
 
 	}
