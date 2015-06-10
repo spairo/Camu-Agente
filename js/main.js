@@ -630,7 +630,9 @@ $.Menu = function(data){
 
 };
 
-$.Aux = function(user, passw){
+$.Aux = function(){
+
+		alert("cargando aux");
 
 		var skillidx = localStorage.getItem('SkillId');
 		var serviciosidx = localStorage.getItem('serviciosId');
@@ -1105,7 +1107,14 @@ $(document).on('click', '#logoutSettings', function(){
 		Window/Document Object Model
  ++++++++++++++++++++++++++++++++*/
 
-$(window).load(function(){});
+$(window).load(function(){
+
+	if(path == "/engine.html"){
+		$.Aux();
+		$("#table_test .disabledAUX").attr("disabled", true);
+	}
+
+});
 
 $(document).ready(function(){
 
@@ -1160,8 +1169,8 @@ $(document).ready(function(){
 	if(path == "/engine.html"){
 
 		//Aux
-		$.Aux();
-		$("#table_test .disabledAUX").attr("disabled", true);
+		//$.Aux();
+		//$("#table_test .disabledAUX").attr("disabled", true);
 
 		$.UrlDecode = function(){
 			var vars = {};
@@ -1431,7 +1440,6 @@ $.onsetEngine = function(){
 	$(".loader").slideDown("slow", function(){
 
 		$.cssEngine(factory);
-		$.Aux(factory);
 		$.customerInfo(factory);
 		$.baselayoutEngine(factory);
 		$.captureRenderEngine(factory);
@@ -1790,7 +1798,7 @@ $.customerInfo = function(data){
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: function(data){
-			alert("DDDD");
+
 			var names = data[0].nombre1 + ' ' + data[0].nombre2;
 			var pat = data[0].apellido1;
 			var mat = data[0].apellido2;
@@ -2189,8 +2197,8 @@ $.onSaveSkillTyping = function(labels, inputs, nodetree){
 
 $.onTransfer = function(){
 
-
 	var vdnTransfirio = localStorage.getItem('vdnTransfiere');
+
 
 	if(vdnTransfirio == null || vdnTransfirio == undefined){
 
