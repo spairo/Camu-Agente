@@ -1431,6 +1431,7 @@ $.onsetEngine = function(){
 	$(".loader").slideDown("slow", function(){
 
 		$.cssEngine(factory);
+		$.Aux(factory);
 		$.customerInfo(factory);
 		$.baselayoutEngine(factory);
 		$.captureRenderEngine(factory);
