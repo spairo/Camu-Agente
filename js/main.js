@@ -15,6 +15,7 @@ var str;
 var scope_url;
 var scope_aux;
 
+
 $(window).load(function(){
 	$(".loader").fadeOut("slow");
 });
@@ -84,7 +85,8 @@ $.login = function(user, password, extension){
 
 									//LocalStorage
 									localStorage.setItem("settings", JSON.stringify(response[0].configuracion));
-									var settings = jQuery.parseJSON(localStorage.getItem("settings"));
+
+									settings = jQuery.parseJSON(localStorage.getItem("settings"));
 
 									var acd = localStorage.setItem('acd', response[0].acd);
 									var name = localStorage.setItem('name', response[0].usuario);
@@ -306,13 +308,13 @@ $.router = function(router){
 $.searchGet = function(){
 
 	if($("#BarraInterfaces").length > 0){
-		//$(".navbar-top").hide();
+		$(".navbar-top").hide();
 	}
 	else{
-		//$(".navbar-top").hide();
+		$(".navbar-top").show();
 	}
 
-	//$("#main").hide();
+	$("#main").hide();
 
 	$("#search-result-get").slideDown();
 
@@ -1437,22 +1439,32 @@ $.onsetEngine = function(){
 
 	var factory = jQuery.parseJSON(localStorage.getItem("settings"));
 
-	$(".loader").slideDown("slow", function(){
+	if(!factory){
+		var r = setInterval("$.onsetEngine()", 2000);
+		//$.onsetEngine();
+		//alert("onsetEngine");
+	}else{
 
-		$.cssEngine(factory);
-		$.customerInfo(factory);
-		$.baselayoutEngine(factory);
-		$.captureRenderEngine(factory);
-		$.typificationsEngine(factory);
-		$.productsEngine(factory);
-		$.typiHistoryEngine(factory);
-		$.vdn(factory);
-		$(".loader").slideUp("slow", function(){
-			$('.navbar-top .logoutEngine').html('<a href="#" id="logout-builder"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
-			$("#Builder_Engine .engine-config").html('<div class="col-md-4 col-md-offset-4 well-sm"><button class="btn btn-block btn-engine-done">Guardar Configuracion <span class="glyphicon glyphicon-cog"></span></button></div>');
-	  });
+		clearInterval(r);
 
-	});
+		$(".loader").slideDown("slow", function(){
+
+			$.cssEngine(factory);
+			$.customerInfo(factory);
+			$.baselayoutEngine(factory);
+			$.captureRenderEngine(factory);
+			$.typificationsEngine(factory);
+			$.productsEngine(factory);
+			$.typiHistoryEngine(factory);
+			$.vdn(factory);
+			$(".loader").slideUp("slow", function(){
+				$('.navbar-top .logoutEngine').html('<a href="#" id="logout-builder"><span class="glyphicon glyphicon-log-out"></span> LogOut</a>');
+				$("#Builder_Engine .engine-config").html('<div class="col-md-4 col-md-offset-4 well-sm"><button class="btn btn-block btn-engine-done">Guardar Configuracion <span class="glyphicon glyphicon-cog"></span></button></div>');
+			});
+
+		});
+
+	}
 
 };
 
