@@ -667,17 +667,18 @@ $.Aux = function(){
 			        for (var i = 0; i < aux_data.length; i++)
 			        {
 								var Auxiliar = aux_data[i].auxiliar;
-								var AuxiliarId = aux_data[i].auxiliaresId;
+								var AuxiliarId = aux_data[i].skillsAuxiliaresId;
 								var urlImg = aux_data[i].imagen;
+								var codigoAuxiliar = aux_data[i].codigoAuxiliar;
 
 								var auxselected = localStorage.getItem("IdAux");
 
 								if(auxselected == AuxiliarId){
 
-									content1 += ' <td> <input class="Visible" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
+									content1 += ' <td> <input class="Visible" type="image" onClick="buttomClick(this.id, this.name)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" name="'+codigoAuxiliar+'" title="' + Auxiliar + '"/> </td> ';
 
 								}else{
-									content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" title="' + Auxiliar + '"/> </td> ';
+									content1 += ' <td> <input class="Opaco" type="image" onClick="buttomClick(this.id, this.name)" id="' + AuxiliarId + '" src="' + urlImg + '" Height="50" Width="50" name="'+codigoAuxiliar+'" title="' + Auxiliar + '"/> </td> ';
 								}
 
 			        }
@@ -696,7 +697,10 @@ $.Aux = function(){
 
 };
 
-function buttomClick(buttom_id){
+function buttomClick(buttom_id, codeAux){
+
+		var codigoAuxiliar = codeAux;
+		parent.fMakeCall(codigoAuxiliar);
 
     var IdAux = localStorage.setItem('IdAux', buttom_id);
     var serviciosId = localStorage.getItem('serviciosId');
@@ -1115,12 +1119,41 @@ $(document).on('click', '#logoutSettings', function(){
  ++++++++++++++++++++++++++++++++*/
 
 $(window).load(function(){
+
 	if(path == "/engine.html"){
+
+		var name = localStorage.getItem('name');
+		var profile = localStorage.getItem('profile');
+
+		$(".name").empty().text(name);
+		$(".profile").empty().text(profile);
 
 		//Aux
 		$.Aux();
 		$("#table_test .disabledAUX").attr("disabled", true);
+
 	}
+	if(path == "/setting.html"){
+
+		//var transfiere = data;
+		//var treeid = $('#Builder_Engine .trees .tags .tag').attr('id');
+		//console.log(treeid);
+
+		/*
+		var idtransf = data;
+		console.log(idtransf);
+		for(var j = 0; j < idtransf.length; j++){
+
+			if(treeid == idtransf[j].transfiere){
+				console.log(idtransf[j].transfiere);
+				$('#Builder_Engine .trees .tags .tag').attr('name', idtransf[j].transfiere);
+			}
+
+		}
+		*/
+
+	}
+
 });
 
 $(document).ready(function(){
@@ -1307,15 +1340,6 @@ $(document).on('click', '.build', function(){
 
 $(document).on('click', '#logout-builder', function(){
 
-	Cookies.remove('id');
-	Cookies.remove('name');
-	Cookies.remove('profile');
-	Cookies.remove('hermetic');
-	Cookies.remove('SkillId');
-	Cookies.remove('serviciosId');
-	Cookies.remove('clientesId');
-	Cookies.remove('clientesClaveId');
-
 	$(".loader").fadeIn("slow", function(){
 		$('#Builder_Engine').empty();
 		//location.reload();
@@ -1330,7 +1354,7 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 		// Get typing selected
 		var treetagid = $('#Builder_Engine .trees .tags .tag').attr('id');
-		var treecomment = "comentario";
+		var treecomment = "";
 
 		// Get product selected
 		var producttagid = $("#Builder_Engine .product .tags .tag").attr('id');
@@ -1370,7 +1394,7 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 			var fields = false;
 
-			$('#Builder_Engine .fields .required').each(function(){
+			$('#Builder_Engine .fieldsIn .input-dinamic').each(function(){
 
 				if(this.value.trim() == '' ){
 						//alert("Requerido");
@@ -1411,73 +1435,75 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
   	}
 
+		if($('#Builder_Engine .products').html().trim()){
+
+			var pro = false;
+
+			if(producttagid == null || producttagid == undefined){
+				alert("Producto Requerido");
+				pro = false;
+				$(".btn-engine-done").prop( "disabled", false );
+				pro = false;
+				return pro;
+
+			}else{
+				pro = true;
+				return pro;
+			}
+
+		}else{
+			var pro = true;
+		}
+
 
 		if(fields == false){
-
 			alert("Campo Captura Requerido");
 			$(".btn-engine-done").prop( "disabled", false );
 			return false;
-
 		}
 		if(treefield == false){
-
 			alert("Campos tipificacion Requerido");
+			$(".btn-engine-done").prop( "disabled", false );
+			return false;
+		}
+		if(pro ==  false){
+
+			alert("Producto Requerido");
 			$(".btn-engine-done").prop( "disabled", false );
 			return false;
 
 		}
 		else if(treetagid == null || treetagid == undefined){
-			alert("tipificacion Requerido");
+
+			alert("tipificacion requerido");
 			$(".btn-engine-done").prop( "disabled", false );
-			return false;
-		}
-		else if($('.jstree-container-ul .jstree-children').length > 0){
-		//else if(producttagid == null || producttagid == undefined){
-			if(producttagid == null || producttagid == undefined){
-				alert("Producto Requerido");
-				$(".btn-engine-done").prop( "disabled", false );
-				return false;
-			}
+			return;
 
 		}
 		else{
+
 			$.onTransfer();
 			$.onsaveProducts(producttagid);
 			$.onsaveTyping(treetagid, treecomment);
 			$.onSaveData(labelarry, inputarry);
 			$.onSaveSkillTyping(labelarry2, inputarry2, treetagid);
 
-			$(".loader").slideDown("4500");
+			$(".loader").slideDown("slow");
 			$("#iframedataset").attr('src', 'about:blank');
-			BanderaLoop = 0;
 
-			fInicio();
 		}
 
 });
 
 // Render Engine
 
-
-
-
-$.onsetEngine = function(data){
-	/*
-	$(document).on('configMain', function(event, result){
-		console.log(result);
-	});
-*/
-
-
-	//}
-
-};
+$.onsetEngine = function(data){};
 
 $.cssEngine = function(data){
 
 	//var skillidx = "1";
 	//var serviciosidx = "1";
-	alert("cssEngine");
+	alert("onsetEngine");
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
 
@@ -1507,7 +1533,6 @@ $.baselayoutEngine = function(data){
 
 	//var skillidx = "1";
 	//var serviciosidx = "1";
-	alert("baselayoutEngine");
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
 
@@ -1568,7 +1593,6 @@ $.captureRenderEngine = function(data){
 
 	//var skillidx = "1";
 	//var serviciosidx = "1";
-	alert("captureRenderEngine");
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
 
@@ -1586,7 +1610,7 @@ $.captureRenderEngine = function(data){
 
 							if(fieldsIn != ""){
 
-								$('.advisory_capture').append('<h4 class="text-center"><span class="glyphicon glyphicon-edit"></span> Datos Captura</h4><div class="fields"></div>');
+								$('.advisory_capture').append('<h4 class="text-center"><span class="glyphicon glyphicon-edit"></span> Datos Captura</h4><div class="fieldsIn"></div>');
 
 								for(var i = 0; i < fieldsIn.length; i++){
 
@@ -1605,20 +1629,20 @@ $.captureRenderEngine = function(data){
 									if(form == "input" || form == "Input"){
 
 										var content = '<div class="form-group form-dinamic"><label class="control-label">'+title+'</label><input type="'+form+'" class="form-control input-sm input-dinamic" id="'+name+'" name="'+title+'" value="'+defaultvalue+'"  maxlength="'+long+'" placeholder=""></div>';
-										$('.advisory_capture .fields').append(content);
-
+										$('.advisory_capture .fieldsIn').append(content);
+										/*
 										if(required == "1"){
 											$(".fields .input-dinamic").addClass('required');
 										}
-
+										*/
 									}
 									if(form == "combo" || form == "Combo"){
 
 											var arrayselect = defaultvalue.split(',');
 
-											var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select id="fill-select" class="form-control input-sm"></select></div>';
+											var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select id="fill-select" class="form-control input-sm input-dinamic"></select></div>';
 
-											$('.advisory_capture .fields').append(content);
+											$('.advisory_capture .fieldsIn').append(content);
 
 											var options = arrayselect;
 
@@ -1635,7 +1659,7 @@ $.captureRenderEngine = function(data){
 
 											for(arry in arrycheckbox){
 												var content = '<div class="checkbox"><label><input type="checkbox" value="">'+arrycheckbox[arry]+'</label></div>';
-												$('.advisory_capture .fields').append(content);
+												$('.advisory_capture .fieldsIn').append(content);
 											};
 
 									}
@@ -1645,7 +1669,7 @@ $.captureRenderEngine = function(data){
 
 										for(arry in arryrdio){
 											var content = '<div class="radio"><label><input type="radio" value="">'+arryrdio[arry]+'</label></div>';
-											$('.advisory_capture .fields').append(content);
+											$('.advisory_capture .fieldsIn').append(content);
 										};
 										//if(required == "1"){
 											//$(".fields .input-dinamic").addClass('required');
@@ -1653,11 +1677,11 @@ $.captureRenderEngine = function(data){
 									}
 									if(form == "date" || form == "Date"){
 											var content = '<div class="form-group"><label for="Colonia">Fecha</label><div class="input-group date" id="datetimepicker1"><input type="text" class="form-control input-sm" /><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div></div>';
-											$('.advisory_capture .fields').append(content);
+											$('.advisory_capture .fieldsIn').append(content);
 									}
 									if(form == "label" || form == "Label"){
 											var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label></div>';
-											$('.advisory_capture .fields').append(content);
+											$('.advisory_capture .fieldsIn').append(content);
 									}
 
 								}
@@ -1680,18 +1704,17 @@ $.typificationsEngine = function(data){
 
 	//var skillidx = "1";
 	//var serviciosidx = "1";
-	alert("typificationsEngine");
-	
+
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
 
 	$('#Builder_Engine .tree').append('<h4 class="text-center"><span class="glyphicon glyphicon-tags"></span> Tipificaciones</h4>');
 
-	for(var i = 0; i < data.length; i++){
+	for(var e = 0; e < data.length; e++){
 
-		if(serviciosidx == data[i].serviciosId){
+		if(serviciosidx == data[e].serviciosId){
 
-			var skills = data[i].skills;
+			var skills = data[e].skills;
 
 				for(var i = 0; i < skills.length; i++){
 
@@ -1713,12 +1736,20 @@ $.typificationsEngine = function(data){
 								}
 
 								var nodetree = id.join(', ');
+								var nodetreetext = r.join(', ');
 								//console.log(nodetree);
+
+
 								$.skillsTyping(nodetree);
 
-								$('.trees .tags').empty().append('<span class="tag" id="'+id.join(', ')+'">'+r.join(', ')+'</span>');
+								$('.trees .tags').empty().append('<span class="tag" id="'+id.join(', ')+'" name="">'+r.join(', ')+'</span>');
 
 						}).jstree();
+
+
+								//console.log("transfiere", transfiere);
+								//$('.trees .tags').empty().append('<span class="tag" id="'+nodetree+'" name="">'+nodetreetext+'</span>');
+
 
 					}
 				}
@@ -1748,20 +1779,25 @@ $.productsEngine = function(data){
 					if(skillidx == skills[i].skillsId){
 
 							var data = skills[i].productos;
-							$('#Builder_Engine .products').append('<h4 class="text-center"><span class="glyphicon glyphicon-tag"></span> Productos</h4>');
-							$('#Builder_Engine .products').jstree({ 'core' : {
-								"data": data
-							}});
 
-							$('#Builder_Engine .products').on('changed.jstree', function(e, data){
-							    var i, j, r = [], id = [];
-							    for(i = 0, j = data.selected.length; i < j; i++) {
-										id.push(data.instance.get_node(data.selected[i]).id);
-										r.push(data.instance.get_node(data.selected[i]).text);
-							    }
-									$('.product .tags').empty().append('<span class="tag" id="'+id.join(', ')+'">'+r.join(', ')+'</span>');
-  						}).jstree();
+							if(!data){
 
+							}else{
+
+								$('#Builder_Engine .products').append('<h4 class="text-center"><span class="glyphicon glyphicon-tag"></span> Productos</h4>');
+								$('#Builder_Engine .products').jstree({ 'core' : {
+									"data": data
+								}});
+
+								$('#Builder_Engine .products').on('changed.jstree', function(e, data){
+								    var i, j, r = [], id = [];
+								    for(i = 0, j = data.selected.length; i < j; i++) {
+											id.push(data.instance.get_node(data.selected[i]).id);
+											r.push(data.instance.get_node(data.selected[i]).text);
+								    }
+										$('.product .tags').empty().append('<span class="tag" id="'+id.join(', ')+'">'+r.join(', ')+'</span>');
+	  						}).jstree();
+							}
 
 					}
 
@@ -2045,7 +2081,7 @@ $.skillsTyping = function(node){
 };
 
 /*===========================
-				    Saving
+				  Saving
  ============================*/
 
 $.onsaveCita = function(){
@@ -2216,7 +2252,6 @@ $.onSaveSkillTyping = function(labels, inputs, nodetree){
 $.onTransfer = function(){
 
 	var vdnTransfirio = localStorage.getItem('vdnTransfiere');
-
 
 	if(vdnTransfirio == null || vdnTransfirio == undefined){
 
