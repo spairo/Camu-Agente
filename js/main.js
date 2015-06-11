@@ -732,7 +732,10 @@ function buttomClick(buttom_id, codeAux){
 
 }
 
-function buttomClick_Disponible(buttom_id){
+function buttomClick_Disponible(buttom_id, codeAux){
+
+		var codigoAuxiliar = codeAux;
+		parent.fMakeCall(codigoAuxiliar);
 
     var url = ws + "rg_ActualizaSesion";
 
@@ -1349,8 +1352,7 @@ $(document).on('click', '#logout-builder', function(){
 
 $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
-
-		$(".btn-engine-done").prop( "disabled", true );
+		$(".btn-engine-done").prop("disabled", true);
 
 		// Get typing selected
 		var treetagid = $('#Builder_Engine .trees .tags .tag').attr('id');
