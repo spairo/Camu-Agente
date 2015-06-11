@@ -1593,22 +1593,22 @@ $.baselayoutEngine = function(data){
 
 $.captureRenderEngine = function(data){
 
-	//var skillidx = "1";
-	//var serviciosidx = "1";
+	//var skillidx = "4";
+  //var serviciosidx = "2";
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
 
-	for(var i = 0; i < data.length; i++){
+	for(var t = 0; t < data.length; t++){
 
-		if(serviciosidx == data[i].serviciosId){
+		if(serviciosidx == data[t].serviciosId){
 
-			var skills = data[i].skills;
+			var skills = data[t].skills;
 
-				for(var i = 0; i < skills.length; i++){
+				for(var r = 0; r < skills.length; r++){
 
-					if(skillidx == skills[i].skillsId){
+					if(skillidx == skills[r].skillsId){
 
-						var fieldsIn = skills[i].camposCaptura;
+						var fieldsIn = skills[r].camposCaptura;
 
 							if(fieldsIn != ""){
 
@@ -1642,17 +1642,55 @@ $.captureRenderEngine = function(data){
 
 											var arrayselect = defaultvalue.split(',');
 
-											var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select id="fill-select" class="form-control input-sm input-dinamic"></select></div>';
+											//console.log("666", parseJSON(arrayselect));
+											/*
+											var split = 'john smith~123 Street~Apt 4~New York~NY~12345'.split('~');
 
-											$('.advisory_capture .fieldsIn').append(content);
+											var name = split[0];
+											var street = split[1];
+											*/
 
-											var options = arrayselect;
 
-											var select = document.getElementById('fill-select');
+											//var obj = JSON.parse(arrayselect);
+											console.log("obj->", arrayselect[0]);
 
-											for(option in options){
-												select.add(new Option(options[option]));
-											};
+											var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label>';
+											var c = '<select id="fill-select" name="'+name+'" class="form-control input-sm input-dinamic"></select></div>';
+
+											$('.advisory_capture .fieldsIn').append(content + c);
+
+
+											for(var h = 0; h < arrayselect.length; h++){
+
+												//console.log(arrayselect[h] + "-" + arrayselect.length);
+												var content = '<option class="" value="">'+arrayselect[h]+'</option>';
+												$('.advisory_capture .fieldsIn #fill-select').append(content);
+
+											}
+
+											defaultvalue = [];
+											arrayselect = [];
+
+											/*
+											$('.advisory_capture .fieldsIn #fill-select').html('');
+
+											$.each(arrayselect, function(val, text) {
+												$('#fill-select').append( $('<option></option>').val(val).html(text) )
+											});
+											*/
+
+
+											/*for(var i = 0; i < arrayselect.length; i++){
+
+												var skillsId = skills[i].skillsId;
+												var skill = skills[i].skill;
+
+												var content = '<option class="" value="'+skillsId+'">'+skill+'</option>';
+												$('#skills .box-skills select.skillchoice').append(content);
+
+											}*/
+
+
 
 									}
 									if(form == "checkbox" || form == "Checkbox"){

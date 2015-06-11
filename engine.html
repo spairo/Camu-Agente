@@ -65,7 +65,7 @@
             <div class="col-md-4">
               <div class="pull-right">
                 <div class="dropdown custom-menu">
-                  <button type="button" class="btn btn-menu dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Menu <span class="caret"></span></button>
+                  <button type="button" class="btn btn-menu dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-align-justify"></span></button>
                   <ul class="dropdown-menu json-menu"></ul>
                 </div>
               </div>
@@ -79,29 +79,36 @@
     <!-- CTI dashboard -->
     <div id="BarraInterfaces">
       <div class="container">
-        <div class="form-inline well-lg">
-          <div id="text-center error-cti well-sm"></div>
-          <div class="form-group">
-            <label id="lblComment"></label>
+        <div id="lblComment" class="lblComment text-center"></div>
+        <div id="text-center error-cti" class="text-center"></div>
+        <div class="row">
+          <div class="col-md-4 text-center">
+            <div class="form-inline">
+              <div class="form-group">
+                <label id="lblNoMakeCall"></label>
+                <input type="text" class="form-control input-lg" id="txtNoMakeCall" placeholder="Numero">
+              </div>
+              <button type="button" id="btnMakeCall" class="btn btn-lg btn-hang" onclick="setTimeout(fMakeCall(document.getElementById('txtNoMakeCall').value), 1000)"><span class="glyphicon glyphicon-earphone"></span></button>
+            </div>
           </div>
-
-          <div class="form-group">
-            <label id="lblCallingNumber">Extension</label>
-            <input type="text" class="form-control input-sm" id="txtStation" disabled>
+          <div class="col-md-4 text-center">
+            <div class="form-inline">
+              <div class="form-group">
+                <label id="lblCallingNumber"></label>
+                <input type="text" class="form-control input-lg" id="txtStation" disabled>
+              </div>
+              <button type="button" id="btnDropCall" class="btn btn-lg btn-call" onclick="fDropCall()"><span class="glyphicon glyphicon-phone-alt"></span></button>
+            </div>
           </div>
-          <button type="button" id="btnDropCall" class="btn btn-default" onclick="fDropCall()">Colgar</button>
-
-          <div class="form-group">
-            <label id="lblNoMakeCall">No.Marcar</label>
-            <input type="text" class="form-control input-sm" id="txtNoMakeCall" placeholder="Numero">
+          <div class="col-md-4 text-center">
+            <div class="form-inline">
+              <div class="form-group">
+                <label id="lblNoTransfer"></label>
+                <input type="text" class="form-control input-lg" id="txtNoTransfer" placeholder="Transferir">
+              </div>
+              <button type="button" id="btnTransferCall" class="btn btn-lg btn-transfercall" onclick="fTransferCall(document.getElementById('txtNoTransfer').value)"><span class="glyphicon glyphicon-transfer"></span></button>
+            </div>
           </div>
-          <button type="button" id="btnMakeCall" class="btn btn-default" onclick="setTimeout(fMakeCall(document.getElementById('txtNoMakeCall').value), 1000)">Marcar</button>
-
-          <div class="form-group">
-            <label id="lblNoTransfer">No.Transferir</label>
-            <input type="text" class="form-control input-sm" id="txtNoTransfer" placeholder="Transferir">
-          </div>
-          <button type="button" id="btnTransferCall" class="btn btn-default" onclick="fTransferCall(document.getElementById('txtNoTransfer').value)">Transfer</button>
         </div>
       </div>
     </div>
