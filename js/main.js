@@ -1354,6 +1354,9 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 
 		$(".btn-engine-done").prop("disabled", true);
 
+		//AllData
+		var AllData = jQuery.parseJSON(localStorage.getItem("settings"));
+
 		// Get typing selected
 		var treetagid = $('#Builder_Engine .trees .tags .tag').attr('id');
 		var treecomment = "";
@@ -1484,14 +1487,17 @@ $(document).on('click', '#Builder_Engine .btn-engine-done', function(){
 		}
 		else{
 
-			$.onTransfer();
+
+			$.TypingsTransfer(AllData);
 			$.onsaveProducts(producttagid);
 			$.onsaveTyping(treetagid, treecomment);
 			$.onSaveData(labelarry, inputarry);
 			$.onSaveSkillTyping(labelarry2, inputarry2, treetagid);
 
+
 			$(".loader").slideDown("slow");
 			$("#iframedataset").attr('src', 'about:blank');
+
 
 		}
 
@@ -1640,57 +1646,21 @@ $.captureRenderEngine = function(data){
 									}
 									if(form == "combo" || form == "Combo"){
 
+											console.log(defaultvalue);
+
 											var arrayselect = defaultvalue.split(',');
 
-											//console.log("666", parseJSON(arrayselect));
-											/*
-											var split = 'john smith~123 Street~Apt 4~New York~NY~12345'.split('~');
+											console.log(arrayselect);
 
-											var name = split[0];
-											var street = split[1];
-											*/
+											var selectDinamic = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select id="fill-select" name="'+name+'" class="form-control input-sm input-dinamic">';
 
-
-											//var obj = JSON.parse(arrayselect);
-											console.log("obj->", arrayselect[0]);
-
-											var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label>';
-											var c = '<select id="fill-select" name="'+name+'" class="form-control input-sm input-dinamic"></select></div>';
-
-											$('.advisory_capture .fieldsIn').append(content + c);
-
-
-											for(var h = 0; h < arrayselect.length; h++){
-
-												//console.log(arrayselect[h] + "-" + arrayselect.length);
-												var content = '<option class="" value="">'+arrayselect[h]+'</option>';
-												$('.advisory_capture .fieldsIn #fill-select').append(content);
-
-											}
-
-											defaultvalue = [];
-											arrayselect = [];
-
-											/*
-											$('.advisory_capture .fieldsIn #fill-select').html('');
-
-											$.each(arrayselect, function(val, text) {
-												$('#fill-select').append( $('<option></option>').val(val).html(text) )
+											$.each(arrayselect, function(val, text){
+												selectDinamic = selectDinamic + '<option val="'+text+'">'+text+'</option>';
 											});
-											*/
 
+											selectDinamic = selectDinamic + '</select></div>';
 
-											/*for(var i = 0; i < arrayselect.length; i++){
-
-												var skillsId = skills[i].skillsId;
-												var skill = skills[i].skill;
-
-												var content = '<option class="" value="'+skillsId+'">'+skill+'</option>';
-												$('#skills .box-skills select.skillchoice').append(content);
-
-											}*/
-
-
+											$('.advisory_capture .fieldsIn').append(selectDinamic);
 
 									}
 									if(form == "checkbox" || form == "Checkbox"){
@@ -2120,6 +2090,48 @@ $.skillsTyping = function(node){
 
 };
 
+$.TypingsTransfer = function(data){
+
+	alert("validando transfer");
+
+	var nodeTy = $('#Builder_Engine .trees .tags .tag').attr('id');
+	var skillidx = localStorage.getItem('SkillId');
+	var serviciosidx = localStorage.getItem('serviciosId');
+
+	for(var e = 0; e < data.length; e++){
+
+		if(serviciosidx == data[e].serviciosId){
+
+			var skills = data[e].skills;
+
+				for(var i = 0; i < skills.length; i++){
+
+					if(skillidx == skills[i].skillsId){
+
+						var subdata = skills[i].tipologias;
+
+						for(var z = 0; z < subdata.length; z++){
+
+							if(subdata[z].id == nodeTy){
+
+								if(subdata[z].transfiere == 1){
+									$.onTransfer();
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+		}
+
+	}
+
+};
+
 /*===========================
 				  Saving
  ============================*/
@@ -2290,7 +2302,7 @@ $.onSaveSkillTyping = function(labels, inputs, nodetree){
 };
 
 $.onTransfer = function(){
-
+	alert("done");
 	var vdnTransfirio = localStorage.getItem('vdnTransfiere');
 
 	if(vdnTransfirio == null || vdnTransfirio == undefined){

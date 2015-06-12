@@ -300,7 +300,7 @@ function fMakeCallTelefonico(acd){
 
         //RESTError(dataactivity, urlactivity);
         var acdTel = "*63" + acd;
-        alert("MakecallT");
+        alert("Conectando...");
         //parent.websocket.send(["makecall", acdTel]);
         websocket.send(["makecall", acdTel]);
         //fDropCall();
@@ -326,16 +326,13 @@ function fMakeCallTelefonico(acd){
 $.fdisponible = function(){
 
     setTimeout(function(){
-      alert("logeando");
+      alert("Agente Disponible");
       //var webs = web;
       var disponible = "*61";
       websocket.send(["makecall", disponible]);
     }, 7000);
 
 };
-
-
-
 
 function fDropCall() {
     try {
