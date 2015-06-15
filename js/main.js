@@ -312,12 +312,29 @@ $.router = function(router){
 
 $.searchGet = function(){
 
-	if ($("#BarraInterfaces").length > 0){
-		$(".navbar-top").hide();
+	//window.parent.document.getElementById('target');
+
+	//var dashCti = window.parent.$(iframedataset);
+
+	if(document.getElementById("BarraInterfaces")){
+
+		alert("si tengo dashCti");
+
+	}else{
+
+		alert("no tengo dashCti");
+
 	}
-	else{
-		$(".navbar-top").show();
-	}
+
+	//if(dashCti.length > 0){
+		//$(".navbar-top").hide();
+		//alert("si tengo dashCti");
+
+	//}
+	//else{
+		//alert("no tengo dashCti");
+		//$(".navbar-top").show();
+	//}
 
 	$("#main").hide();
 
@@ -403,7 +420,7 @@ $.searchGet = function(){
 
 			}else{
 				//console.log("vasio, voy a agregar boton de crear");
-				$('#search-result-get').empty().slideDown("slow").append('<div class="btn-group btn-group-lg pull-left" role="group" aria-label="config"><button class="btn btn-search add-client">Crear Cliente <span class="glyphicon glyphicon-plus"></button></div><div class="result"></div>');
+				$('#search-result-get').empty().slideDown("slow").append('<div class="btn-group btn-group-lg pull-left" role="group" aria-label="config"><button class="btn btn-search add-client"><span class="glyphicon glyphicon-user"></span> <span class="glyphicon glyphicon-plus"></button></div><div class="result"></div>');
 				$(".result").empty().slideDown("slow").append('<span class="not-found">No hay resultados</span>');
 			}
 
@@ -794,7 +811,6 @@ function Cambiar_Clase_Aux_Activo(Id_Buttom){
 
 }
 
-
 function SaveAuxError(response){
 		alert('Error al guardar Auxiliar!');
 }
@@ -824,7 +840,6 @@ function SaveDispSuccess(response){
 
     //alert('Auxiliar guardado con Exito!');
 }
-
 
 /*Login*/
 
@@ -1187,6 +1202,7 @@ $(document).ready(function(){
 				if(CtiVclave == undefined || CtiVclave == null || CtiClientesId == undefined || CtiClientesId == null){
 
 				}else{
+
 					//$(".navbar-top").slideUp("slow");
 					//$("#main").slideUp("slow");
 					//$("#logdIn").slideUp("slow");
@@ -1601,20 +1617,22 @@ $.captureRenderEngine = function(data){
 
 	//var skillidx = "4";
   //var serviciosidx = "2";
+	//var skillidx = "1";
+	//var serviciosidx = "1";
 	var skillidx = localStorage.getItem('SkillId');
 	var serviciosidx = localStorage.getItem('serviciosId');
 
-	for(var t = 0; t < data.length; t++){
+	for(var i = 0; i < data.length; i++){
 
-		if(serviciosidx == data[t].serviciosId){
+		if(serviciosidx == data[i].serviciosId){
 
-			var skills = data[t].skills;
+			var skills = data[i].skills;
 
-				for(var r = 0; r < skills.length; r++){
+				for(var i = 0; i < skills.length; i++){
 
-					if(skillidx == skills[r].skillsId){
+					if(skillidx == skills[i].skillsId){
 
-						var fieldsIn = skills[r].camposCaptura;
+						var fieldsIn = skills[i].camposCaptura;
 
 							if(fieldsIn != ""){
 
@@ -1646,21 +1664,19 @@ $.captureRenderEngine = function(data){
 									}
 									if(form == "combo" || form == "Combo"){
 
-											console.log(defaultvalue);
-
 											var arrayselect = defaultvalue.split(',');
 
-											console.log(arrayselect);
+											var content = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select id="fill-select" class="form-control input-sm input-dinamic"></select></div>';
 
-											var selectDinamic = '<div class="form-group form-dinamic"><label class="control-label">'+name+'</label><select id="fill-select" name="'+name+'" class="form-control input-sm input-dinamic">';
+											$('.advisory_capture .fieldsIn').append(content);
 
-											$.each(arrayselect, function(val, text){
-												selectDinamic = selectDinamic + '<option val="'+text+'">'+text+'</option>';
-											});
+											var options = arrayselect;
 
-											selectDinamic = selectDinamic + '</select></div>';
+											var select = document.getElementById('fill-select');
 
-											$('.advisory_capture .fieldsIn').append(selectDinamic);
+											for(option in options){
+												select.add(new Option(options[option]));
+											};
 
 									}
 									if(form == "checkbox" || form == "Checkbox"){
@@ -2090,48 +2106,6 @@ $.skillsTyping = function(node){
 
 };
 
-$.TypingsTransfer = function(data){
-
-	alert("validando transfer");
-
-	var nodeTy = $('#Builder_Engine .trees .tags .tag').attr('id');
-	var skillidx = localStorage.getItem('SkillId');
-	var serviciosidx = localStorage.getItem('serviciosId');
-
-	for(var e = 0; e < data.length; e++){
-
-		if(serviciosidx == data[e].serviciosId){
-
-			var skills = data[e].skills;
-
-				for(var i = 0; i < skills.length; i++){
-
-					if(skillidx == skills[i].skillsId){
-
-						var subdata = skills[i].tipologias;
-
-						for(var z = 0; z < subdata.length; z++){
-
-							if(subdata[z].id == nodeTy){
-
-								if(subdata[z].transfiere == 1){
-									$.onTransfer();
-								}
-
-							}
-
-						}
-
-					}
-
-				}
-
-		}
-
-	}
-
-};
-
 /*===========================
 				  Saving
  ============================*/
@@ -2302,7 +2276,7 @@ $.onSaveSkillTyping = function(labels, inputs, nodetree){
 };
 
 $.onTransfer = function(){
-	alert("done");
+
 	var vdnTransfirio = localStorage.getItem('vdnTransfiere');
 
 	if(vdnTransfirio == null || vdnTransfirio == undefined){
